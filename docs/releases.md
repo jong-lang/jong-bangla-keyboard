@@ -3,7 +3,10 @@
 Jong Bangla uses branches and pull requests, manually selected versions, and
 automated draft releases. The automation does not publish releases, merge PRs,
 create version bumps or publish Cargo packages. Both crates remain `publish = false`.
-Start with source releases while public binary packaging remains undecided.
+The [roadmap](roadmap.md) defines confirmed platform/package targets and staged
+delivery. Current automation produces source archives only; it does not yet build
+Linux packages, Windows installers or macOS bundles. Early source releases may
+ship independently while those delivery stages are implemented.
 
 ## Everyday changes
 
@@ -25,18 +28,20 @@ not remove the change from the source archive or the full Git history.
 
 ## Version policy
 
-Select versions manually in a release preparation PR. Keep the core and Fcitx5
-addon at one project version for now, so one tag identifies the complete source.
+Select versions manually in a release preparation PR. Keep the core and all
+implemented adapters at one project version, so one tag identifies the complete
+source. Package rebuild revisions are separate from the upstream project version.
+Document each ecosystem's prerelease version mapping when adding its recipe.
 Tags use `vX.Y.Z`, or `vX.Y.Z-alpha.N`, `vX.Y.Z-beta.N`, `vX.Y.Z-rc.N` with `N >= 1`.
 The metadata version omits the leading `v`. Other tag forms are rejected.
 
 - `alpha`: experimental releases with explicitly documented missing validation
   or known defects. `v0.1.0-alpha.1` is the suggested first public release, not a
   version selected or published by this setup change.
-- `beta`: intended first-release features are implemented and installation and
-  the intended desktop routes have recorded validation; remaining issues are
-  listed for testers.
-- `rc`: a candidate for a declared stable scope with no known blocking defects.
+- `beta`: the declared adapters, packages and desktop routes pass the
+  [acceptance gate](roadmap.md#acceptance-gate-for-each-release-scope).
+- `rc`: a candidate for a declared stable scope with no open blocking Issues for
+  that scope; any accepted deferrals are recorded in the tracker.
 - Before `1.0`, use a new minor version for incompatible changes to the declared
   interface or behavior; use patch versions for compatible fixes.
 - `1.0.0` requires a documented API/behavior promise, installation path and
@@ -52,16 +57,20 @@ The current Cargo `0.1.0` baseline is not a published release.
    [the core manifest](../Cargo.toml) and [the FFI manifest](../adapters/fcitx5/ffi/Cargo.toml),
    and `Version` in [the addon metadata](../adapters/fcitx5/jong-bangla.conf.in).
    Regenerate `Cargo.lock` with `cargo generate-lockfile --offline`; inspect its diff.
+   These are the currently implemented artifacts. When adding adapters/packages,
+   extend the validator and asset workflow to cover their version metadata before
+   offering those artifacts in a release.
 2. Copy [the release template](../.github/RELEASE_TEMPLATE.md) into `CHANGELOG.md`
    below `Unreleased`. Replace all `{{...}}` placeholders, use an ISO date
    (`YYYY-MM-DD`), and move the changes being released into this dated section.
    Keep `Unreleased` available for future work. Do not duplicate its initial
    "not a published release" baseline description into published notes.
-3. Fill every template section. Use `None` for no fixes/breaking changes. State
-   desktop checks not performed for this release explicitly, and identify older
-   observations as prior evidence. Carry forward applicable known issues,
-   including the unresolved Brave/WhatsApp first-character loss unless resolved
-   or explicitly deferred. A source release does not imply a desktop support claim.
+3. Fill every template section. Use `None` for no fixes/breaking changes. Declare
+   the included adapters, artifacts, OS/architecture matrix and input routes.
+   State checks not performed and identify older observations as prior evidence.
+   Track bugs and release-blocking/deferral decisions in GitHub Issues; the Known
+   issues section links to the relevant issues or milestone without copying bug
+   reports. A source release does not imply a desktop support claim.
 4. Run the [documented checks](development.md), including the adapter's staged
    install check. Run the [pinned reference checks](reference-checks.md) for
    phonetic changes and the appropriate resource checks for new performance claims.
@@ -78,6 +87,9 @@ The current Cargo `0.1.0` baseline is not a published release.
    It must pass for the prepared release version. The validator checks both
    manifests, both lockfile package versions, addon metadata, a unique dated
    changelog section, required nonempty note sections and unresolved placeholders.
+   Attach the successful command and outcome to the release PR: current PR CI
+   does not run this validator. Automatic validation currently starts on tag
+   pushes; moving it before merge is a [planned tooling step](roadmap.md#implementation-follow-ups-from-the-documentation-review).
 6. Review the complete diff, get explicit user confirmation before an agent
    commits, then submit the release PR. Merge only after hosted checks pass.
 
@@ -101,7 +113,7 @@ The [release workflow](../.github/workflows/release.yml) runs on `v*` tag pushes
    a validation-run link and generated PR/contributor notes. Version suffixes
    automatically set the draft's prerelease flag; drafts are never marked latest.
 
-Review the title, notes, prerequisite/install links, known issues, prerelease
+Review the title, notes, prerequisite/install links, linked Issues, prerelease
 flag and assets before manually publishing. For stable releases, deliberately
 select whether it should be the latest release. Keep prereleases off latest.
 Verify the downloaded archive with `sha256sum -c SHA256SUMS` in its download folder.
@@ -117,7 +129,12 @@ version through a PR. Never move/reuse a release tag or replace published assets
 
 Workflow files cannot enforce repository branch rules or enable immutable
 releases. An administrator must configure these settings separately; this local
-setup has not changed or verified the hosted settings.
+guide does not change them. The last recorded inspection (2026-10-31) found an
+active `main` PR ruleset with zero required approvals and administrator bypass,
+but no required status checks; PR #1 used bypass after both jobs passed. Tag
+protections and immutable-release settings were not inspected. Reinspect and
+verify the desired settings below before relying on them; this is dated evidence,
+not a live hosted-settings check.
 
 - Add an active branch ruleset for `main` requiring a PR, blocking force pushes
   and deletion, and requiring the `Documentation and release tooling` and

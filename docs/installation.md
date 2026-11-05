@@ -3,12 +3,15 @@
 Build prerequisites are listed in the [development guide](development.md#build-and-check-the-fcitx5-experiment).
 Run commands from the repository root. Staged installation has been checked;
 actual installed-route desktop typing is still awaiting user confirmation.
+This guide covers the current Fcitx5 source installation only. IBus, native Linux
+packages, Flatpak, Windows TSF and macOS delivery are planned in the
+[roadmap](roadmap.md); installation commands for those targets do not exist yet.
 
 ## Install the experimental addon
 
 This procedure targets the recorded CachyOS x86_64 environment with Fcitx5 under
-`/usr`. The name is provisional; this is a local source installation, with the
-[existing desktop limitations](v1.md#remaining-desktop-smoke-checklist).
+`/usr`. The name is provisional; this is a local source installation with limited
+[desktop validation](fcitx5-validation.md#remaining-desktop-smoke-checklist).
 Keep your already configured Fcitx5/frontend setup. Installation adds the addon
 files; activation remains a separate manual desktop action.
 
@@ -76,3 +79,26 @@ sudo rm -- /usr/lib/fcitx5/libjong-bangla.so \
 Restart Fcitx5 through your existing session setup afterward. Restore any prior
 manual-install backups as appropriate. Keep shared directories, other engines,
 toolkit integrations and the rest of your Fcitx5 configuration.
+
+## Troubleshooting discovery and activation
+
+- **Jong Bangla is absent from the selector:** verify the three installed paths
+  above match your Fcitx5 prefix. Restart the normal daemon after installation
+  and disable the current-language filter in its configuration tool. A staged
+  installation does not register an engine with the desktop daemon.
+- **Typing stays Latin:** select Jong Bangla in the application being tested and
+  try `ki` then Space in a disposable field. Record the application and actual
+  input route. Check the existing frontend setup against the official
+  [Fcitx Wayland guide](https://fcitx-im.org/wiki/Using_Fcitx_5_on_Wayland/en)
+  before changing session settings; installing an addon does not configure every
+  application frontend.
+- **Behavior still matches an older build:** rebuild and repeat the explicit
+  installation, then restart the daemon through the same session setup. A
+  running process retains its loaded addon. Check for another manual or
+  package-managed copy before removing or replacing files.
+
+If these checks do not explain the result, search or report it in
+[GitHub Issues](https://github.com/shaadahmmed/jong-bangla-keyboard/issues) using
+the build/commit, exact synthetic keys and environment fields from
+[CONTRIBUTING.md](../CONTRIBUTING.md#report-a-bug-or-suggest-a-change).
+Keep bug investigation and workarounds in the issue.

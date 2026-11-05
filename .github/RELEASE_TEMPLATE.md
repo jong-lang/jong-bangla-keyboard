@@ -14,7 +14,9 @@
 
 ### Installation and upgrade
 
-This is a source release; no prebuilt desktop package is provided.
+{{List the exact available source/package/installer assets and their supported
+OS versions and architectures. State which roadmap targets are not included.
+Current release automation produces source archives only.}}
 Follow the [installation guide](https://github.com/shaadahmmed/jong-bangla-keyboard/blob/v{{version}}/docs/installation.md).
 
 {{Describe prerequisites and any upgrade-specific steps.}}
@@ -27,5 +29,6 @@ Follow the [installation guide](https://github.com/shaadahmmed/jong-bangla-keybo
 
 ### Known issues
 
-- {{List unresolved issues and workarounds. Carry forward applicable issues.}}
+- {{Link to applicable GitHub Issues or the release milestone. Keep bug reports,
+  workarounds and deferral decisions in the tracker.}}
 - Compatibility evidence is bounded; full Avro parity is not established.

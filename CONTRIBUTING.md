@@ -7,14 +7,18 @@ and the relevant [requirements and behavior decisions](docs/v1.md).
 
 ## Report a bug or suggest a change
 
-Use the repository's issue tracker. Before opening an issue, check existing
-reports and the [known desktop limitations](docs/v1.md#remaining-desktop-smoke-checklist).
+Use [GitHub Issues](https://github.com/shaadahmmed/jong-bangla-keyboard/issues).
+Search existing reports before opening an issue. Bug reproduction, investigation,
+workarounds and resolution/deferral decisions belong in the issue, rather than
+README, requirements or progress-log bug narratives. Docs may link to an issue
+and must still state the implementation and validation scope accurately.
 
 For conversion bugs, provide a minimal synthetic phonetic input, expected and
 actual Bangla output, and Unicode code points when visually similar text differs.
 State the reference and revision used for the expected behavior. For desktop
-bugs, include reproduction steps, distro, desktop, Fcitx5 and application/toolkit
-versions, and whether the application uses Wayland or XWayland. Distinguish an
+bugs, include reproduction steps, OS/distro, desktop, input framework and
+application/toolkit versions, and the actual native or compatibility input route.
+For Linux, distinguish Wayland from XWayland. Distinguish an
 active editable word from text already committed to the application.
 
 Use disposable sample text. Do not include passwords, private typed text or
@@ -40,8 +44,9 @@ should use the same branch and pull request process.
 
 ## Validate and submit
 
-For Rust changes, run the documented format, Clippy, workspace test and release
-build commands. Run the Fcitx5 checks when changing the adapter; keep synthetic
+For Rust changes, run the complete workspace check block in the development
+guide, including API docs and the conversion smoke example. Run the Fcitx5
+checks and staged installation check when changing the adapter; keep synthetic
 harness results separate from actual desktop observations. Use reference and
 resource checks when relevant to the behavior or claims being changed. Report
 any check you could not run.
@@ -69,3 +74,6 @@ value. Labels categorize generated notes; they do not select the release version
 Follow the [release guide](docs/releases.md) for manual versioning, release PRs,
 draft review and publication. Project code is [MIT licensed](LICENSE); retain
 applicable notices and document any third-party obligations.
+
+Platform and packaging work follows the [staged roadmap](docs/roadmap.md).
+Keep release scope and acceptance evidence separate from planned availability.

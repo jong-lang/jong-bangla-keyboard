@@ -3,9 +3,12 @@
 ## Project
 
 Jong Bangla (`jong-bangla-board`) is a Bangla phonetic desktop input method,
-implemented from scratch with a reusable Rust engine. The first release targets
-Fcitx5 on Linux, with CachyOS + KDE Plasma on Wayland as the first test environment.
-IBus and Windows integrations are future work. Project code is MIT licensed.
+implemented from scratch with a reusable Rust engine. The staged release scope
+includes Linux Fcitx5 and IBus, Flatpak/deb/rpm/pacman packages and maintained AUR
+recipes, Windows TSF, and macOS on Apple silicon and Intel. Fcitx5 on CachyOS +
+KDE Plasma Wayland is the first implementation/test environment. Follow
+[the roadmap](docs/roadmap.md); planned targets are not delivered support.
+Project code is MIT licensed.
 
 `docs/v1.md` distinguishes confirmed requirements from proposals and open decisions.
 Do not turn a proposal into a requirement without explaining the decision.
@@ -24,6 +27,13 @@ User instructions take precedence over this guide; update the docs when they cha
   Read relevant sections of [docs/development.md](docs/development.md) for check
   commands, [CONTRIBUTING.md](CONTRIBUTING.md) for contribution expectations, and
   [docs/v1.md](docs/v1.md) for requirements and decisions needed by the task.
+  Use [docs/roadmap.md](docs/roadmap.md) for platform/package stages and acceptance
+  gates when the task affects release scope or delivery.
+  Use [docs/adapter-contract.md](docs/adapter-contract.md) for native event and
+  ownership rules, and [docs/compatibility.md](docs/compatibility.md) for reference
+  provenance and Unicode policy. Read only the relevant rule-family sections in
+  `docs/compatibility/` when investigating historical phonetic decisions; those
+  records are not current requirements or routine handoff reading.
   Do not read these documents in full by default.
 - Read historical progress entries only when investigating an earlier decision
   or regression, or when the current handoff lacks necessary context.
@@ -75,6 +85,10 @@ User instructions take precedence over this guide; update the docs when they cha
   relevant existing commit when useful; do not try to embed a commit's own hash.
 - Keep planned, in-progress, and completed work distinct. Never claim a check or
   milestone is complete without evidence.
+- Track bugs, reproduction details, workarounds and release-blocking or deferral
+  decisions in GitHub Issues. Link to issues from docs where needed; do not keep
+  duplicate bug narratives in requirements, usage guides or the progress log.
+  Keep implementation and validation limits documented accurately.
 - Implement every new feature and fix on a branch and submit it through a pull
   request to `main`; do not push these changes directly to `main`.
 - Do not automatically commit completed work. Finish the checks and documentation,
@@ -110,15 +124,17 @@ User instructions take precedence over this guide; update the docs when they cha
 ## Architecture boundaries
 
 - Keep transliteration independent of Fcitx5, display servers, desktop APIs, and UI.
-- Keep composition state and edit/commit actions independent of the platform
-  adapter so future IBus and Windows adapters can share behavior.
+- Keep composition state and edit/commit actions independent of platform adapters
+  so Fcitx5, IBus, Windows TSF and macOS can share behavior.
 - Keep framework-specific key events, preedit updates, and commits in the adapter.
   Reuse Fcitx5 UI facilities where suitable.
-- Rust is the implementation language for engine and composition logic. A minimal
-  C++ bridge is a proposal to validate against Fcitx5's addon API, not a settled
-  requirement. Do not move transliteration rules into a bridge.
-- Add concrete extension points when needed. Do not build a dynamic plugin system
-  or speculative IBus/Windows adapters for the first release.
+- Rust is the implementation language for engine and composition logic. The
+  experimental Fcitx5 adapter uses a small C++ bridge and Rust C ABI. Other native
+  bindings/glue are chosen during each platform's feasibility step; C++ is not a
+  cross-platform requirement. Do not move transliteration rules into bridges.
+- Add concrete extension points when needed. Implement IBus, TSF and macOS in
+  their roadmap stages. Do not build a dynamic plugin system or generalize an
+  adapter framework before concrete reuse exists.
 - Keep unsafe code at a documented interoperability boundary when unavoidable.
   Specify ownership, lifetimes, encoding, error handling, and panic containment.
 

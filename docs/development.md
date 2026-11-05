@@ -1,8 +1,11 @@
 # Development guide
 
 Run all commands from the repository root. For contribution scope and review
-expectations, read [CONTRIBUTING.md](../CONTRIBUTING.md). For installation, use
-the separate [installation guide](installation.md).
+expectations, read [CONTRIBUTING.md](../CONTRIBUTING.md). Obtain a Git checkout
+for contributor checks; an extracted source archive is sufficient for the Rust
+and Fcitx5 build/test blocks. For installation, use the separate
+[installation guide](installation.md). Only the experimental Fcitx5 adapter is
+implemented; other platform and package work follows the [roadmap](roadmap.md).
 
 ## Documentation and release tooling
 
@@ -17,6 +20,10 @@ git diff --check
 
 The documentation checker validates repository Markdown links/anchors, fences
 and shell example syntax. It does not fetch external links or execute examples.
+It uses `git ls-files`, so it and the Git diff checks require a checkout; they
+cannot currently run on an extracted source archive. The adapter resource
+measurement tool also uses Git for provenance. Archive-check support and an
+archive build in CI are planned, rather than claimed as current validation.
 The unit tests exercise the release metadata and note-validation gates.
 Run `actionlint` when changing `.github/workflows/`; installing ShellCheck also
 enables its shell diagnostics. CI installs both tools in its build container.
@@ -36,11 +43,11 @@ From the repository root:
 
 ```sh
 cargo fmt --all -- --check
-cargo clippy --offline --workspace --all-targets -- -D warnings
-cargo test --offline --workspace
-cargo build --offline --workspace --release
-cargo doc --offline --workspace --no-deps
-cargo run --offline --example convert -- 'kh12T'
+cargo clippy --offline --locked --workspace --all-targets -- -D warnings
+cargo test --offline --locked --workspace
+cargo build --offline --locked --workspace --release
+cargo doc --offline --locked --workspace --no-deps
+cargo run --offline --locked --example convert -- 'kh12T'
 ```
 
 The conversion example prints `খ১২ট`. See the [typing guide](typing.md) for
@@ -51,12 +58,12 @@ more examples and composition controls. API docs are generated in `target/doc/`.
 This builds an experimental addon and runs synthetic input through the installed
 Fcitx5 dispatcher. It does not install the addon, connect a desktop frontend, or
 change input-method settings. Limited user-reported desktop smoke observations
-are recorded in the [specification](v1.md#fcitx5-local-feasibility-result);
+are recorded in the [validation record](fcitx5-validation.md#fcitx5-local-feasibility-result);
 the full frontend matrix is still unverified.
 
 In addition to Rust, use Fcitx5 Core/Utils development headers **5.1.23 or newer**,
 a C++20 compiler, CMake **3.25 or newer**, and Ninja. These are build requirements;
-only the versions in the [environment record](v1.md#fcitx5-local-feasibility-result)
+only the versions in the [environment record](fcitx5-validation.md#fcitx5-local-feasibility-result)
 have been validated. Cargo remains offline and adds no registry dependencies.
 
 ```sh
@@ -72,7 +79,7 @@ cache and runtime directories. Build-local metadata contains the absolute librar
 path and is unsuitable for installation. Separate install rules generate metadata
 without a build path; see [experimental installation](installation.md#install-the-experimental-addon)
 for the explicit install/removal procedure and
-[layout decisions](v1.md#experimental-local-installation-plan).
+[layout decisions](fcitx5-validation.md#experimental-local-installation-plan).
 Only synthetic strings are recorded by the harness; the addon has no input logger.
 
 Ten suites check editing, boundaries/shortcuts, releases/modifiers/repeats, resolved
@@ -82,21 +89,28 @@ preedit/commit/application-key effects, including framework-owned shortcuts and
 both focus-out commit owners. A simulated frontend commit is not evidence that a
 real toolkit honors that path. Actual AltGr/compose completion, document relocation,
 Wayland/XWayland delivery and desktop UI still need systematic smoke tests.
-Use the [remaining desktop checklist](v1.md#remaining-desktop-smoke-checklist)
+Use the [remaining desktop checklist](fcitx5-validation.md#remaining-desktop-smoke-checklist)
 to report those observations and application runtime details.
 The user has manually confirmed that the updated Escape behavior works. For
 repeat tests, `ki` then Escape should keep কি, and the next `i` should start a
-fresh ই. Restart the private test daemon
-with the rebuilt addon; an already loaded process keeps its old implementation.
+fresh ই. Follow the explicit install/restart procedure for a new desktop build;
+an already loaded process keeps its old implementation. The desktop checklist
+uses installed applications and does not require the historical private helper.
 The precise
-[boundary contract and limits](v1.md#fcitx5-local-feasibility-result) are recorded
+[boundary contract and limits](fcitx5-validation.md#fcitx5-local-feasibility-result) are recorded
 alongside the product specification.
 
 For C++ formatting (validated with clang-format 23.1.4):
 
 ```sh
-clang-format --dry-run --Werror adapters/fcitx5/addon.cpp adapters/fcitx5/jong.h adapters/fcitx5/tests/harness.cpp
+clang-format --dry-run --Werror adapters/fcitx5/addon.cpp adapters/fcitx5/jong.h \
+  adapters/fcitx5/tests/harness.cpp adapters/fcitx5/tests/memory.cpp \
+  adapters/fcitx5/tests/resources.cpp
 ```
+
+Run this for C++ changes; current CI does not enforce C++ formatting. Adding that
+job is a planned tooling change. For adapter changes, also run CTest and the
+staged installation check in the [installation guide](installation.md).
 
 The Rust workspace checks above include the C-ABI crate through `--workspace`. To repeat
 the C++ AddressSanitizer/UndefinedBehaviorSanitizer check as well:
@@ -124,7 +138,7 @@ The boundary attempts to release a caught payload once. If its destructor panics
 the replacement payload is deliberately retained, and the session is cleared.
 Double panics and panicking hooks still abort; this policy is not a guarantee of
 leak freedom or recovery from arbitrary destructor code. See the
-[failure-policy evidence](v1.md#c-abi-caught-panic-policy-review).
+[failure-policy evidence](adapter-contract.md#c-abi-caught-panic-policy-review).
 
 For a leak check, use the same sanitized build in an ordinary terminal outside
 ptrace/debugger tracing, with Python 3 available:
@@ -141,7 +155,7 @@ normal lifecycle test is also included in CTest. No suppression file is used.
 Rust heap allocations are observed through the system allocator, as verified by
 the deliberate leak; this does not instrument Rust memory accesses. These
 synthetic tests do not exercise every failure path or a live desktop daemon.
-See the [results and panic-path limit](v1.md#local-resource-measurement-and-leak-check).
+See the [results and panic-path limit](performance.md#local-resource-measurement-and-leak-check).
 
 ## Library structure
 
