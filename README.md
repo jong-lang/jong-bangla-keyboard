@@ -5,8 +5,11 @@ engine. Type phonetic Latin keys and edit the converted Bangla before committing
 it to your application.
 
 The working project name is `jong-bangla-board`; **Jong Bangla** is the proposed
-display name. The first release targets **Fcitx5 on Linux**, with **CachyOS + KDE
-Plasma on Wayland** as the first test environment. IBus and Windows are future work.
+display name. Delivery is staged: **Fcitx5 and IBus on Linux**, Linux packages
+(Flatpak, `.deb`, `.rpm`, pacman and maintained AUR recipes), **Windows TSF**, and
+**macOS on Apple silicon and Intel**. Fcitx5 on CachyOS + KDE Plasma Wayland is
+the first implementation and test environment. See the [release roadmap](docs/roadmap.md)
+for stage boundaries and acceptance gates.
 
 ## Project status
 
@@ -16,14 +19,16 @@ and passes isolated dispatcher tests. Limited desktop typing has been reported
 in GTK3, Firefox, KWrite and Kate. Installation staging has been checked; actual
 installed-route desktop typing still awaits confirmation.
 
-The engine targets a [pinned jsAvroPhonetic reference](docs/v1.md#phonetic-behavior-reference).
+The engine targets a [pinned jsAvroPhonetic reference](docs/compatibility.md#phonetic-behavior-reference).
 Recorded evidence covers 522,933 parity cases plus separate Unicode policy cases;
 this is bounded coverage, not a claim of full Avro compatibility. Unsupported
 Unicode is preserved without lowercasing or normalization.
 
-KWrite/Kate Bangla word-navigation and committed-word deletion issues are deferred
-for v1. Broader application and Wayland/XWayland routes remain unverified. See the
-[current handoff](docs/progress.md#current-position) for evidence and limitations.
+IBus, Windows, macOS and binary packages are planned, with no delivered support
+yet. Broader application and Wayland/XWayland routes remain unverified. Report
+and track bugs in [GitHub Issues](https://github.com/shaadahmmed/jong-bangla-keyboard/issues).
+See the [current handoff](docs/progress.md#current-position) for implementation
+and validation status.
 
 ## Typing behavior
 
@@ -39,7 +44,8 @@ See the [typing guide](docs/typing.md) for examples and other controls.
 
 ## Try the engine
 
-With Rust/Cargo **1.99.1 or newer**, run from the repository root:
+Obtain a Git checkout or extract a source archive. With Rust/Cargo **1.99.1 or
+newer**, run from that repository/source root:
 
 ```sh
 cargo run --offline --example convert -- 'ami bangla'
@@ -60,9 +66,13 @@ library layout, use the [development guide](docs/development.md).
 | [Installation](docs/installation.md) | Build, stage, install, activate, update and remove the addon |
 | [Development](docs/development.md) | Toolchain, workspace checks, Fcitx5 harness and code layout |
 | [Releases](docs/releases.md) | Pull requests, manual versions, release template and draft publication |
+| [Roadmap](docs/roadmap.md) | Staged platform delivery, package channels and release acceptance gates |
 | [Reference checks](docs/reference-checks.md) | Reproduce pinned compatibility comparisons and context audits |
 | [Performance](docs/performance.md) | Reproduce core latency and adapter resource measurements |
-| [Requirements and behavior](docs/v1.md) | Confirmed decisions, exact Unicode rules and compatibility evidence |
+| [Requirements and behavior](docs/v1.md) | Current product requirements, composition semantics and public API |
+| [Adapter contract](docs/adapter-contract.md) | Native events, context lifecycle, C ABI and failure policy |
+| [Fcitx5 validation](docs/fcitx5-validation.md) | Desktop checklist, environment and staged-install evidence |
+| [Compatibility](docs/compatibility.md) | Reference provenance, Unicode policy and historical rule records |
 | [Progress](docs/progress.md) | Current developer handoff and next implementation step |
 | [Changelog](CHANGELOG.md) | Notable changes intended for users and contributors |
 
@@ -77,4 +87,4 @@ of desktop frameworks and preserve exact Unicode evidence for phonetic changes.
 
 Project code is licensed under [MIT](LICENSE). The compatibility reference stays
 external and is not shipped with the library; its provenance is documented in the
-[reference decision](docs/v1.md#phonetic-behavior-reference).
+[reference decision](docs/compatibility.md#phonetic-behavior-reference).

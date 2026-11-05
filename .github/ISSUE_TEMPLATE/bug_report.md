@@ -8,8 +8,9 @@ assignees: ''
 
 ## What happened?
 
-Describe the problem and what you expected. Check the known limitations in
-`docs/v1.md` and use synthetic sample text without private information.
+Describe the problem and what you expected. Search existing GitHub Issues first
+and use synthetic sample text without private information. Bug investigation,
+workarounds and release deferral decisions stay in the issue.
 
 ## Reproduction
 
@@ -24,11 +25,11 @@ say whether the word was still in preedit or already committed.
 
 ## Environment
 
-- Distro and version:
+- OS/distro, version and CPU architecture:
 - Desktop and version:
-- Fcitx5 version and input route (if applicable):
+- Input framework/adapter and version (Fcitx5, IBus, TSF, macOS or other):
 - Application and toolkit versions:
-- Application session: Wayland / XWayland / other:
+- Actual application/input route: Wayland / XWayland / native Windows/macOS / other:
 - Rust/Cargo or build-tool versions (for build problems):
 
 ## Relevant evidence

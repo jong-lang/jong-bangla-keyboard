@@ -3,88 +3,89 @@
 This is the current handoff for developers and future coding sessions. Replace
 these summaries after each completed step; aim for 50–100 lines before
 [Completed steps](#completed-steps). That section preserves older history and
-need not grow. Use Git for detailed change history, [v1.md](v1.md) for requirements
-and behavioral decisions, and tests/fixtures for exact compatibility evidence.
+need not grow. Use Git for detailed change history, [v1.md](v1.md) for behavior,
+the [roadmap](roadmap.md) for platform delivery and acceptance gates, and
+[GitHub Issues](https://github.com/shaadahmmed/jong-bangla-keyboard/issues) for bugs.
 Dates use the project's Asia/Dhaka timezone.
 
 ## Current position
 
-- **Implemented:** independent Rust transliteration/composition, C ABI and an
-  experimental C++ Fcitx5 addon with an isolated dispatcher harness.
-- **Combined PR open:** [PR #1](https://github.com/shaadahmmed/jong-bangla-keyboard/pull/1)
-  targets `main` from `ci/release-workflows`. Its current remote head is `e083093`.
-  Review found one ineffective CI whitespace check; the fix is locally validated
-  and awaits explicit commit approval. No merge, push or commit occurred this step.
-- **CI correction:** documentation-job checkout fetches history; whitespace checks
-  compare PRs to their base, main pushes across the full pushed range, and release
-  tags to the tagged commit's first parent. Root commits use an empty tree.
-  See [development checks](development.md#documentation-and-release-tooling).
-- **Hosted CI prior evidence:** both jobs passed for `e083093` in
-  [run 41174787623](https://github.com/shaadahmmed/jong-bangla-keyboard/actions/runs/41174787623).
-  This predates the local fix; its updated hosted run is still pending.
-- **Merge restriction verified:** the active `Protection` ruleset restricts updates
-  to `main` and allows an administrator bypass. PR #1 is mergeable but reports
-  `BLOCKED`; the ruleset requires PRs with zero approving reviewers and currently
-  has no required status-check rule. No bypass or settings change was performed.
-- **Release limits:** tag-triggered draft/API execution remains untested; no version,
-  tag or release was created. Tag protections and immutable-release settings were
-  not inspected this step. See [the release guide](releases.md).
-- **User workflow:** branches and PRs, manual release versions, explicit approval
-  before agent commits. The user requested merging once the PR has no issues;
-  the new fix still needs commit approval, updated hosted CI and resolution of
-  the normal-merge restriction before that authorized merge can proceed.
-- **Active product issue:** intermittent initial আ loss for `amar` in Brave/
-  WhatsApp remains unresolved without a v1 deferral. Kate, Brave's address bar
-  and WhatsApp/Firefox passed user comparisons. The held-Backspace slowdown was
-  withdrawn; runtime/input route and reset hypothesis remain unconfirmed.
-- **Other limits:** installed-route typing and broader desktop routes remain
-  unconfirmed. Kate/KWrite word-editing issues stay deferred; binary packaging
-  remains open. See [desktop evidence](v1.md#fcitx5-local-feasibility-result).
+- **Implemented:** independent Rust transliteration/composition, a private Rust
+  C ABI and an experimental C++ Fcitx5 addon with isolated dispatcher tests.
+- **Release scope confirmed on 2026-11-05:** staged Linux Fcitx5 and IBus;
+  Flatpak, deb, rpm and pacman packages with maintained AUR recipes; Windows TSF;
+  macOS on Apple silicon and Intel. Only the Fcitx5 experiment exists today.
+  See the [roadmap](roadmap.md) for stage boundaries and acceptance gates.
+- **Bug tracking:** reports, reproduction, investigation, workarounds and
+  release-blocking/deferral decisions belong in GitHub Issues. Docs link to the
+  tracker and retain implementation/validation limits without bug narratives.
+- **Prior merge evidence:** PR #1 merged on 2026-10-31 as `1a9b2d9`, including
+  CI fix `406ac9a`. Both final PR and post-merge CI passed in
+  [run 41176688238](https://github.com/shaadahmmed/jong-bangla-keyboard/actions/runs/41176688238)
+  and [run 41176794536](https://github.com/shaadahmmed/jong-bangla-keyboard/actions/runs/41176794536).
+  These are prior hosted results, not checks rerun for this documentation step.
+- **Repository protection prior evidence:** the 2026-10-31 inspection found a
+  PR ruleset with zero required approvals and administrator bypass, but no required
+  status checks. Normal merging still needs configuration/verification. Tag rules
+  and immutable-release settings were not inspected. No settings changed here.
+- **Validation limits:** installed-route typing and the broader desktop matrix
+  remain unconfirmed. Other adapters/packages are unimplemented. Tag-triggered
+  draft/API execution remains untested; current automation creates source drafts
+  only. Historical private-session tests do not prove normal installed delivery.
+- **Documentation layout:** `v1.md` is the concise current requirements/API
+  contract. Native event/ownership rules, Fcitx5 validation, compatibility policy
+  and measured results have focused guides. Historical rule records are grouped
+  in `docs/compatibility/` and are read only for relevant investigations.
 - **Compatibility prior evidence:** 522,933 parity rows plus 60 Unicode policy
-  rows; no pinned comparison or performance measurement was rerun this step.
+  rows. No reference comparison or performance measurement was rerun here.
 
 ## Latest completed step
 
-- **2026-10-31 — Review PR #1 and prepare the CI whitespace fix.** Reviewed the
-  full PR against its base `0c04654` and confirmed remote head `e083093`. Reproduced
-  committed whitespace passing the original `git diff --check`: a clean checkout
-  has no uncommitted diff. The workflow now checks explicit committed ranges.
-  Updated development instructions; no engine/adapter behavior changed.
-- **Actual local checks:** `python3 /tmp/jong-pr-ci-whitespace-check.py` passed ten
-  disposable-Git-repository scenarios executing the workflow's actual shell block:
-  clean/dirty PRs, multi-commit main pushes, tagged changes, corrected content and
-  clean/dirty root commits. Earlier whitespace in a multi-commit range is caught;
-  tag checks inspect only the tagged delta. The temporary harness is not shipped.
-- **Other actual commands:** `python3 tools/check-docs.py`,
-  `python3 -m unittest discover -s tools/tests -v`,
-  `/tmp/jong-release-tools/actionlint`, `git diff --check`, and
-  `git diff --check origin/main...HEAD` passed. Nine release-tooling tests passed.
-  Documentation checks were repeated after the handoff edit.
-- **Remote read-only commands:** `gh pr view 1`, `gh pr checks 1`,
-  `gh run view 41174787623` and the GitHub API rules/ruleset reads (all using
-  `shaadahmmed/jong-bangla-keyboard`) confirmed hosted success for the prior head
-  and identified the update restriction. Classic branch protection returned 404;
-  the active protection is a repository ruleset, ID `26262102`.
-- **Prior evidence only:** hosted Rust formatting, Clippy, 377 tests/two doctests,
-  release build, API docs, conversion smoke, native CTest and staged installation
-  passed for `e083093`. These were not rerun locally for this workflow-only fix.
-- **Limits:** updated hosted CI awaits an approved commit/push. No release API,
-  desktop, pinned reference, sanitizer/leak or performance checks were performed.
-  The fix remains uncommitted; the repository's settings remain unchanged.
+- **2026-11-05 — Complete the documentation corrections and split the spec.**
+  The staged platform/package roadmap and GitHub Issues bug policy remain the
+  confirmed direction. The first cleanup left `v1.md` at 5,691 lines; this step
+  reduced it to 222 lines, separating current requirements from implementation
+  chronology and validation records.
+- Added focused adapter-contract, Fcitx5-validation and compatibility guides;
+  moved recorded measurements into the existing performance guide. Preserved
+  historical phonetic evidence in four rule-family records, with a compatibility
+  index. Updated repository links, including link-only changes in older progress
+  entries; their evidence/narrative content is retained. Product behavior and
+  source code are unchanged.
+- **Checks rerun before the approved commit:** `python3 tools/check-docs.py`
+  passed 24 Markdown files, 803 local links/anchors, code fences and 15 shell
+  examples; `python3 -m unittest
+  discover -s tools/tests -q` passed nine tooling tests; `git diff --check` passed.
+- **Prior split validation:** `python3 /tmp/jong-check-spec-split.py` verified
+  all 89 prior section anchors
+  have valid mapped destinations, retained rule/requirement/Unicode/ownership/
+  measurement text after link/heading rebasing and directional-reference cleanup,
+  and historical progress
+  content with link-only changes. The temporary checker is not project tooling.
+- **Prior validation from the earlier cleanup:** 19 typing examples matched the
+  existing built CLI and formatting passed all five C++/header files. Those
+  checks were not rerun for this text-only split. No application test suite,
+  new desktop test, reference comparison or hosted check was run here.
+- **Limits:** the new guides do not add platform/package support or CI jobs.
+  External bookmarks to moved sections of `v1.md` need their new document
+  destinations; repository Markdown links have been updated. Historical rule
+  records remain lengthy reference material, outside routine handoff reading.
+- **Commit scope:** the user approved committing this documentation/template
+  step on `docs/platform-release-plan`, based on the merged `origin/main`
+  snapshot. The prior local merge-handoff outcome is retained above. Push and PR
+  submission remain pending; no release, package or desktop-setting change was made.
 
 ## Next small implementation step
 
-1. Obtain approval for `ci: check committed whitespace across workflow events`,
-   commit/push this reviewed fix, then inspect the updated hosted CI results.
-2. Resolve the `main` update restriction through the maintainer's chosen settings
-   or explicitly authorized administrator bypass, then merge the PR after checks
-   pass. Configure required CI checks according to the release guide; do not create
-   a release as part of this work.
-3. Resume Brave runtime/input-route investigation separately when requested.
+1. Configure and verify required hosted checks and normal protected PR merging,
+   following the [release guide](releases.md#github-repository-settings).
+2. Implement release-preparation PR validation and exported-source build checks
+   as a separate tooling increment, then complete the Fcitx5 installed-route
+   acceptance baseline before starting the IBus adapter stage.
 
-**Done when:** the fix is committed, updated hosted CI passes, and PR #1 is merged
-through an authorized route. Repository protection setup and release-specific
-API validation remain distinct follow-up work.
+**Done when:** routine merging and pre-release validation are verified, and the
+first release has an explicit tested scope. Continue IBus, Linux packaging,
+Windows and macOS in the roadmap stages; they do not block a scoped earlier alpha.
 
 ## Completed steps
 
@@ -349,7 +350,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
   removed the three resolved gap expectations. Recorded partial outputs for
   earlier `kk`/`nk`/`lk`/`sk`/`Shk`, longer `kShN`/`kShm`, aliases, reph,
   and escapes; refreshed seven reference gap probes.
-- Updated [README.md](../README.md) and [v1.md](v1.md#exact-ksh-conjunct)
+- Updated [README.md](../README.md) and [v1.md](compatibility/exact-conjuncts.md#exact-ksh-conjunct)
   with Unicode sequences, priority, examples, counts, limitations, and next work.
   Marked earlier gap descriptions as historical. No dependencies, normalization,
   persistent state, performance measurement, or platform code added.
@@ -395,7 +396,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
   replaced resolved gap regressions with supported fixtures. Recorded explicit
   partial outputs for earlier `kk`/`nk`/`lk`/`sk`/`Shk` matches, longer
   `kkhN`/`kkhm`, aliases, reph, and escapes; refreshed seven reference gap probes.
-- Updated [README.md](../README.md) and [v1.md](v1.md#exact-kkh-conjunct)
+- Updated [README.md](../README.md) and [v1.md](compatibility/exact-conjuncts.md#exact-kkh-conjunct)
   with Unicode sequences, priority, examples, counts, limitations, and next work.
   Earlier gap descriptions are historical. No upstream source, rule tables,
   fixtures, dependencies, normalization, persistent state, or platform code added.
@@ -460,7 +461,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
   standalone `kSh`, and `NGkSh`/`ngkSh` (which still need `kSh` conversion).
   Refreshed seven reference gap probes.
 - Updated [README.md](../README.md) and
-  [v1.md](v1.md#exact-ngksh-conjunct) with exact Unicode, matching priority,
+  [v1.md](compatibility/exact-conjuncts.md#exact-ngksh-conjunct) with exact Unicode, matching priority,
   examples, counts, limitations, and next work. Marked earlier `NgkSh` gaps
   as historical. No upstream source, rules, fixtures, dependencies,
   normalization, persistent state, or platform code added.
@@ -511,7 +512,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
   `NGkkh`/`ngkkh` (which still need standalone `kkh` conversion).
   Refreshed seven reference gap probes.
 - Updated [README.md](../README.md) and
-  [v1.md](v1.md#exact-ngkkh-conjunct) with exact Unicode, matching priority,
+  [v1.md](compatibility/exact-conjuncts.md#exact-ngkkh-conjunct) with exact Unicode, matching priority,
   examples, counts, limitations, and next work. Marked earlier `Ngkkh` gaps
   as historical. No upstream source, rules, fixtures, dependencies,
   normalization, persistent state, or platform code added.
@@ -560,7 +561,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
   partial outputs for earlier-prefix conflicts, aliases, reph, and escapes,
   and refreshed seven reference gap probes.
 - Updated [README.md](../README.md) and
-  [v1.md](v1.md#exact-ngkx-conjunct) with exact Unicode, matching priority,
+  [v1.md](compatibility/exact-conjuncts.md#exact-ngkx-conjunct) with exact Unicode, matching priority,
   examples, counts, limitations, and next work. Marked the earlier `Ngkx`
   gap as historical. Probes confirmed related `Ngkkh`/`NgkSh` spellings
   remain separate: their single following `r` attaches, unlike `Ngkx`.
@@ -612,7 +613,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
   partial outputs for earlier-prefix conflicts, aliases, reph, and escapes,
   and refreshed seven reference gap probes.
 - Updated [README.md](../README.md) and
-  [v1.md](v1.md#exact-ngkh-conjunct) with exact Unicode, matching priority,
+  [v1.md](compatibility/exact-conjuncts.md#exact-ngkh-conjunct) with exact Unicode, matching priority,
   examples, counts, limitations, and next work. Marked the earlier `Ngkh`
   gap as historical. No upstream source, rules, fixtures, dependencies,
   normalization, persistent state, or platform code added.
@@ -663,7 +664,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
   tests passed afterward, including extended control-character, separate-call,
   and long-buffer regressions. Removed the resolved `Ngk` gap expectation.
 - Updated [README.md](../README.md) and
-  [v1.md](v1.md#exact-ngk-conjunct) with exact Unicode, matching priority,
+  [v1.md](compatibility/exact-conjuncts.md#exact-ngk-conjunct) with exact Unicode, matching priority,
   examples, counts, limitations, and next work. Marked earlier `Ngk` gap
   descriptions as historical. No upstream source, rules, fixtures, dependencies,
   normalization, persistent state, or platform code added.
@@ -714,7 +715,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
   added explicit partial outputs for the five precedence gaps, `NgX`, `NgxA`,
   `rrNgx`, and escapes. Refreshed seven reference gap probes.
 - Updated [README.md](../README.md) and
-  [v1.md](v1.md#exact-ngx-conjunct) with exact Unicode, matching order,
+  [v1.md](compatibility/exact-conjuncts.md#exact-ngx-conjunct) with exact Unicode, matching order,
   examples, counts, limitations, and next work. Marked earlier `Ngx` gap
   descriptions as historical and refreshed fixture comments.
 - Checks: after applying rustfmt, `cargo fmt --all -- --check`,
@@ -757,7 +758,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
   gap expectations, retained `Ngx`/`kkx`/`rrx`, added `rrkx` as an explicit
   partial-output regression, and refreshed seven reference gap probes.
 - Updated [README.md](../README.md) and
-  [v1.md](v1.md#following-r-after-lowercase-x-and-exact-kx) with exact Unicode,
+  [v1.md](compatibility/foundations.md#following-r-after-lowercase-x-and-exact-kx) with exact Unicode,
   matching priority, examples, counts, remaining gaps, and next work. Marked
   earlier following-`r` gap descriptions as historical.
 - Checks: after applying rustfmt, `cargo fmt --all -- --check`,
@@ -806,7 +807,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
   reph, aliases, and escapes as explicit partial-output regressions and refreshed
   seven reference gap probes.
 - Updated [README.md](../README.md) and
-  [v1.md](v1.md#contextual-lowercase-x-and-exact-kx) with exact Unicode,
+  [v1.md](compatibility/foundations.md#contextual-lowercase-x-and-exact-kx) with exact Unicode,
   context, examples, case count, limitations, and next work. Marked prior
   `x`/`kx` probes as historical and replaced obsolete unsupported-`x`
   descriptions in the README with the remaining uppercase-`Q` gap.
@@ -854,7 +855,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
   expectations and refreshed seven probes around remaining `x`, aliases, reph,
   and escapes.
 - Updated [README.md](../README.md) and
-  [v1.md](v1.md#following-r-after-lowercase-w) with exact Unicode, matching
+  [v1.md](compatibility/foundations.md#following-r-after-lowercase-w) with exact Unicode, matching
   priority, examples, case count, limitations, and next work. Marked the
   previous `wrr`/`wrrri` gap descriptions as historical.
 - Checks: `cargo fmt --all -- --check`,
@@ -899,7 +900,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
   regressions; the full run passed. Kept uppercase aliases, `wrr`/`wrrri`,
   `rrw`, and escapes as explicit partial-output regressions and refreshed seven
   reference gap probes.
-- Updated [README.md](../README.md) and [v1.md](v1.md#contextual-lowercase-w)
+- Updated [README.md](../README.md) and [v1.md](compatibility/foundations.md#contextual-lowercase-w)
   with exact Unicode, matching context, examples, case count, limitations, and
   next work. Marked the earlier `w` probe as historical and replaced obsolete
   README descriptions of unsupported `w` with still-unsupported `x`.
@@ -940,7 +941,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
   adjacency, and escapes as explicit partial-output regressions and refreshed
   seven reference gap probes.
 - Updated [README.md](../README.md) and
-  [v1.md](v1.md#basic-lowercase-v-consonant) with exact Unicode, examples,
+  [v1.md](compatibility/foundations.md#basic-lowercase-v-consonant) with exact Unicode, examples,
   inventory/case counts, remaining gaps, and next work. Marked the earlier `v`
   gap probe as historical. No dependencies, normalization, spelling correction,
   persistent state, or platform code added.
@@ -980,7 +981,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
   because `q` now converts. Kept uppercase `Q`, `qr`, and escapes as explicit
   partial-output regressions and refreshed seven reference gap probes.
 - Updated [README.md](../README.md) and
-  [v1.md](v1.md#basic-lowercase-q-consonant) with exact Unicode, examples,
+  [v1.md](compatibility/foundations.md#basic-lowercase-q-consonant) with exact Unicode, examples,
   inventory/case counts, remaining gaps, and next work. Marked earlier `q`
   gap descriptions as historical. No dependencies or platform code added.
 - Checks: `cargo fmt --all -- --check`,
@@ -1025,7 +1026,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
   gap expectations and refreshed seven probes around remaining lowercase `q`,
   alias, reph, and escape limitations.
 - Updated [README.md](../README.md) and
-  [v1.md](v1.md#following-r-after-uppercase-y) with exact Unicode, matching
+  [v1.md](compatibility/foundations.md#following-r-after-uppercase-y) with exact Unicode, matching
   priority, examples, counts, remaining gaps, and next work. Marked earlier
   `Y` gap descriptions as historical and refreshed fixture comments.
 - Checks: `cargo fmt --all -- --check`,
@@ -1071,7 +1072,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
   and refreshed seven reference probes around remaining uppercase `Y`, alias,
   reph, and escape limitations.
 - Updated [README.md](../README.md) and
-  [v1.md](v1.md#following-r-after-lowercase-y-and-uppercase-z) with exact Unicode,
+  [v1.md](compatibility/foundations.md#following-r-after-lowercase-y-and-uppercase-z) with exact Unicode,
   matching priority, examples, counts, remaining gaps, and next work. Marked
   earlier gap tables as historical and refreshed fixture comments.
 - Checks: after applying rustfmt, `cargo fmt --all -- --check`,
@@ -1114,7 +1115,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
   implementation. Extended Unicode-boundary, control-character, separate-call,
   and long-buffer checks. Removed resolved `Z`/`kZ`/`zZ`/`yZ`/`YZ` gap expectations;
   added explicit longer `Zrr`/`Zry`, `AZ`, and escape limitations. Updated old
-  fixture comments, README, and [v1.md](v1.md#uppercase-z-with-az-and-oz-forms).
+  fixture comments, README, and [v1.md](compatibility/foundations.md#uppercase-z-with-az-and-oz-forms).
 - Checks: after applying rustfmt, `cargo fmt --all -- --check`,
   `cargo clippy --offline --all-targets -- -D warnings`, `cargo test --offline`
   (26 regression tests and one documentation example), and
@@ -1157,7 +1158,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
   gap expectations with longer `yrr`, `yZ`, and escape cases; refreshed seven
   reference gap probes.
 - Updated [README.md](../README.md) and
-  [v1.md](v1.md#contextual-lowercase-y) with Unicode, examples, counts, and remaining
+  [v1.md](compatibility/foundations.md#contextual-lowercase-y) with Unicode, examples, counts, and remaining
   gaps. No dependencies, composition, platform code, or tool upgrades added.
 - Checks: `cargo fmt --all -- --check`,
   `cargo clippy --offline --all-targets -- -D warnings`, `cargo test --offline`
@@ -1197,7 +1198,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
   long-buffer checks. Updated the old unmatched-`qXYZ` check because its `Y`
   now converts, while `q`, `X`, and `Z` remain literal.
 - Updated [README.md](../README.md) and
-  [v1.md](v1.md#basic-uppercase-y-consonant) with Unicode, counts, examples, and
+  [v1.md](compatibility/foundations.md#basic-uppercase-y-consonant) with Unicode, counts, examples, and
   exact remaining gaps. No dependencies, composition, or platform code added.
 - Checks: `cargo fmt --all -- --check`,
   `cargo clippy --offline --all-targets -- -D warnings`, `cargo test --offline`
@@ -1240,7 +1241,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
   known `ঙৃ` output; it and all existing tests pass after the fix. Extended
   long-buffer and separate-call checks, removed resolved gap expectations, and
   refreshed seven reference gap probes. Updated [README.md](../README.md),
-  [v1.md](v1.md#following-rri-after-ng-ng-and-ng), and older fixture comments so
+  [v1.md](compatibility/foundations.md#following-rri-after-ng-ng-and-ng), and older fixture comments so
   they no longer describe these three cases as unsupported.
 - Checks: `cargo fmt --all -- --check`,
   `cargo clippy --offline --all-targets -- -D warnings`, `cargo test --offline`
@@ -1282,7 +1283,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
 - Extended Unicode-boundary, separate-call, and long-buffer checks. Removed the
   old unsupported-`ng` expectation and recorded partial outputs for the new gap
   probes. Updated [README.md](../README.md) and
-  [v1.md](v1.md#lowercase-ng-sign-and-vowel-forms) with exact Unicode, examples,
+  [v1.md](compatibility/foundations.md#lowercase-ng-sign-and-vowel-forms) with exact Unicode, examples,
   matching priority, counts, and limits. No dependencies or platform code added.
 - Checks: `cargo fmt --all -- --check`,
   `cargo clippy --offline --all-targets -- -D warnings`, `cargo test --offline`
@@ -1322,7 +1323,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
 - Extended Unicode-boundary, separate-call, and long-buffer regression checks.
   Documented partial outputs for lowercase `ng`, `Ngk`, `NGc`, `NGch`, escapes,
   and following `rri`. Updated [README.md](../README.md) and
-  [v1.md](v1.md#basic-ng-and-ng-consonants) with Unicode, examples, counts, and
+  [v1.md](compatibility/foundations.md#basic-ng-and-ng-consonants) with Unicode, examples, counts, and
   limitations. No dependencies, composition, or platform code added.
 - Checks: `cargo fmt --all -- --check`,
   `cargo clippy --offline --all-targets -- -D warnings`, `cargo test --offline`
@@ -1358,7 +1359,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
   vowel case (`zini` → `যিনি`, `zIni` → `যীনি`), without spelling correction.
   Extended Unicode-boundary, separate-call, and long-buffer checks. Recorded
   partial outputs for uppercase `Z`, related conjuncts, `zr`, and escapes.
-- Updated [README.md](../README.md) and [v1.md](v1.md#basic-lowercase-z-consonant)
+- Updated [README.md](../README.md) and [v1.md](compatibility/foundations.md#basic-lowercase-z-consonant)
   with Unicode, counts, examples, and remaining gaps. No dependencies,
   composition, or platform code added.
 - Checks: `cargo fmt --all -- --check`,
@@ -1403,7 +1404,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
 - Extended Unicode-boundary, separate-call, and long-buffer checks. Updated
   the remaining `Rri` partial output to `ড়রি`; its reference conjunct `ড়্রি`
   remains unimplemented. Updated [README.md](../README.md) and
-  [v1.md](v1.md#basic-uppercase-r-and-rh-consonants) with counts, Unicode, examples,
+  [v1.md](compatibility/foundations.md#basic-uppercase-r-and-rh-consonants) with counts, Unicode, examples,
   and current limitations. No dependencies, composition, or platform code added.
 - Checks: `cargo fmt --all -- --check`,
   `cargo clippy --offline --all-targets -- -D warnings`, `cargo test --offline`
@@ -1445,7 +1446,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
   `sh`/`Sh`. Extended Unicode-boundary, separate-call, and long-buffer checks.
   Added explicit partial outputs for conjuncts, uppercase-`H` aliases, and escapes.
 - Updated [README.md](../README.md) and
-  [v1.md](v1.md#confirmed-s-sh-s-and-sh-mapping) with implemented status, Unicode,
+  [v1.md](compatibility/foundations.md#confirmed-s-sh-s-and-sh-mapping) with implemented status, Unicode,
   counts, examples, and remaining gaps. No dependencies, composition, or
   platform code added.
 - Checks: `cargo fmt --all -- --check`,
@@ -1479,7 +1480,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
 - Checked all four standalone forms against the SHA-256-verified external
   jsAvroPhonetic v1.1.4 parser with Node.js v24.21.0. All match; no deliberate
   reference deviation is needed. No upstream source, rules, or fixtures imported.
-- Updated [v1.md](v1.md#confirmed-s-sh-s-and-sh-mapping), README, and the next-step
+- Updated [v1.md](compatibility/foundations.md#confirmed-s-sh-s-and-sh-mapping), README, and the next-step
   plan. This is a documentation correction; engine code and fixture counts
   remain unchanged. No Cargo checks apply to this increment.
 - Checks: UTF-8 decoding, local Markdown links/anchors, final newlines, trailing
@@ -1506,7 +1507,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
   updated partial uppercase/escape outputs to reflect converted `h`. Escapes
   remain unsupported: a backtick still appears in `` d`h `` → `` দ`হ ``.
 - Extended Unicode boundary, separate-call, and long-buffer regressions. Updated
-  [README.md](../README.md) and [v1.md](v1.md#basic-l-and-h-consonants) with exact
+  [README.md](../README.md) and [v1.md](compatibility/foundations.md#basic-l-and-h-consonants) with exact
   Unicode, examples, current counts, and remaining gaps, including affected
   earlier gap tables. No dependencies, composition, or platform code added.
 - Checks: `cargo fmt --all -- --check` passed after applying rustfmt;
@@ -1548,7 +1549,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
 - Extended long-buffer and separate-call regressions and documented temporary
   limits for conjuncts, uppercase-`H` aliases, standalone `h`, and escapes.
   Updated [README.md](../README.md) and
-  [v1.md](v1.md#basic-d-dh-d-and-dh-consonants) with Unicode, examples, current
+  [v1.md](compatibility/foundations.md#basic-d-dh-d-and-dh-consonants) with Unicode, examples, current
   counts, and gaps. No dependencies, composition, or platform code added.
 - Checks after correcting the examples: `cargo test --offline` passed (16
   regression tests and one documentation example);
@@ -1588,7 +1589,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
   for conjuncts, uppercase variants, standalone `h`, and escapes. Reference `Jh`
   produces জহ, distinct from `jh` → ঝ; no blanket case normalization added.
   Updated [README.md](../README.md) and
-  [v1.md](v1.md#basic-c-ch-j-and-jh-consonants) with exact Unicode, current counts,
+  [v1.md](compatibility/foundations.md#basic-c-ch-j-and-jh-consonants) with exact Unicode, current counts,
   examples, and remaining gaps. No dependencies or platform code added.
 - Checks: `cargo test --offline` passed (15 regression tests and one documentation
   example); `cargo fmt --all -- --check`,
@@ -1625,7 +1626,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
 - Extended long-buffer and separate-call checks and recorded temporary limits
   for uppercase aliases, conjuncts, overlapping `pph`, and interrupted/escaped
   input. Updated [README.md](../README.md) and
-  [v1.md](v1.md#basic-p-ph-and-f-consonants) with exact Unicode, current counts,
+  [v1.md](compatibility/foundations.md#basic-p-ph-and-f-consonants) with exact Unicode, current counts,
   examples, and remaining gaps. No dependencies or platform code added.
 - Checks: `cargo test --offline` passed (14 regression tests and one documentation
   example); `cargo fmt --all -- --check`,
@@ -1658,7 +1659,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
   runs, basic `r` before supported consonants, boundaries, Unicode, and words.
 - All 822 reference cases match with the SHA-256-verified external parser under
   Node.js v24.21.0. Updated temporary-limit tests and documented remaining conjunct,
-  reph, and uppercase-`R` gaps in [v1.md](v1.md#basic-r-and-rr-consonants).
+  reph, and uppercase-`R` gaps in [v1.md](compatibility/foundations.md#basic-r-and-rr-consonants).
   Extended long-buffer and separate-call checks; updated [README.md](../README.md).
   No upstream source, rules, fixtures, dependencies, or platform code imported.
 - Checks: `cargo test --offline` passed (13 regression tests and one documentation
@@ -1697,7 +1698,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
   temporary vowel-boundary restriction. Added regressions that make these
   temporary limits, case variants, and literal backticks explicit.
 - Extended boundary, separate-call, and long-buffer tests to `rri`. Updated
-  [README.md](../README.md) and [v1.md](v1.md#seventh-vowel-group) for the implemented
+  [README.md](../README.md) and [v1.md](compatibility/foundations.md#seventh-vowel-group) for the implemented
   forms, exact Unicode, count, examples, and remaining gaps. No dependencies,
   composition controls, or platform code added.
 - Checks: `cargo test --offline` passed (12 regression tests and one documentation
@@ -1733,7 +1734,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
   Node.js v24.21.0. No upstream source, rules, or fixtures imported.
 - Extended boundary, separate-call, long-buffer, and literal-backtick regressions
   to both pairs; removed their obsolete temporary-limit expectations. Updated
-  [README.md](../README.md) and [v1.md](v1.md#sixth-vowel-group) with current
+  [README.md](../README.md) and [v1.md](compatibility/foundations.md#sixth-vowel-group) with current
   behavior, exact Unicode, count, examples, and remaining gaps.
 - Checks: `cargo test --offline` passed (11 regression tests and one documentation
   example); `cargo fmt --all -- --check`,
@@ -1771,7 +1772,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
 - Extended boundary, separate-call, long-buffer, and literal-backtick regressions.
   Replaced the temporary `kemon` gap expectation with its reference-checked result
   `কেমন`. Kept the two-key vowels `OI`/`OU` explicitly incomplete for the next step.
-- Updated [README.md](../README.md) and [v1.md](v1.md#fifth-vowel-group) with exact
+- Updated [README.md](../README.md) and [v1.md](compatibility/foundations.md#fifth-vowel-group) with exact
   Unicode, raw-context behavior, examples, current count, and remaining gaps.
   No dependencies, composition controls, or platform code added.
 - Checks: `cargo test --offline` passed (ten regression tests and one documentation
@@ -1808,7 +1809,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
 - Extended boundary, separate-call, long-buffer, and literal-backtick regressions
   to `e`/`ee`. The two-key match advances only after an ASCII `ee` prefix, keeping
   UTF-8 boundaries intact. Existing consonant and vowel cases continue to pass.
-- Updated [README.md](../README.md) and [v1.md](v1.md#fourth-vowel-group) with
+- Updated [README.md](../README.md) and [v1.md](compatibility/foundations.md#fourth-vowel-group) with
   behavior, exact Unicode, examples, current fixture count, and remaining gaps.
   No dependencies, upstream source/rules/fixtures, or platform code imported.
 - Checks after correcting the example: `cargo test --offline` passed (nine
@@ -1842,7 +1843,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
   SHA-256-verified external reference under Node.js v24.21.0. Extended boundary,
   separate-call, long-buffer, and literal-backtick regressions to `I`. Removed
   the obsolete temporary-limit expectation that uppercase `I` remains Latin.
-- Updated [README.md](../README.md) and [v1.md](v1.md#third-vowel-group) for current
+- Updated [README.md](../README.md) and [v1.md](compatibility/foundations.md#third-vowel-group) for current
   behavior, exact Unicode, examples, count, and remaining gaps. No dependencies
   or upstream source, rules, or fixtures were imported.
 - Checks: `cargo test --offline` passed (eight regression tests and one
@@ -1880,7 +1881,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
   temporary-limit tests now that `u` is supported, including literal backticks;
   the long-buffer correctness test now includes both `u`/`U` and a following `a`.
 - Updated [README.md](../README.md) usage/status and
-  [v1.md](v1.md#second-vowel-group) for the new behavior, exact Unicode, current
+  [v1.md](compatibility/foundations.md#second-vowel-group) for the new behavior, exact Unicode, current
   fixture count, and remaining gaps. Previous slice descriptions remain historical.
 - Checks: `cargo test --offline` passed (seven regression tests and one
   documentation example); `cargo fmt --all -- --check`,
@@ -1914,7 +1915,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
   vowels, boundaries, mixed Unicode, and separate conversion calls. Updated
   earlier temporary-limit tests where `a` is now supported. Fixture readers now
   reject files with no cases, avoiding an empty fixture passing silently.
-- Updated [README.md](../README.md) examples and [v1.md](v1.md#first-vowel-group)
+- Updated [README.md](../README.md) examples and [v1.md](compatibility/foundations.md#first-vowel-group)
   behavior/limits. Kept the original conversion-slice description as history,
   explicitly marking `a` and `ka` gaps as resolved by this increment.
 - Checks: `cargo test --offline` passed (six regression tests and one documentation
@@ -1951,7 +1952,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
   to the project. The comparison tool verifies the parser's SHA-256 first.
 - Documented reproducible build, example, and reference-comparison commands in
   [README.md](../README.md); recorded supported sequences and five observed gaps
-  in [v1.md](v1.md#first-conversion-slice).
+  in [v1.md](compatibility/foundations.md#first-conversion-slice).
 - Checks: `cargo fmt --all -- --check` passed after applying rustfmt;
   `cargo clippy --offline --all-targets -- -D warnings` passed;
   `cargo test --offline` passed (four regression tests and one documentation
@@ -1978,7 +1979,7 @@ vowels, following-`r` behavior, and overlaps as one related batch.
 - Selected jsAvroPhonetic v1.1.4, commit
   `d3790172ebff92d43f0294bc51fed1fca7c80039`, as the deterministic conversion
   reference. Documented its scope, MPL-1.1 provenance, and comparison requirements
-  in [v1.md](v1.md#phonetic-behavior-reference). No upstream source or data imported.
+  in [v1.md](compatibility.md#phonetic-behavior-reference). No upstream source or data imported.
 - Recorded the user's preference for the latest stable tools where practical in
   [AGENTS.md](../AGENTS.md). Continue explaining each small step before edits.
 - Added the user's commit-per-step workflow: after checks and the progress update,

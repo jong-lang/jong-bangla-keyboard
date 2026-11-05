@@ -22,6 +22,9 @@ package version `0.1.0` does not establish a release date or desktop support cla
 - Core latency, adapter resource and lifecycle/leak measurement tooling.
 - Focused typing, installation, development, reference and performance guides,
   contribution instructions, and issue/pull request templates.
+- A staged release roadmap covering Linux Fcitx5 and IBus, Flatpak/deb/rpm/pacman
+  packages and maintained AUR recipes, Windows TSF, and macOS on Apple silicon
+  and Intel. These additions describe planned delivery, not implemented support.
 - GitHub CI for documentation/release tooling, Rust workspace and Fcitx5 staged
   installation checks; version-tag validation, reviewed release-note template,
   source archives with SHA-256 checksums, and automated draft releases.
@@ -35,14 +38,18 @@ package version `0.1.0` does not establish a release date or desktop support cla
 - Escape commits active Bangla and consumes the press; Space and Enter commit
   before forwarding. Navigation and application shortcuts also commit first.
 - Keep autocorrection and prediction outside the first release.
+- Track bug reports, investigation and deferral decisions in GitHub Issues.
 
 ### Known limitations
 
 - Compatibility checks cover a bounded set; full Avro parity is not established.
 - Desktop evidence is limited to recorded environments. Actual installed-route
   typing and the broader frontend matrix still need confirmation.
-- KWrite/Kate Bangla word-navigation and committed-word deletion issues remain
-  deferred for v1. IBus and Windows integrations are future work.
+- Additional adapters and binary packages remain unimplemented; release scope
+  and acceptance gates are defined in the [roadmap](docs/roadmap.md).
+
+Report and track bugs in
+[GitHub Issues](https://github.com/shaadahmmed/jong-bangla-keyboard/issues).
 
 See the [requirements](docs/v1.md) and [current handoff](docs/progress.md#current-position)
 for exact decisions, environment evidence and next steps.

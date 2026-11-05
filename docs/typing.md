@@ -31,11 +31,27 @@ library performs no logging, file access or network access.
 | `baRi gaRi gaRh drriRh` | `বাড়ি গাড়ি গাঢ় দৃঢ়` | R and Rh forms |
 | `kx kkh kSh` | `ক্ষ ক্ষ ক্ষ` | Conjunct spellings |
 
+Common punctuation is also phonetic:
+
+| Input | Output | Behavior |
+| --- | --- | --- |
+| `.` | `।` | Bangla sentence terminator |
+| `` .` `` | `.` | Literal period |
+| `...` | `...` | Three literal periods |
+| `:` | `ঃ` | Bangla visarga |
+| `` :` `` | `:` | Literal colon |
+| `$` | `৳` | Taka sign |
+
+Type the backtick after the symbol for the literal period/colon forms. A
+standalone backtick separates phonetic matches and has no visible output; it
+does not make the next Latin letter literal. Punctuation remains in the active
+word until a commit boundary, so Backspace can edit these sequences.
+
 These are selected examples. Exact Unicode sequences, overlapping matches and
 per-rule limitations are recorded in the [behavior specification](v1.md#transliteration-api)
 and [fixtures](../tests/fixtures). Unsupported characters, including Bangla and
 emoji, pass through unchanged under the
-[Unicode preservation policy](v1.md#unicode-case-preservation-policy).
+[Unicode preservation policy](compatibility.md#unicode-case-preservation-policy).
 
 ## Editing in the desktop addon
 
@@ -52,8 +68,20 @@ the application. There is no Bangla/Latin choice list in v1.
 | Punctuation or phonetic escape | Keep it editable with the word until a boundary |
 
 Punctuation has phonetic meanings and literal escape forms; consult the
-[symbol table](v1.md#punctuation-and-symbol-batch) and
-[vowel-sign escapes](v1.md#vowel-sign-escape-batch) for exact spellings.
+[symbol table](compatibility/case-symbols-reph.md#punctuation-and-symbol-batch) and
+[vowel-sign escapes](compatibility/case-symbols-reph.md#vowel-sign-escape-batch) for exact spellings.
 Focus loss, switching and reset follow the
-[adapter contract](v1.md#adapter-interaction-contract). Actual toolkit and desktop
-coverage remains limited; see the [desktop checklist](v1.md#remaining-desktop-smoke-checklist).
+[adapter contract](adapter-contract.md#adapter-interaction-contract). Actual toolkit and desktop
+coverage remains limited; see the [desktop checklist](fcitx5-validation.md#remaining-desktop-smoke-checklist).
+
+## Switch to English
+
+Use your configured Fcitx input-method switching action to select the keyboard
+or English input method, and switch back to resume Bangla. Jong does not add a
+global shortcut; the action depends on your Fcitx configuration. Switching while
+a word is pending finalizes it when the frontend permits delivery, and returning
+starts a fresh word. For literal Latin words or ASCII numbers, use that English
+input method. The v1 preedit has no raw-Latin candidate or digit-mode toggle.
+
+Report unexpected behavior in
+[GitHub Issues](https://github.com/shaadahmmed/jong-bangla-keyboard/issues).

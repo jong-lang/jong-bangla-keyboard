@@ -9,7 +9,7 @@ This optional development check uses Node.js (verified with the installed
 v24.21.0 LTS-line runtime). Node is not needed to build or use the Rust library.
 The independently authored [fixtures](../tests/fixtures) record raw input,
 expected UTF-8 output and exact Unicode code points. Detailed per-rule coverage
-and provenance are in the [behavior specification](v1.md#phonetic-behavior-reference).
+and provenance are in the [behavior specification](compatibility.md#phonetic-behavior-reference).
 The comparison calls
 `OmicronLab.Avro.Phonetic.parse(input)` directly, without browser UI, dictionaries,
 or autocorrection.
@@ -33,7 +33,7 @@ checks the reference columns. Policy cases do not increase the parity count.
 For example, the engine preserves `İ`, `É`, and `Σ`; the reference returns `ই̇`,
 `é`, and `σ`. Expansion can also change phonetic matches: `rrİ` stays `ররİ`
 here but becomes `ঋ̇` in the reference. See the
-[decision and limits](v1.md#unicode-case-preservation-policy).
+[decision and limits](compatibility.md#unicode-case-preservation-policy).
 The original comparison and test tooling are MIT;
 the upstream parser remains external and is not shipped with the library.
 
