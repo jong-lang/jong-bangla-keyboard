@@ -3,89 +3,82 @@
 This is the current handoff for developers and future coding sessions. Replace
 these summaries after each completed step; aim for 50–100 lines before
 [Completed steps](#completed-steps). That section preserves older history and
-need not grow. Use Git for detailed change history, [v1.md](v1.md) for behavior,
-the [roadmap](roadmap.md) for platform delivery and acceptance gates, and
-[GitHub Issues](https://github.com/shaadahmmed/jong-bangla-keyboard/issues) for bugs.
+need not grow. Use Git for detailed changes, [v1.md](v1.md) for behavior and the
+[roadmap](roadmap.md) for delivery gates. Bug reports and investigation belong in
+[GitHub Issues](https://github.com/shaadahmmed/jong-bangla-keyboard/issues).
 Dates use the project's Asia/Dhaka timezone.
 
 ## Current position
 
 - **Implemented:** independent Rust transliteration/composition, a private Rust
   C ABI and an experimental C++ Fcitx5 addon with isolated dispatcher tests.
-- **Release scope confirmed on 2026-11-05:** staged Linux Fcitx5 and IBus;
-  Flatpak, deb, rpm and pacman packages with maintained AUR recipes; Windows TSF;
-  macOS on Apple silicon and Intel. Only the Fcitx5 experiment exists today.
-  See the [roadmap](roadmap.md) for stage boundaries and acceptance gates.
-- **Bug tracking:** reports, reproduction, investigation, workarounds and
-  release-blocking/deferral decisions belong in GitHub Issues. Docs link to the
-  tracker and retain implementation/validation limits without bug narratives.
-- **Prior merge evidence:** PR #1 merged on 2026-10-31 as `1a9b2d9`, including
-  CI fix `406ac9a`. Both final PR and post-merge CI passed in
-  [run 41176688238](https://github.com/shaadahmmed/jong-bangla-keyboard/actions/runs/41176688238)
-  and [run 41176794536](https://github.com/shaadahmmed/jong-bangla-keyboard/actions/runs/41176794536).
-  These are prior hosted results, not checks rerun for this documentation step.
-- **Repository protection prior evidence:** the 2026-10-31 inspection found a
-  PR ruleset with zero required approvals and administrator bypass, but no required
-  status checks. Normal merging still needs configuration/verification. Tag rules
-  and immutable-release settings were not inspected. No settings changed here.
+- **Delivery scope:** staged Linux Fcitx5 and IBus, Linux packages/AUR, Windows
+  TSF and macOS on Apple silicon and Intel. Only the Fcitx5 experiment exists;
+  the [roadmap](roadmap.md) distinguishes planned targets from delivered support.
+- **Task workflow confirmed on 2026-11-05:** check open Issues/PRs, finish existing
+  work and prioritize actionable bugs; use a fresh branch from updated main;
+  complete checks, commit/push and create a PR without routine confirmation.
+  Review, fix findings and merge only the checked latest revision, then verify
+  post-merge CI and clean up task branches. See [CONTRIBUTING.md](../CONTRIBUTING.md#review-merge-and-cleanup).
+- **Review limits:** identify self-review explicitly. Assess architecture,
+  correctness, regressions and relevant memory/performance/security concerns;
+  a clean review is not proof of no defects. No agent delegation is authorized.
+- **Protected merge evidence:** PR #3 merged as `24c1f1e` without bypass.
+  Both jobs passed in [PR CI](https://github.com/shaadahmmed/jong-bangla-keyboard/actions/runs/42066375680)
+  and [post-merge CI](https://github.com/shaadahmmed/jong-bangla-keyboard/actions/runs/42066639505).
+  The task branch was removed locally/remotely and local main synchronized.
+  See [repository settings](releases.md#github-repository-settings) and
+  [closed Issue #2](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/2).
+- **Bug tracking:** reports, investigation, workarounds and closure/deferral
+  decisions stay in Issues. Docs retain requirements, usage, validation limits
+  and concise changelog entries without duplicate bug narratives.
 - **Validation limits:** installed-route typing and the broader desktop matrix
-  remain unconfirmed. Other adapters/packages are unimplemented. Tag-triggered
-  draft/API execution remains untested; current automation creates source drafts
-  only. Historical private-session tests do not prove normal installed delivery.
-- **Documentation layout:** `v1.md` is the concise current requirements/API
-  contract. Native event/ownership rules, Fcitx5 validation, compatibility policy
-  and measured results have focused guides. Historical rule records are grouped
-  in `docs/compatibility/` and are read only for relevant investigations.
+  remain unconfirmed; additional adapters/packages are unimplemented. Tag-driven
+  draft/API execution remains untested. Tag protections and immutable-release
+  settings were not inspected. Release versions and publication remain manual.
 - **Compatibility prior evidence:** 522,933 parity rows plus 60 Unicode policy
-  rows. No reference comparison or performance measurement was rerun here.
+  rows. No new reference comparison or performance measurement was run here.
+  Current requirements, native contracts and compatibility history have focused
+  guides linked from the [README](../README.md#documentation).
 
 ## Latest completed step
 
-- **2026-11-05 — Complete the documentation corrections and split the spec.**
-  The staged platform/package roadmap and GitHub Issues bug policy remain the
-  confirmed direction. The first cleanup left `v1.md` at 5,691 lines; this step
-  reduced it to 222 lines, separating current requirements from implementation
-  chronology and validation records.
-- Added focused adapter-contract, Fcitx5-validation and compatibility guides;
-  moved recorded measurements into the existing performance guide. Preserved
-  historical phonetic evidence in four rule-family records, with a compatibility
-  index. Updated repository links, including link-only changes in older progress
-  entries; their evidence/narrative content is retained. Product behavior and
-  source code are unchanged.
-- **Checks rerun before the approved commit:** `python3 tools/check-docs.py`
-  passed 24 Markdown files, 803 local links/anchors, code fences and 15 shell
-  examples; `python3 -m unittest
-  discover -s tools/tests -q` passed nine tooling tests; `git diff --check` passed.
-- **Prior split validation:** `python3 /tmp/jong-check-spec-split.py` verified
-  all 89 prior section anchors
-  have valid mapped destinations, retained rule/requirement/Unicode/ownership/
-  measurement text after link/heading rebasing and directional-reference cleanup,
-  and historical progress
-  content with link-only changes. The temporary checker is not project tooling.
-- **Prior validation from the earlier cleanup:** 19 typing examples matched the
-  existing built CLI and formatting passed all five C++/header files. Those
-  checks were not rerun for this text-only split. No application test suite,
-  new desktop test, reference comparison or hosted check was run here.
-- **Limits:** the new guides do not add platform/package support or CI jobs.
-  External bookmarks to moved sections of `v1.md` need their new document
-  destinations; repository Markdown links have been updated. Historical rule
-  records remain lengthy reference material, outside routine handoff reading.
-- **Commit scope:** the user approved committing this documentation/template
-  step on `docs/platform-release-plan`, based on the merged `origin/main`
-  snapshot. The prior local merge-handoff outcome is retained above. Push and PR
-  submission remain pending; no release, package or desktop-setting change was made.
+- **2026-11-05 — Record the approved issue-first task and PR workflow.**
+  Updated agent/contributor/release instructions and the PR template for automatic
+  commits/PRs, relevant review, findings with evidence, protected merge gates and
+  verified task-branch cleanup. This supersedes the per-commit confirmation rule;
+  manual release version selection and publication remain unchanged.
+- Aligned the changelog, requirements cross-reference and roadmap with the new
+  workflow and verified protected merging. No executable source, dependencies,
+  input-method settings or typing behavior changed. Historical progress entries
+  below remain unchanged.
+- **Actual checks:** `python3 tools/check-docs.py` passed 24 Markdown files,
+  807 local links/anchors, fences and 15 shell examples;
+  `python3 -m unittest discover -s tools/tests -q` passed nine tests;
+  `git diff --check` passed. A Python comparison confirmed unchanged historical
+  progress and Markdown-only changes across all eight files. Self-review found
+  no unresolved findings. Runtime memory/performance tests are not applicable
+  to these documentation-only changes.
+- **Prior hosted evidence:** PR #3 and its merge passed the Rust/Fcitx5 build,
+  workspace tests, documentation/release tooling and staged installation checks.
+  Those runs predate the workflow documentation change.
+- **Delivery tracking:** prepared on `docs/issue-first-pr-workflow`, based on
+  synchronized main after PR #3. Acceptance and delivery are tracked in
+  [Issue #4](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/4).
+  Consult its linked PR for current hosted checks, review and merge status.
 
 ## Next small implementation step
 
-1. Configure and verify required hosted checks and normal protected PR merging,
-   following the [release guide](releases.md#github-repository-settings).
-2. Implement release-preparation PR validation and exported-source build checks
+1. At the next task start, check open Issues and PRs before selecting work.
+   Finish any pending delivery through the documented review/merge gates.
+2. Subject to the issue queue and maintainer priorities, implement
+   release-preparation PR validation and exported-source build checks
    as a separate tooling increment, then complete the Fcitx5 installed-route
-   acceptance baseline before starting the IBus adapter stage.
+   baseline before starting the IBus stage.
 
-**Done when:** routine merging and pre-release validation are verified, and the
-first release has an explicit tested scope. Continue IBus, Linux packaging,
-Windows and macOS in the roadmap stages; they do not block a scoped earlier alpha.
+**Done when:** each task follows the recorded review/merge gates, and release
+validation and desktop acceptance establish an explicit tested scope. Later
+platforms remain separate roadmap stages, not prerequisites for a scoped alpha.
 
 ## Completed steps
 

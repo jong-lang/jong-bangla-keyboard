@@ -30,9 +30,17 @@ desired typing behavior and whether they change a confirmed v1 decision.
 Keep each change focused and independently reviewable. Follow the
 [development guide](docs/development.md) for prerequisites and commands; run them
 from the repository root. No network service is needed for ordinary Rust checks.
-Create a branch for every new feature or fix and submit a pull request to `main`;
-do not push these changes directly to `main`. Documentation and maintenance work
-should use the same branch and pull request process.
+
+Before starting a new task, inspect open GitHub Issues and pull requests. Finish
+existing work and prioritize actionable bugs before unrelated work. Keep blocked
+issues open with an explanation; never close a valid issue just to clear the
+queue. Explain blocked work or unclear priorities before proceeding. If the
+tracker is unavailable, report that limitation instead of assuming it is empty.
+
+Create a fresh branch from updated `main` for each coherent task and submit a
+pull request to `main`; do not push task changes directly to `main` or reuse a
+completed task's branch. Documentation and maintenance use the same process.
+Preserve unrelated work.
 
 - Keep transliteration and composition independent of Fcitx5 and desktop APIs.
 - Add meaningful regression cases for behavior changes. For phonetic rules,
@@ -60,13 +68,42 @@ Update usage instructions with code changes, behavioral decisions in
 `Unreleased` in [CHANGELOG.md](CHANGELOG.md); routine internal steps belong in Git
 and the handoff. Keep the changelog distinct from detailed validation records.
 
-When an agent assists with a change, it must finish the checks and documentation,
-present a detailed summary of changes, validation and limitations, and wait for
-the user's explicit confirmation before committing. Task completion alone does
-not authorize a commit. Use a descriptive message and include only the reviewed
-work. Pull requests should explain the problem, resulting behavior, validation
-and material limitations. CI checks documentation/release tooling and the Rust/
-Fcitx5 build; hosted status checks do not replace desktop smoke observations.
+The maintainer approved autonomous task delivery on 2026-11-05, replacing the
+previous per-commit confirmation requirement. After completing the task, relevant
+documentation and checks, an agent commits, pushes and creates a PR without
+routine confirmation requests. Include only the task's work and use descriptive
+messages. PRs explain the problem, resulting behavior, validation and material
+limitations, and link related issues. Use `Fixes #123` only when the PR fully
+resolves that issue. CI checks documentation/release tooling and the Rust/Fcitx5
+build; hosted status checks do not replace desktop smoke observations.
+
+## Review, merge and cleanup
+
+Review the complete PR for correctness, architecture, regressions and test
+coverage. Assess memory ownership/leaks, unsafe boundaries, performance,
+security and compatibility when relevant. Documentation-only changes need link
+and consistency checks, rather than runtime measurements. Identify self-review
+explicitly; do not present it as independent approval. Independent review is
+useful when available, but agents must not delegate without the user's request.
+
+Post each finding on the PR with its file/line or affected setting, severity,
+evidence or reproduction, impact and recommended correction. Distinguish
+optional suggestions from defects. Fix findings, rerun affected checks and
+review the updated diff. Keep bug reports and investigation in linked GitHub
+Issues; PR comments describe the actionable review finding.
+
+Merge only when the latest revision passes required checks, all review findings
+and conversations are resolved, and there are no merge conflicts. A new push
+requires review of the changes and checks for that revision. Never bypass branch
+protections to finish a task. Explain any blocked gate on the PR and leave the
+work open; a clean review does not guarantee the absence of defects.
+
+Verify the merge and post-merge CI before deleting the completed task's remote
+and local branches and synchronizing local `main`. Delete only that task's
+branches, preserve unrelated work, and do not force-delete unmerged work. If
+post-merge verification fails, keep the task branches, record the failure in an
+Issue and fix it through a new branch/PR. Close issues only when resolved or
+with a justified closure reason; a fixing PR can close them on merge.
 
 Apply relevant PR labels: `enhancement`, `bug`, `breaking-change`, `documentation`
 or `dependencies`. Use `skip-release-notes` only for changes with no release-note

@@ -9,6 +9,18 @@ List actual commands and outcomes. Identify checks that could not run. For
 phonetic changes, include the pinned reference and exact Unicode evidence. Keep
 synthetic harness checks separate from actual desktop tests.
 
+## Review
+
+Identify self-review or independent review and the reviewed revision. Assess
+correctness, architecture, regressions and tests; cover memory ownership/leaks,
+unsafe boundaries, performance, security and compatibility where relevant.
+Explain why a category is not applicable when useful.
+
+Post findings with location, severity, evidence, impact and recommended correction.
+Fix findings and repeat affected checks and review. Merge only after required
+checks pass on the latest revision, findings/conversations are resolved and there
+are no conflicts. Verify the merge and post-merge CI before task-branch cleanup.
+
 ## Documentation and limitations
 
 Describe relevant usage, behavior, handoff and changelog updates. Record material

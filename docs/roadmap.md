@@ -176,8 +176,10 @@ The following work is planned, not implemented by the documentation update:
 - Preserve any future desktop-test helpers in the repository with reproducible
   launch instructions. The current checklist uses normally installed apps and
   does not depend on the older untracked private-session helper.
-- Configure and verify ordinary protected PR merging and required hosted checks;
-  the last recorded inspection is in the release guide.
+
+Ordinary protected PR merging and required hosted checks were verified on
+2026-11-05. Keep these gates in place for future stages; see the
+[release guide](releases.md#github-repository-settings) for dated evidence.
 
 ## Platform and packaging references
 
