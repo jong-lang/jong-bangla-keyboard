@@ -49,6 +49,12 @@ User instructions take precedence over this guide; update the docs when they cha
 
 ## Collaborate in coherent steps
 
+- Before starting a new task, inspect open GitHub Issues and pull requests.
+  Finish existing work and prioritize actionable bugs before unrelated work.
+  Never close a valid issue just to clear the queue. Keep blocked issues open
+  with an explanation; explain blocked work or unclear priorities before
+  proceeding. If the tracker cannot be checked, report that limitation rather
+  than assuming there are no open issues.
 - Explain the purpose and expected result of the next coherent step before editing.
 - Complete one coherent, reviewable increment at a time. Avoid combining engine
   changes, platform integration, packaging, and unrelated cleanup in one change.
@@ -66,9 +72,9 @@ User instructions take precedence over this guide; update the docs when they cha
 - Share fixture/check tooling where useful while preserving independent expected
   outputs and evidence for every spelling. Use targeted reference checks during
   investigation, then one full required validation run, documentation/handoff
-  update, and review summary for the completed batch. Commit only after the user's
-  explicit confirmation. Repeat full checks when later edits or failures require
-  them; do not repeat the full cycle for every spelling.
+  update, and review summary for the completed batch. Deliver the batch through
+  the branch/PR workflow below. Repeat full checks when later edits or failures
+  require them; do not repeat the full cycle for every spelling.
 - Walk the user through the result in plain language: what changed, why it matters,
   how it was checked, and what comes next. Explain unfamiliar terms when introduced.
 - Update the three handoff sections in `docs/progress.md` after each coherent
@@ -89,12 +95,31 @@ User instructions take precedence over this guide; update the docs when they cha
   decisions in GitHub Issues. Link to issues from docs where needed; do not keep
   duplicate bug narratives in requirements, usage guides or the progress log.
   Keep implementation and validation limits documented accurately.
-- Implement every new feature and fix on a branch and submit it through a pull
-  request to `main`; do not push these changes directly to `main`.
-- Do not automatically commit completed work. Finish the checks and documentation,
-  then give the user a detailed summary of changes, validation and limitations,
-  propose a descriptive commit message, and wait for explicit confirmation before
-  committing. Include only the reviewed step's work in the approved commit.
+- Create a fresh branch from updated `main` for each coherent task, including
+  documentation and maintenance. Do not reuse a completed task's branch or push
+  task changes directly to `main`. Preserve unrelated work.
+- Complete the task, relevant documentation and checks, then commit, push and
+  create a PR to `main` without routine confirmation requests. Use descriptive
+  commit/PR messages and include only the task's work. This workflow was approved
+  on 2026-11-05 and supersedes the previous per-commit confirmation requirement.
+- Review the complete PR for correctness, architecture, regressions and test
+  coverage. Assess memory ownership/leaks, unsafe boundaries, performance,
+  security and compatibility where relevant. State whether the review is
+  self-review or independent review; do not imply self-review is independent
+  approval. Match validation to the changed behavior and document its limits.
+- Post findings on the PR with precise locations, severity, evidence, impact and
+  recommended corrections. Distinguish optional suggestions from defects. Fix
+  findings, repeat affected checks and review the updated diff. Track bugs in
+  GitHub Issues and link them from the PR without duplicating reports in docs.
+- Merge only when the latest revision has passed all required checks, all review
+  findings and conversations are resolved, and there are no merge conflicts.
+  Never bypass protections to finish a task. If any gate is blocked, explain it
+  on the PR and keep the work open; lack of findings is not a defect-free guarantee.
+- Link fixing PRs to their issues. Close issues only when resolved or with a
+  justified closure reason. Verify the merge and post-merge CI, then delete only
+  the completed task's remote and local branches and synchronize local `main`.
+  Preserve branches and unrelated work if verification fails; track the failure
+  in GitHub Issues and fix it on a new branch.
 - Keep release versions manual and prepare them through a release pull request.
   Follow [the release guide](docs/releases.md); automation prepares drafts, while
   publication remains an explicit maintainer action.

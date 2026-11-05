@@ -29,7 +29,9 @@ package version `0.1.0` does not establish a release date or desktop support cla
   installation checks; version-tag validation, reviewed release-note template,
   source archives with SHA-256 checksums, and automated draft releases.
 - Weekly GitHub Actions dependency update PR configuration and a documented
-  branch/PR workflow with manual versions and confirmation before agent commits.
+  issue-first task workflow with fresh branches, automatic agent commits/PRs,
+  relevant review, protected merging and verified branch cleanup. Release
+  versions and publication remain manual.
 
 ### Behavior decisions
 

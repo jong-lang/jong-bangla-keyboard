@@ -10,15 +10,21 @@ ship independently while those delivery stages are implemented.
 
 ## Everyday changes
 
-1. Create a branch from an up-to-date `main` for each feature or fix. Use the same
-   process for documentation and maintenance changes; keep each PR focused.
+1. Inspect open Issues and PRs, finish existing work and prioritize actionable
+   bugs. Keep blocked issues open with an explanation and explain unclear
+   priorities before proceeding. Create a fresh branch from up-to-date `main`
+   for each coherent task, including documentation and maintenance.
 2. Add meaningful regression coverage, relevant docs and notable user-facing
    entries under `Unreleased` in [the changelog](../CHANGELOG.md).
-3. Run the relevant [development checks](development.md). An assisting agent
-   presents a detailed summary and waits for explicit user confirmation before
-   committing; finishing a task does not authorize a commit.
-4. Push the approved branch and open a PR to `main`. Inspect the actual hosted CI
-   results before merging. Do not push features or fixes directly to `main`.
+3. Run the relevant [development checks](development.md), then commit, push and
+   open a PR to `main` without routine confirmation requests. The maintainer
+   approved this workflow in place of the former per-commit confirmation rule.
+4. Follow the [review, merge and cleanup rules](../CONTRIBUTING.md#review-merge-and-cleanup).
+   Review the complete PR, post and fix findings, and require successful checks
+   for the latest revision, resolved conversations and no conflicts before
+   merging. Never bypass protections or push task changes directly to `main`.
+5. Verify the merge and post-merge CI, close resolved linked issues, delete only
+   the completed task's remote/local branches and synchronize local `main`.
 
 Use descriptive PR titles and labels: `enhancement`, `bug`, `breaking-change`,
 `documentation` or `dependencies`. The [release-note configuration](../.github/release.yml)
@@ -90,8 +96,9 @@ The current Cargo `0.1.0` baseline is not a published release.
    Attach the successful command and outcome to the release PR: current PR CI
    does not run this validator. Automatic validation currently starts on tag
    pushes; moving it before merge is a [planned tooling step](roadmap.md#implementation-follow-ups-from-the-documentation-review).
-6. Review the complete diff, get explicit user confirmation before an agent
-   commits, then submit the release PR. Merge only after hosted checks pass.
+6. Review the complete diff, commit and submit the release PR through the same
+   review and merge gates as other tasks. Version selection stays manual;
+   merging a release PR does not authorize tagging or publishing a release.
 
 ## Tag and review the draft
 
@@ -128,21 +135,28 @@ version through a PR. Never move/reuse a release tag or replace published assets
 ## GitHub repository settings
 
 Workflow files cannot enforce repository branch rules or enable immutable
-releases. An administrator must configure these settings separately; this local
-guide does not change them. The last recorded inspection (2026-10-31) found an
-active `main` PR ruleset with zero required approvals and administrator bypass,
-but no required status checks; PR #1 used bypass after both jobs passed. Tag
-protections and immutable-release settings were not inspected. Reinspect and
-verify the desired settings below before relying on them; this is dated evidence,
-not a live hosted-settings check.
+releases. An administrator must configure these settings separately.
+
+**Verified on 2026-11-05:** `main` requires PRs, both CI jobs from GitHub Actions
+(app 15368), an up-to-date base and resolved review conversations. Stale approvals
+are dismissed; deletion and force pushes are blocked, and there are no bypass
+actors. Zero external approvals are required for the solo-maintainer setup.
+[PR #3](https://github.com/shaadahmmed/jong-bangla-keyboard/pull/3) merged normally;
+its [PR CI](https://github.com/shaadahmmed/jong-bangla-keyboard/actions/runs/42066375680)
+and [post-merge CI](https://github.com/shaadahmmed/jong-bangla-keyboard/actions/runs/42066639505)
+passed. Configuration tracking and verification are in
+[Issue #2](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/2).
+Tag protections and immutable-release settings were not inspected. This is
+dated evidence; reinspect settings before relying on them in a later session.
 
 - Add an active branch ruleset for `main` requiring a PR, blocking force pushes
   and deletion, and requiring the `Documentation and release tooling` and
   `Rust and Fcitx5` status checks. Select the actual checks after their first
-  successful hosted run; require the branch to be up to date before merging.
+  successful hosted run; require the branch to be up to date before merging,
+  resolved review conversations and dismissal of stale approvals.
 - For a solo maintainer, require PRs with **zero required approving reviewers**:
   you cannot approve your own PR. Add a required independent reviewer when one
-  is available. Avoid routine bypasses of the branch rules.
+  is available. Never bypass the branch rules to finish a task.
 - Add a tag ruleset for `v*` blocking updates and deletion, while allowing
   maintainers to create new release tags.
 - Enable immutable releases. Assemble all assets in the draft before publishing.
