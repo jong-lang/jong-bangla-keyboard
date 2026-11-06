@@ -40,6 +40,8 @@ package version `0.1.0` does not establish a release date or desktop support cla
   Ctrl+A and window-focus return; one English UK AltGr+E → € result is reported.
 - Reversible Fcitx5 temporary-Shift-toggle guidance and dispatcher coverage for
   its Meta+Space activation cycle, disabled-toggle control and Shift+I case.
+- User-reported Kate 26.08.3 follow-up results for pending-word preservation
+  under Ctrl/Shift, `ki`/`kI` case, held keys/Backspace and pointer/click relocation.
 - Weekly GitHub Actions dependency update PR configuration and a documented
   issue-first task workflow with fresh branches, automatic agent commits/PRs,
   relevant review, protected merging and verified branch cleanup. Release

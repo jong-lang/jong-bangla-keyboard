@@ -16,29 +16,34 @@ Dates use the project's Asia/Dhaka timezone.
   and macOS on both architectures. Only the Fcitx5 experiment exists; see the
   [roadmap](roadmap.md) for planned versus delivered support.
 - **Resolved configuration report:** [Issue #12](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/12)
-  records the standalone-Shift switching investigation and manual retest. Read-only
-  configuration inspection, upstream 5.1.23 code and an isolated reproduction
-  identify Fcitx's configured temporary toggle. An empty-list control preserves
-  standalone Shift and phonetic case; no production adapter change is needed.
-  The user chose reversible manual changes and confirmed the problem is fixed.
-  The retest app was not named, so it is not attributed separately to both apps.
+  records the temporary-Shift-toggle diagnosis and user-confirmed manual fix.
+  No production adapter change was needed. The original retest app was unnamed;
+  the new Kate result separately confirms pending-word preservation under Shift.
 - **Installed desktop evidence:** user-reported cases cover basic typing/editing
   in KWrite 26.08.2 and Firefox 159.0.1 on Wayland, window focus and Enter/Ctrl+A
   in both, Firefox field return/password transitions/window closure, and language
   switching. One English UK AltGr+E → € case is reported without app/pending state.
-  See the [scoped validation record](fcitx5-validation.md#installed-route-basic-smoke-result).
+- **New Kate evidence:** Kate 26.08.3 preserves pending text under standalone
+  Ctrl/Shift and pointer motion; fresh `ki`/`kI` produce `কি`/`কী`. Held letters
+  and Backspace have no reported freeze, lag or stuck-key issue. After clicking,
+  the old word stays at its original location and the new word starts at the
+  clicked location. See the [scoped Kate record](fcitx5-validation.md#kate-modifiers-case-repeats-and-cursor-relocation).
 - **Environment:** user reports CachyOS x86_64, Plasma 6.8.2, kernel
   7.3.1-1-cachyos and KWrite Qt 6.12.0. Installed Fcitx5 package inventory is
   5.1.23-1.1; the loaded addon revision, running Fcitx5/Firefox toolkit and exact
-  frontend transport remain unconfirmed. Package and runtime evidence differ.
-- **Other desktop limits:** remaining modifiers/case/repeats, cursor relocation,
-  dead-key/Compose and broader app/frontend combinations still need results.
+  frontend transport remain unconfirmed. Kate's toolkit and route were not
+  separately supplied. Package and runtime evidence differ.
+- **Other desktop limits:** Firefox/KWrite modifier/case/repeat and relocation
+  combinations, selection, dead-key/Compose and broader app/frontend coverage
+  still need results. Kate reports do not establish other apps' behavior or a
+  measured latency guarantee; key-release duplication was not separately reported.
 - **Release tooling:** PR/main CI validates versions/notes and builds/tests the
   checkout and source export, including staged installation. Git-based checks
   need a checkout. Versions, tagging and publication remain maintainer actions.
-- **Delivery prior evidence:** PR #11 merged as `cef8200`; its
-  [post-merge CI](https://github.com/shaadahmmed/jong-bangla-keyboard/actions/runs/42167762764)
-  passed both jobs. Task branches were removed and main synchronized.
+- **Delivery prior evidence:** PR #13 merged as `be61714`; its
+  [post-merge CI](https://github.com/shaadahmmed/jong-bangla-keyboard/actions/runs/42189743916)
+  passed both jobs. The present step began on clean, synchronized main with no
+  open Issues or PRs.
 - **Workflow:** inspect Issues/PRs, prioritize bugs, use fresh branches, validate,
   commit/PR, self-review, protected merge, verify CI and clean only task branches.
   No delegation is authorized; see [contribution rules](../CONTRIBUTING.md#review-merge-and-cleanup).
@@ -48,50 +53,38 @@ Dates use the project's Asia/Dhaka timezone.
 
 ## Latest completed step
 
-- **2026-11-06 — Diagnose the temporary Shift toggle and extend dispatcher tests.**
-  The framework-shortcuts suite now covers ordinary English, Meta+Space activation,
-  repeated temporary Shift toggles, primary-toggle exit and an empty-list control.
-  It verifies exactly-once word commit, fresh return, Shift+I case and modifier
-  passthrough. Both configured profiles pass; production engine/addon code is
-  unchanged. Investigation/retest details stay in Issue #12.
-- Recorded user-reported Firefox Enter/Ctrl+A/window-focus passes, the additional
-  environment information and the scoped AltGr+E result. Unreported modifier,
-  repeat and cursor checks were not marked as passes.
-- Added reversible temporary-toggle instructions, troubleshooting and a contract
-  clarification: framework shortcuts take precedence over adapter modifier rules.
-  A temporary candidate config with only `AltTriggerKeys=` added under `[Hotkey]`
-  was validated using Fcitx's parser; primary triggers remained unchanged. The
-  user chose manual changes and confirmed the correction works in response to
-  the primary-toggle/Shift/case retest; the app was not named. The agent did not
-  edit settings or restart a daemon.
-- **Actual checks:** `bash tools/check-build.sh` passed Rust fmt/Clippy/workspace
-  tests/release/docs/conversion, both CTest tests and staged installation/loading/
-  missing-library/removal controls. One pre-existing ignored doctest remains.
-  Earlier targeted `cmake --build target/ci-fcitx5` and
-  `ctest --test-dir target/ci-fcitx5 --output-on-failure` also passed.
-- C++ formatting via the development guide's `clang-format --dry-run --Werror`
-  command, `python3 tools/check-docs.py`, `git diff --check` and historical-progress
-  preservation passed. No reference comparison or performance measurement was
-  rerun; no new performance, full AltGr or secure-context guarantee is claimed.
-- **Review/delivery:** self-review covers shortcut ownership, actual key events,
-  state/commit controls, lifetimes, configuration isolation and evidence limits.
-  Prepared on `test/fcitx-temporary-shift-toggle`; the PR tracks hosted checks
-  and delivery. Issue #12 is resolved by the user-confirmed manual configuration
-  change.
+- **2026-11-06 — Record Kate 26.08.3 modifier, case, repeat and cursor results.**
+  Added a separate user-reported Kate record, preserving the distinction from
+  KWrite and Firefox. The follow-up confirms the old word stays at its original
+  location after clicking and both case spellings pass. README and Unreleased
+  notes link this evidence to the experimental desktop status.
+- **Evidence limits:** no agent-observed desktop run, new runtime/frontend data,
+  exact next-character output after clicking, separate selection result or
+  key-release duplication confirmation. No production code or settings changed.
+- **Actual checks:** `python3 tools/check-docs.py` passed local links/anchors,
+  fences and shell syntax; `python3 -m unittest discover -s tools/tests -v`
+  passed all 16 tooling tests; `git diff --check` passed. Historical progress
+  preservation was checked against main. Runtime, reference and performance
+  checks from earlier steps are prior evidence, not rerun desktop validation.
+- **Review/delivery:** self-review checks evidence scope, app/version attribution,
+  link consistency and unchanged historical entries. Prepared on
+  `docs/kate-modifier-cursor-results`; the PR tracks hosted checks and delivery.
+  Next action is the remaining named-app observations and runtime identification.
 
 ## Next small implementation step
 
 1. Check Issues/PRs and finish pending delivery through protected gates.
-2. Continue the remaining modifier/case/repeat and cursor-relocation observations
-   in named apps. The user confirmed the temporary-toggle correction works but
-   did not name the retest app. Keep this confirmation scoped accordingly and
-   preserve the user's chosen shortcuts.
-3. Complete remaining desktop observations and missing candidate/runtime details,
-   choose the tested initial scope, then start the [IBus stage](roadmap.md#2-add-ibus).
+2. Test modifier/case/repeat and pointer/click relocation in Firefox; retain
+   Kate 26.08.3 as a separate app from KWrite 26.08.2. Where claiming those cases
+   in KWrite too, obtain its own results. Preserve the user's chosen shortcuts.
+3. Complete the remaining [desktop checklist](fcitx5-validation.md#remaining-desktop-smoke-checklist)
+   combinations and missing candidate/runtime details. Clarify selection and
+   key-release behavior where needed for the initial scope.
+4. Choose the tested initial scope, then start the [IBus stage](roadmap.md#2-add-ibus).
    Other adapters and packaging remain separate stages.
 
-**Done when:** the reported problem has an evidenced disposition and desktop
-results/explicit limits establish the initial scope, with protected task delivery.
+**Done when:** desktop results and explicit limits establish the initial scope,
+with protected task delivery and no unresolved release-blocking bugs.
 
 ## Completed steps
 
