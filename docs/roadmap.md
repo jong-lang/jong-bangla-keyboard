@@ -61,10 +61,13 @@ Basic installed-route checks have [user-reported passes](fcitx5-validation.md#in
 in KWrite 26.08.2 and Firefox 159.0.1 on Wayland. Further reports cover scoped
 focus, shortcut and input-method switching cases; the validation record identifies
 each app/case and incomplete observations. Remaining app/case combinations and
-missing candidate/runtime details still need evidence.
-Choose the initial support matrix from those results. A source alpha may ship
-with explicitly unvalidated routes; a supported route must pass the acceptance
-gate. Keep platform bugs and release-blocking decisions in
+missing runtime details still need evidence.
+The [verified source baseline](fcitx5-validation.md#verified-source-baseline-and-initial-scope)
+now reproduces the installed binary. Initial scope remains experimental source
+installation on CachyOS x86_64 / Plasma Wayland, with app-specific user reports;
+this establishes a baseline for IBus work without declaring a supported route.
+A source alpha may ship with explicitly unvalidated routes; beta/stable scope
+must pass the acceptance gate. Keep platform bugs and release-blocking decisions in
 [GitHub Issues](https://github.com/shaadahmmed/jong-bangla-keyboard/issues).
 
 ### 2. Add IBus

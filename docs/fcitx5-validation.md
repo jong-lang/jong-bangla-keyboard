@@ -342,6 +342,48 @@ post-install restart; the agent did not independently identify the running
 process's loaded binary or the source revision used to build it. Do not assign
 the current checkout's commit to this earlier build.
 
+### Verified source baseline and initial scope
+
+**2026-11-06 — Agent-checked binary equivalence:** a fresh Release build from
+clean revision `72378338e59f399e05ef6a1f0ad688e106440735` produced exactly the
+installed addon bytes. The original October 30 build's source commit remains
+unknown; the new build establishes a verified source for the same binary.
+
+Commands used after `bash tools/check-build.sh` passed:
+
+```sh
+cmake -S adapters/fcitx5 -B target/fcitx5-baseline-7237833 -G Ninja \
+  -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr \
+  -DFCITX_INSTALL_USE_FCITX_SYS_PATHS=ON
+cmake --build target/fcitx5-baseline-7237833
+ctest --test-dir target/fcitx5-baseline-7237833 --output-on-failure
+python3 tools/check-install.py target/fcitx5-baseline-7237833
+sha256sum target/fcitx5-baseline-7237833/libjong-bangla.so /usr/lib/fcitx5/libjong-bangla.so
+cmp target/fcitx5-baseline-7237833/libjong-bangla.so /usr/lib/fcitx5/libjong-bangla.so
+```
+
+Both libraries have SHA-256
+`a9b9af1f3a99f2f3d4dbd92ca000adea2a521f5396cbf6c83ca31fd6058cc8d4`.
+`cmp` also confirmed that generated addon registration and source input-method
+registration match their installed files. Both CTest cases and all ten staged
+dispatcher suites passed, including missing-library and removal controls.
+Tools: Rust/Cargo 1.99.1, GCC 16.2.1, GNU ld 2.47, CMake 4.4.5, Ninja 1.13.2
+and Fcitx5 development package 5.1.23 on Linux 7.3.1-1-cachyos x86_64.
+
+**Initial scope:** experimental Fcitx5 source installation on CachyOS x86_64 /
+KDE Plasma Wayland, with the app/version-specific user reports above. This is
+an unpublished development baseline; no route is promoted to beta or stable
+support. GTK, Electron, XWayland, other distributions and other adapters have
+no acceptance claim. Release scope must still satisfy the
+[roadmap gates](roadmap.md#acceptance-gate-for-each-release-scope).
+
+No reinstall or repeat desktop test is needed solely to establish this binary
+equivalence. No Fcitx5 process was visible to this inspection, so the loaded
+binary was not independently identified; the prior restart remains user-reported.
+Exact Compose/dead-key sequences, incomplete app/case results and performance
+budgets remain open validation work. Next is IBus feasibility with the shared
+controller; installed IBus validation will require a named GNOME/IBus session.
+
 ## Remaining desktop smoke checklist
 
 Use the [installed addon](installation.md) in normally launched GTK3, Firefox
