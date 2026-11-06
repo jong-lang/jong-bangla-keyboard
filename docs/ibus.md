@@ -87,7 +87,9 @@ use IBus development headers/library **1.5.33 or newer**, pkg-config, a C11/C++2
 compiler, CMake 3.25+, Ninja, Python 3.11+ and `dbus-run-session`. The minimum is a
 build prerequisite; only the environment above has been checked. Arch splits
 the library/headers into `libibus`; other distributions may use `libibus-1.0-dev`
-or `ibus-devel`. A running IBus daemon is unnecessary for these checks.
+or `ibus-devel`. A running IBus daemon is unnecessary for these checks. Minimal test containers
+need their own initialized D-Bus machine identity; CI provisions that inside its
+disposable container, without changing the developer host.
 
 ```sh
 cmake -S adapters/ibus -B target/ibus -G Ninja \

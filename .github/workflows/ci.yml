@@ -58,7 +58,11 @@ jobs:
     steps:
       # Arch supplies the documented Fcitx5 headers; older Ubuntu packages do not.
       - name: Prepare Arch build environment
-        run: pacman -Syu --noconfirm --needed git rust cmake ninja fcitx5 libibus dbus python actionlint shellcheck
+        run: |
+          pacman -Syu --noconfirm --needed git rust cmake ninja fcitx5 libibus dbus python actionlint shellcheck
+          # Minimal containers lack the machine ID that IBus reads at startup.
+          # Initialize only this disposable CI container; no desktop is started.
+          dbus-uuidgen --ensure
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false

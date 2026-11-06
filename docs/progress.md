@@ -72,9 +72,12 @@ Dates use the project's Asia/Dhaka timezone.
   `python3 tools/check-release.py --base origin/main`, `actionlint`,
   `shellcheck tools/check-build.sh`, native `clang-format --dry-run --Werror`
   and `git diff --check` passed. No release version was changed.
-- **Tracker/delivery:** no open Issues or PRs at task start. Work uses fresh
-  `feat/ibus-adapter` from synchronized main. Separate-session review and merge
-  of this implementation remain pending; do not treat self-review as that gate.
+- **Tracker/delivery:** no open Issues or PRs at task start. Fresh branch
+  `feat/ibus-adapter` now has [PR #19](https://github.com/shaadahmmed/jong-bangla-keyboard/pull/19).
+  The first hosted run exposed a container prerequisite; reproduction and the
+  correction are tracked in [#20](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/20).
+  CI setup is corrected; verify required hosted checks on the latest PR head.
+  Separate-session review and merge remain pending; self-review is insufficient.
 - **Limits:** no GNOME/IBus installed acceptance, completed Compose-table support,
   verified AltGr/frontend routing, generic mouse-relocation notification or
   desktop latency result. These limits are detailed in the IBus record rather
