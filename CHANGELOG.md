@@ -33,7 +33,9 @@ package version `0.1.0` does not establish a release date or desktop support cla
 - User-reported basic installed-addon smoke results for KWrite 26.08.2 and
   Firefox 159.0.1 on Wayland: Space, raw Backspace, Ctrl+Backspace and Escape.
   KWrite follow-up results also cover Enter, Ctrl+A and switching to Firefox
-  and back while composition is pending.
+  and back while composition is pending. Further reports cover Firefox field
+  handoff and English/Bangla switching in both apps, with Meta+X reported for
+  switching to English.
 - Weekly GitHub Actions dependency update PR configuration and a documented
   issue-first task workflow with fresh branches, automatic agent commits/PRs,
   relevant review, protected merging and verified branch cleanup. Release

@@ -159,9 +159,9 @@ and Wayland routes are user-reported. The loaded addon revision, exact frontend
 transport, current distro/Plasma versions and Fcitx5/toolkit runtime versions were
 not supplied with this result; earlier environment records remain prior evidence.
 This establishes a basic installed-route result for these two named apps.
-Additional KWrite results are recorded below. Other focus/shortcut cases,
-input-method switching, relocation, restricted fields and the wider matrix still
-need separate results. These observations do not establish a broader support range.
+Follow-up KWrite and Firefox results are recorded below. Remaining focus/shortcut
+cases, relocation, restricted fields and the wider matrix still need separate
+results. These observations do not establish a broader support range.
 
 ### KWrite lifecycle follow-up
 
@@ -180,6 +180,26 @@ not observe or capture the output. The window-focus result covers KWrite as
 the composing application and Firefox as the other window. It does not establish
 Firefox field-focus behavior or the corresponding Firefox composition cases.
 Candidate/runtime details remain limited as described above.
+
+### Firefox field handoff and input-method switching
+
+**2026-11-06 — User-reported follow-up:** the user reported the Firefox
+two-field handoff working, describing `ki` in A, Tab, then `i` in B. They also
+confirmed the requested English/Bangla switching case works as expected without
+issues, reporting **Meta+X** as the shortcut used to switch to English. App/route
+context remains the previously reported Firefox 159.0.1 and KWrite 26.08.2 on Wayland.
+
+| Check | App context | Requested behavior | Reported result |
+| --- | --- | --- | --- |
+| Field A to B | Firefox | Pending `ki` in A, Tab to B, `i`: one `কি` in A and fresh `ই` in B | User-reported working A-to-B flow |
+| Input-method switch | Firefox and KWrite | Pending `ki`, switch to English, type literal `x`, return to Jong and type `i`: committed `কি`, literal `x`, fresh `ই` | User-reported pass, no issues |
+
+The field response describes A-to-B typing; return-to-A stale-buffer behavior
+was requested but not separately described, so remains unconfirmed. The switching
+response is a combined confirmation for the two requested apps; it does not
+provide separate output captures. Meta+X was specified for switching to English;
+the return-to-Jong action was not separately specified. These are user reports,
+not agent-observed checks, and add no new candidate/runtime details.
 
 ## Remaining desktop smoke checklist
 
