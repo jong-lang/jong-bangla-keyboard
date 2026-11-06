@@ -93,9 +93,15 @@ The current Cargo `0.1.0` baseline is not a published release.
    It must pass for the prepared release version. The validator checks both
    manifests, both lockfile package versions, addon metadata, a unique dated
    changelog section, required nonempty note sections and unresolved placeholders.
-   Attach the successful command and outcome to the release PR: current PR CI
-   does not run this validator. Automatic validation currently starts on tag
-   pushes; moving it before merge is a [planned tooling step](roadmap.md#implementation-follow-ups-from-the-documentation-review).
+   Attach the successful command and outcome to the release PR. PR CI now checks
+   release preparation before merge: it enforces consistent metadata and requires
+   complete dated notes when versions change or either revision has release notes.
+   The unchanged initial unreleased baseline may omit dated notes. This also
+   catches a first release prepared at the existing version. CI builds and tests
+   both the checkout and an exported source archive, including staged Fcitx5
+   installation. Git-based documentation/provenance checks still need a checkout;
+   see [development checks](development.md#documentation-and-release-tooling).
+   Tag pushes repeat explicit tag validation before preparing a draft.
 6. Review the complete diff, commit and submit the release PR through the same
    review and merge gates as other tasks. Version selection stays manual;
    merging a release PR does not authorize tagging or publishing a release.

@@ -15,70 +15,79 @@ Dates use the project's Asia/Dhaka timezone.
 - **Delivery scope:** staged Linux Fcitx5 and IBus, Linux packages/AUR, Windows
   TSF and macOS on Apple silicon and Intel. Only the Fcitx5 experiment exists;
   the [roadmap](roadmap.md) distinguishes planned targets from delivered support.
-- **Task workflow confirmed on 2026-11-05:** check open Issues/PRs, finish existing
-  work and prioritize actionable bugs; use a fresh branch from updated main;
-  complete checks, commit/push and create a PR without routine confirmation.
-  Review, fix findings and merge only the checked latest revision, then verify
-  post-merge CI and clean up task branches. See [CONTRIBUTING.md](../CONTRIBUTING.md#review-merge-and-cleanup).
-- **Review limits:** identify self-review explicitly. Assess architecture,
-  correctness, regressions and relevant memory/performance/security concerns;
-  a clean review is not proof of no defects. No agent delegation is authorized.
-- **Protected merge evidence:** PR #3 merged as `24c1f1e` without bypass.
-  Both jobs passed in [PR CI](https://github.com/shaadahmmed/jong-bangla-keyboard/actions/runs/42066375680)
-  and [post-merge CI](https://github.com/shaadahmmed/jong-bangla-keyboard/actions/runs/42066639505).
-  The task branch was removed locally/remotely and local main synchronized.
-  See [repository settings](releases.md#github-repository-settings) and
-  [closed Issue #2](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/2).
-- **Bug tracking:** reports, investigation, workarounds and closure/deferral
-  decisions stay in Issues. Docs retain requirements, usage, validation limits
-  and concise changelog entries without duplicate bug narratives.
+- **Release tooling:** PR/main CI checks version consistency and prepared release
+  notes, and builds/tests both the checkout and a clean exported source archive.
+  Both routes use `bash tools/check-build.sh`, including staged installation.
+  Git-based documentation/provenance checks still require a checkout. Version
+  selection, tagging and publication remain explicit maintainer actions.
+- **Task workflow:** check Issues/PRs, prioritize existing work and actionable
+  bugs, use a fresh branch from updated main, then validate, commit/push and
+  create a PR. Self-review is explicit; no agent delegation is authorized.
+  Merge only through protected gates, verify post-merge CI, then remove only
+  task branches and synchronize main. See [contribution rules](../CONTRIBUTING.md#review-merge-and-cleanup).
+- **Protected merge prior evidence:** PR #3 merged as `24c1f1e` without bypass;
+  [PR CI](https://github.com/shaadahmmed/jong-bangla-keyboard/actions/runs/42066375680)
+  and [post-merge CI](https://github.com/shaadahmmed/jong-bangla-keyboard/actions/runs/42066639505)
+  passed. The active ruleset was reinspected on 2026-11-06; current task delivery
+  must still verify its own hosted checks and merge. See [repository settings](releases.md#github-repository-settings).
 - **Validation limits:** installed-route typing and the broader desktop matrix
   remain unconfirmed; additional adapters/packages are unimplemented. Tag-driven
   draft/API execution remains untested. Tag protections and immutable-release
-  settings were not inspected. Release versions and publication remain manual.
+  settings were not inspected. Bug investigation/deferral stays in GitHub Issues.
 - **Compatibility prior evidence:** 522,933 parity rows plus 60 Unicode policy
   rows. No new reference comparison or performance measurement was run here.
-  Current requirements, native contracts and compatibility history have focused
-  guides linked from the [README](../README.md#documentation).
+  Focused guides are linked from the [README](../README.md#documentation).
 
 ## Latest completed step
 
-- **2026-11-05 — Record the approved issue-first task and PR workflow.**
-  Updated agent/contributor/release instructions and the PR template for automatic
-  commits/PRs, relevant review, findings with evidence, protected merge gates and
-  verified task-branch cleanup. This supersedes the per-commit confirmation rule;
-  manual release version selection and publication remain unchanged.
-- Aligned the changelog, requirements cross-reference and roadmap with the new
-  workflow and verified protected merging. No executable source, dependencies,
-  input-method settings or typing behavior changed. Historical progress entries
-  below remain unchanged.
-- **Actual checks:** `python3 tools/check-docs.py` passed 24 Markdown files,
-  807 local links/anchors, fences and 15 shell examples;
-  `python3 -m unittest discover -s tools/tests -q` passed nine tests;
-  `git diff --check` passed. A Python comparison confirmed unchanged historical
-  progress and Markdown-only changes across all eight files. Self-review found
-  no unresolved findings. Runtime memory/performance tests are not applicable
-  to these documentation-only changes.
-- **Prior hosted evidence:** PR #3 and its merge passed the Rust/Fcitx5 build,
-  workspace tests, documentation/release tooling and staged installation checks.
-  Those runs predate the workflow documentation change.
-- **Delivery tracking:** prepared on `docs/issue-first-pr-workflow`, based on
-  synchronized main after PR #3. Acceptance and delivery are tracked in
-  [Issue #4](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/4).
-  Consult its linked PR for current hosted checks, review and merge status.
+- **2026-11-06 — Implement release-preparation and exported-source CI checks.**
+  Added base-revision validation that permits the consistent initial unreleased
+  baseline but requires complete dated notes when versions change or either
+  revision contains release headings. Explicit tag/note extraction remains usable
+  without Git; only preparation comparison needs history.
+- Added a shared Rust/Fcitx5 check script and a separate clean archive build in
+  the existing required build job. It exports tracked source, checks it outside
+  a Git worktree, then runs offline Rust checks, CTest and staged installation.
+  Updated development/release instructions, roadmap and Unreleased changelog.
+- **Actual local checks:** `python3 -m unittest discover -s tools/tests -q`
+  passed 16 tests; `python3 tools/check-release.py --base origin/main` passed the
+  initial-baseline gate. `python3 tools/check-docs.py` passed local links/anchors,
+  fences and shell syntax; `git diff --check` passed.
+- `bash tools/check-build.sh` passed in the checkout and a clean `git archive`
+  export: formatting, Clippy, workspace tests (one pre-existing ignored doctest),
+  release build, API docs, conversion smoke, both CTest tests and all staged
+  installation/discovery/missing-library/removal checks. No desktop frontends
+  were used. The archive was exported from the staged source tree before commit.
+- `target/ci-fcitx5/jong-fcitx5-harness --installed /usr/share/fcitx5 /usr/lib/fcitx5`
+  passed all ten suites against the existing system installation. This remains
+  synthetic evidence, not a normal-session application typing result.
+- `actionlint` 1.7.12 with ShellCheck 0.11.0 and
+  `shellcheck tools/check-build.sh` passed. Downloaded official lint tools were
+  confined to `/tmp`; system packages/settings were not changed. Build tools:
+  Rust/Cargo 1.99.1, Fcitx5 5.1.23, CMake 4.4.5, Ninja 1.13.2, Python 3.14.9.
+- **Review/delivery:** self-review found and fixed an initial-baseline omission
+  of the required Unreleased heading; regression coverage now rejects it.
+  Prepared as [PR #6](https://github.com/shaadahmmed/jong-bangla-keyboard/pull/6)
+  from `ci/release-preparation-source-checks`. Its first hosted run passed checkout
+  checks but failed before archive building; see [Issue #7](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/7).
+  The correction trusts only the exact workspace for the export command; a local
+  ownership-mismatch/control probe and workflow lint passed. The PR records
+  current hosted checks and delivery status. No engine, C ABI or desktop behavior changed;
+  runtime performance and full reference comparisons were not rerun.
 
 ## Next small implementation step
 
-1. At the next task start, check open Issues and PRs before selecting work.
-   Finish any pending delivery through the documented review/merge gates.
-2. Subject to the issue queue and maintainer priorities, implement
-   release-preparation PR validation and exported-source build checks
-   as a separate tooling increment, then complete the Fcitx5 installed-route
-   baseline before starting the IBus stage.
+1. Check open Issues/PRs and finish any pending delivery through protected gates.
+2. Complete the [Fcitx5 installed-route baseline](fcitx5-validation.md#remaining-desktop-smoke-checklist)
+   in normally launched applications. Record actual application/toolkit versions,
+   Wayland/XWayland routes and case-by-case observations; keep failures in Issues.
+   Staged installation and synthetic tests do not establish desktop acceptance.
+3. Choose the initial tested release scope from that evidence, then begin the
+   [IBus stage](roadmap.md#2-add-ibus). C++ formatting CI remains a separate
+   tooling follow-up, not part of this increment.
 
-**Done when:** each task follows the recorded review/merge gates, and release
-validation and desktop acceptance establish an explicit tested scope. Later
-platforms remain separate roadmap stages, not prerequisites for a scoped alpha.
+**Done when:** protected PR delivery and desktop acceptance establish an explicit
+scope. Later platforms remain separate stages, not prerequisites for a scoped alpha.
 
 ## Completed steps
 

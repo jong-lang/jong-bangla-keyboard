@@ -5,6 +5,7 @@ import argparse
 from datetime import date
 from pathlib import Path
 import re
+import subprocess
 import sys
 import tomllib
 
@@ -16,10 +17,7 @@ REQUIRED_SECTIONS = (
 VERSION = r"(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)(?:-(?:alpha|beta|rc)\.[1-9][0-9]*)?"
 
 
-def release_notes(root, tag):
-    if not re.fullmatch(rf"v{VERSION}", tag):
-        raise ValueError("tag must be vX.Y.Z or vX.Y.Z-{alpha,beta,rc}.N (N >= 1)")
-    version = tag[1:]
+def check_versions(root, version):
     for name in ("Cargo.toml", "adapters/fcitx5/ffi/Cargo.toml"):
         package = tomllib.loads((root / name).read_text(encoding="utf-8"))["package"]
         if package["version"] != version:
@@ -32,6 +30,13 @@ def release_notes(root, tag):
     metadata = (root / "adapters/fcitx5/jong-bangla.conf.in").read_text(encoding="utf-8")
     if re.findall(r"^Version=(.*)$", metadata, re.M) != [version]:
         raise ValueError(f"addon metadata Version must equal {version}")
+
+
+def release_notes(root, tag):
+    if not re.fullmatch(rf"v{VERSION}", tag):
+        raise ValueError("tag must be vX.Y.Z or vX.Y.Z-{alpha,beta,rc}.N (N >= 1)")
+    version = tag[1:]
+    check_versions(root, version)
 
     changelog = (root / "CHANGELOG.md").read_text(encoding="utf-8")
     if not re.search(r"^## Unreleased\s*$", changelog, re.M):
@@ -56,18 +61,50 @@ def release_notes(root, tag):
     return f"# Jong Bangla {tag}\n\n{notes}\n"
 
 
+def preparation_notes(root, base_version, base_changelog):
+    """Allow the initial unreleased baseline, but validate every prepared release."""
+    version = tomllib.loads((root / "Cargo.toml").read_text(encoding="utf-8"))["package"]["version"]
+    if not re.fullmatch(VERSION, version):
+        raise ValueError("package version must be X.Y.Z or X.Y.Z-{alpha,beta,rc}.N (N >= 1)")
+    check_versions(root, version)
+    changelog = (root / "CHANGELOG.md").read_text(encoding="utf-8")
+    if not re.search(r"^## Unreleased\s*$", changelog, re.M):
+        raise ValueError("CHANGELOG.md must retain an Unreleased section")
+    # A version bump or any release heading in either revision requires notes.
+    # Keeping the base changelog here also catches removal of all dated notes.
+    headings = re.findall(r"^## (.+)$", changelog + "\n" + base_changelog, re.M)
+    if version == base_version and headings and all(h.strip() == "Unreleased" for h in headings):
+        return None
+    return release_notes(root, "v" + version)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("tag")
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument("tag", nargs="?")
+    mode.add_argument("--base", help="check release preparation against this Git revision")
     parser.add_argument("--notes-file", type=Path)
     args = parser.parse_args()
+    if args.base and args.notes_file:
+        parser.error("--notes-file requires an explicit tag")
     try:
-        notes = release_notes(Path.cwd(), args.tag)
-    except (ValueError, KeyError, OSError) as error:
+        if args.base:
+            base_manifest, base_changelog = [
+                subprocess.check_output(["git", "show", f"{args.base}:{name}"], text=True)
+                for name in ("Cargo.toml", "CHANGELOG.md")
+            ]
+            base_version = tomllib.loads(base_manifest)["package"]["version"]
+            notes = preparation_notes(Path.cwd(), base_version, base_changelog)
+        else:
+            notes = release_notes(Path.cwd(), args.tag)
+    except (ValueError, KeyError, OSError, subprocess.CalledProcessError) as error:
         sys.exit(f"FAIL: {error}")
+    if notes is None:
+        print("PASS: consistent initial unreleased baseline; no release prepared")
+        return
     if args.notes_file:
         args.notes_file.write_text(notes, encoding="utf-8")
-    print(f"PASS: {args.tag} matches manifests, lockfile, addon metadata and complete dated notes")
+    print("PASS: release matches manifests, lockfile, addon metadata and complete dated notes")
 
 
 if __name__ == "__main__":

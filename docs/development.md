@@ -21,10 +21,12 @@ git diff --check
 The documentation checker validates repository Markdown links/anchors, fences
 and shell example syntax. It does not fetch external links or execute examples.
 It uses `git ls-files`, so it and the Git diff checks require a checkout; they
-cannot currently run on an extracted source archive. The adapter resource
-measurement tool also uses Git for provenance. Archive-check support and an
-archive build in CI are planned, rather than claimed as current validation.
-The unit tests exercise the release metadata and note-validation gates.
+cannot run on an extracted source archive. The adapter resource measurement tool
+also uses Git for provenance. CI separately builds and tests an exported source
+archive with the same Rust/Fcitx5 checks as the checkout, including staged
+installation. This does not make Git-based contributor/provenance checks
+available in an archive. The unit tests exercise release metadata,
+note-validation and release-preparation gates.
 Run `actionlint` when changing `.github/workflows/`; installing ShellCheck also
 enables its shell diagnostics. CI installs both tools in its build container.
 
@@ -32,6 +34,31 @@ The local `git diff --check` command checks uncommitted edits. CI fetches histor
 and checks committed changes: PRs against their base commit, pushes to `main`
 across the full pushed range, and release tags against the tagged commit's first
 parent (or an empty tree for a root commit).
+The same job runs `python3 tools/check-release.py --base BASE_REVISION` against
+that base (the root commit uses itself). An unchanged initial unreleased version
+may omit dated notes, but all version fields must agree. A version change or
+release heading in either revision requires complete dated notes for the current
+version. Existing release notes remain checked on later ordinary PRs.
+
+To run the CI build/test block locally, use `bash tools/check-build.sh` from the
+source root. It runs the Rust checks below and a Release Fcitx5 build, CTest and
+staged-installation check, without changing the desktop or installing system files.
+To check the committed source export independently of checkout build artifacts:
+
+```sh
+source_check_dir="$(mktemp -d)"
+git archive --format=tar --prefix=jong-bangla/ HEAD | gzip -n > "$source_check_dir/source.tar.gz"
+tar -xzf "$source_check_dir/source.tar.gz" -C "$source_check_dir"
+(cd "$source_check_dir/jong-bangla" && bash tools/check-build.sh)
+rm -rf "$source_check_dir"
+```
+
+This checks `HEAD`, so commit intended changes first. CI uses a temporary directory
+outside the checkout, verifies there is no enclosing Git worktree, and cleans it
+on exit. Export trusts only the exact CI workspace for that Git command, covering
+container/checkout ownership differences without changing global Git settings.
+The archive has the same layout and compression as the release asset;
+the version-specific release prefix is substituted only when drafting a release.
 
 ## Build and check the Rust workspace
 

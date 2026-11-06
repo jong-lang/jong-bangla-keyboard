@@ -13,7 +13,7 @@ release = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(release)
 
 
-class ReleaseValidation(unittest.TestCase):
+class ReleaseFixture:
     def setUp(self):
         self.directory = tempfile.TemporaryDirectory()
         self.addCleanup(self.directory.cleanup)
@@ -35,6 +35,8 @@ class ReleaseValidation(unittest.TestCase):
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(content, encoding="utf-8")
 
+
+class ReleaseValidation(ReleaseFixture, unittest.TestCase):
     def test_extracts_only_selected_release(self):
         notes = release.release_notes(self.root, "v" + self.version)
         self.assertIn("# Jong Bangla v0.1.0-alpha.1", notes)
@@ -99,6 +101,69 @@ class ReleaseValidation(unittest.TestCase):
             ))
             with self.subTest(section=section), self.assertRaisesRegex(ValueError, "nonempty"):
                 release.release_notes(self.root, "v" + self.version)
+
+
+class ReleasePreparation(ReleaseFixture, unittest.TestCase):
+    def test_allows_only_consistent_initial_baseline(self):
+        baseline = "# Changelog\n\n## Unreleased\n\nInitial development.\n"
+        self.write("CHANGELOG.md", baseline)
+        self.assertIsNone(release.preparation_notes(self.root, self.version, baseline))
+        for name in ("Cargo.toml", "adapters/fcitx5/ffi/Cargo.toml", "Cargo.lock",
+                     "adapters/fcitx5/jong-bangla.conf.in"):
+            original = (self.root / name).read_text()
+            self.write(name, original.replace(self.version, "0.2.0"))
+            with self.subTest(name=name), self.assertRaises(ValueError):
+                release.preparation_notes(self.root, self.version, baseline)
+            self.write(name, original)
+
+    def test_version_bump_requires_dated_notes(self):
+        baseline = "# Changelog\n\n## Unreleased\n\nInitial development.\n"
+        self.write("CHANGELOG.md", baseline)
+        with self.assertRaisesRegex(ValueError, "expected one changelog"):
+            release.preparation_notes(self.root, "0.0.1", baseline)
+
+    def test_initial_baseline_still_requires_unreleased_section_and_valid_version(self):
+        baseline = "# Changelog\n\n## Unreleased\n"
+        self.write("CHANGELOG.md", "# Changelog\n\nInitial development.\n")
+        with self.assertRaisesRegex(ValueError, "Unreleased section"):
+            release.preparation_notes(self.root, self.version, baseline)
+        self.write("CHANGELOG.md", baseline)
+        self.write("Cargo.toml", '[package]\nversion = "0.1.0-nightly"\n')
+        with self.assertRaisesRegex(ValueError, "package version must"):
+            release.preparation_notes(self.root, self.version, baseline)
+
+    def test_first_release_without_version_bump_requires_complete_notes(self):
+        baseline = "# Changelog\n\n## Unreleased\n"
+        self.assertIn("### Known issues", release.preparation_notes(self.root, self.version, baseline))
+        self.write("CHANGELOG.md", self.changelog.replace("Recorded result.", "{{Pending}}"))
+        with self.assertRaisesRegex(ValueError, "placeholders"):
+            release.preparation_notes(self.root, self.version, baseline)
+
+    def test_removing_all_release_notes_cannot_restore_baseline(self):
+        self.write("CHANGELOG.md", "# Changelog\n\n## Unreleased\n")
+        with self.assertRaisesRegex(ValueError, "expected one changelog"):
+            release.preparation_notes(self.root, self.version, self.changelog)
+
+    def test_ordinary_change_after_release_still_validates_notes(self):
+        self.assertIsNotNone(release.preparation_notes(self.root, self.version, self.changelog))
+        self.write("CHANGELOG.md", self.changelog.replace("### Known issues", "### Other"))
+        with self.assertRaisesRegex(ValueError, "Known issues"):
+            release.preparation_notes(self.root, self.version, self.changelog)
+
+    def test_cli_checks_base_revision_and_fails_for_unknown_base(self):
+        for args in (["init", "-q"], ["add", "."],
+                     ["-c", "user.name=Release test", "-c", "user.email=test@example.invalid",
+                      "commit", "-qm", "baseline"]):
+            subprocess.run(["git", *args], cwd=self.root, check=True, capture_output=True)
+        command = [sys.executable, str(Path(release.__file__).resolve()), "--base"]
+        result = subprocess.run(command + ["HEAD"], cwd=self.root, text=True, capture_output=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.write("adapters/fcitx5/jong-bangla.conf.in", "[Addon]\nVersion=0.2.0\n")
+        result = subprocess.run(command + ["HEAD"], cwd=self.root, text=True, capture_output=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("addon metadata", result.stderr)
+        result = subprocess.run(command + ["missing-revision"], cwd=self.root, text=True, capture_output=True)
+        self.assertNotEqual(result.returncode, 0)
 
 
 if __name__ == "__main__":
