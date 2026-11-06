@@ -25,7 +25,7 @@ jobs:
           persist-credentials: false
       - run: python3 tools/check-docs.py
       - run: python3 -m unittest discover -s tools/tests -v
-      - name: Check committed whitespace
+      - name: Check committed whitespace and release preparation
         shell: bash
         env:
           PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
@@ -41,6 +41,11 @@ jobs:
             base="$(git rev-parse --verify HEAD^ 2>/dev/null || git hash-object -t tree /dev/null)"
           fi
           git diff --check "$base" HEAD
+          # An initial root commit has no previous manifests or changelog.
+          if ! git rev-parse --verify HEAD^ >/dev/null 2>&1; then
+            base=HEAD
+          fi
+          python3 tools/check-release.py --base "$base"
 
   build:
     name: Rust and Fcitx5
@@ -63,18 +68,21 @@ jobs:
           rustc --version
           cargo --version
       - name: Check workflows
-        run: actionlint
-      - name: Check Rust workspace
         run: |
-          cargo fmt --all -- --check
-          cargo clippy --offline --locked --workspace --all-targets -- -D warnings
-          cargo test --offline --locked --workspace
-          cargo build --offline --locked --workspace --release
-          cargo doc --offline --locked --workspace --no-deps
-          test "$(cargo run --offline --locked --quiet --example convert -- 'kh12T')" = 'খ১২ট'
-      - name: Build and test Fcitx5 adapter
+          actionlint
+          shellcheck tools/check-build.sh
+      - name: Check Rust workspace and Fcitx5 adapter
+        run: bash tools/check-build.sh
+      - name: Build and check exported source without Git metadata
         run: |
-          cmake -S adapters/fcitx5 -B target/ci-fcitx5 -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DFCITX_INSTALL_USE_FCITX_SYS_PATHS=ON
-          cmake --build target/ci-fcitx5
-          ctest --test-dir target/ci-fcitx5 --output-on-failure
-          python3 tools/check-install.py target/ci-fcitx5
+          export_dir="$(mktemp -d "$RUNNER_TEMP/jong-source.XXXXXX")"
+          trap 'rm -rf "$export_dir"' EXIT
+          git archive --format=tar --prefix=jong-bangla/ HEAD | gzip -n > "$export_dir/source.tar.gz"
+          tar -xzf "$export_dir/source.tar.gz" -C "$export_dir"
+          cd "$export_dir/jong-bangla"
+          test ! -e .git
+          if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+            echo 'Exported source must be outside a Git checkout.' >&2
+            exit 1
+          fi
+          bash tools/check-build.sh

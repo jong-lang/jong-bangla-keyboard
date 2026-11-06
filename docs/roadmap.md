@@ -165,12 +165,13 @@ one stage does not assert support for every roadmap target.
 
 ## Implementation follow-ups from the documentation review
 
-The following work is planned, not implemented by the documentation update:
+Release-preparation PR CI now checks versions and dated notes before tag creation.
+CI also builds and tests an exported source archive with Rust/Fcitx5 and staged
+installation checks. Git-based documentation and provenance checks still require
+a checkout; see the [development guide](development.md#documentation-and-release-tooling).
 
-- Run version/note validation in release-preparation PR CI, before tag creation.
-  Until then, the release PR must attach the manual validator result.
-- Build and check an exported source archive in CI. Git-based documentation and
-  provenance checks currently require a checkout, as the development guide notes.
+The following work remains planned:
+
 - Add C++ formatting enforcement in CI; the development guide covers all current
   C++ files for local checks.
 - Preserve any future desktop-test helpers in the repository with reproducible
