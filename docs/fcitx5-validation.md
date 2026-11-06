@@ -220,6 +220,44 @@ not separately described. The agent did not observe or capture these results.
 No new candidate/runtime details or direct callback/commit-ownership evidence
 were supplied; those limits and remaining app/case combinations still apply.
 
+### Further Firefox cases and environment report
+
+**2026-11-06 — User-reported follow-up:** the user confirmed all three requested
+Firefox cases below pass, in the previously reported Firefox 159.0.1 Wayland
+context. They also supplied current environment details and one AltGr result.
+
+| Check | Requested behavior | Reported result |
+| --- | --- | --- |
+| Enter boundary | `ki`, Enter produces `কি` and one newline | User-reported pass |
+| Select-all shortcut | `ki`, Ctrl+A, `i` replaces the selection with `ই` | User-reported pass |
+| Window focus and return | Pending `ki`, switch to KWrite and return, then type `i`: the original word appears once and the new composition starts fresh | User-reported pass |
+| AltGr character | English UK layout, AltGr+E while Jong is selected produces `€` | User-reported working; app and pending-word state not specified |
+
+| Environment field | Evidence |
+| --- | --- |
+| Distro / architecture | User reports CachyOS, x86_64 |
+| Desktop / kernel | User reports KDE Plasma 6.8.2 and Linux 7.3.1-1-cachyos |
+| KWrite toolkit | User reports Qt 6.12.0; KWrite 26.08.2/Wayland is the earlier app context |
+| Installed package inventory | Agent read `pacman -Q fcitx5 plasma-workspace qt6-base`: 5.1.23-1.1, 6.8.2-1.1 and 6.12.0-3.1 respectively |
+
+Package inventory does not independently identify running processes or the loaded
+addon revision. The AltGr report does not establish both apps, pending-word
+interaction, the raw modifier route, or dead-key/Compose completion. The remaining
+modifier/case/repeat and pointer/cursor checks were not reported as passes.
+The Shift-switching report, investigation, configuration choice and desktop
+retest status are tracked in [Issue #12](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/12).
+After the reversible manual-setting instructions, the user confirmed the unwanted
+switching was fixed and working normally in response to the Meta+Space,
+standalone-Shift/pending-word and `kI` retest request. The retest app was not named;
+this confirmation must not be assigned independently to both apps.
+
+The expanded synthetic framework-shortcuts suite separately reproduces the
+Meta+Space/temporary-Shift activation cycle and checks an empty temporary-toggle
+list as a control. Both profiles preserve resolved Shift+I case; the empty-list
+profile also preserves a pending word under standalone Shift. These dispatcher
+results are separate from the user-reported retest. No production adapter policy
+was changed.
+
 ## Remaining desktop smoke checklist
 
 Use the [installed addon](installation.md) in normally launched GTK3, Firefox
@@ -243,6 +281,11 @@ for the remaining combinations rather than treating one app's pass as another's.
 | Pointer and cursor relocation | Move the pointer over pending `ki`, then continue: motion alone should preserve it. Separately click elsewhere in the document or select text while input is pending. Report where কি ends up and whether the next `i` begins fresh. A reset may discard pending text; stale text must not be inserted at the new cursor. |
 | Restricted field / context closure | In GTK3/Firefox, move from pending `ki` to the dummy password field, then back. Report any original-field commit/discard, password-field composition or stale buffer. Close a test window with pending input and open a new one; its first `i` should be fresh ই. Never use a real password. |
 | AltGr / dead key / Compose | Use only an already configured layout/Compose key. Report the exact sequence, expected character, actual result and whether a word was pending. Otherwise mark unavailable; do not change system settings for this test. |
+
+Record existing framework bindings before interpreting modifier-only results.
+A configured temporary Shift toggle is owned by Fcitx; the adapter's preservation
+rule applies to events reaching it. The [typing guide](typing.md#standalone-shift-switching)
+explains how users can choose and reverse that binding without an addon change.
 
 For each application, record its version, toolkit version where exposed and
 Wayland/XWayland path, distinguishing an observed runtime value from a forced

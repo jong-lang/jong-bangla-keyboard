@@ -428,6 +428,87 @@ void test_repeats(Instance &instance) {
   ic.expect({"preedit:", "commit:কি", "key"});
 }
 
+void test_temporary_trigger(Instance &instance) {
+  for (const bool shiftToggle : {true, false}) {
+    RawConfig config;
+    config["Hotkey/TriggerKeys/0"].setValue("Super+space");
+    config["Hotkey/AltTriggerKeys"].setValue("");
+    if (shiftToggle) {
+      config["Hotkey/AltTriggerKeys/0"].setValue("Shift_L");
+    }
+    config["Hotkey/EnumerateGroupForwardKeys"].setValue("");
+    config["Hotkey/EnumerateGroupBackwardKeys"].setValue("");
+    instance.globalConfig().load(config, true);
+    require(instance.globalConfig().altTriggerKeys().empty() == !shiftToggle,
+            "load temporary toggle configuration");
+    Context ic(instance);
+    const auto shift = [&ic]() {
+      ic.send(Key(FcitxKey_Shift_L));
+      ic.send(Key(FcitxKey_Shift_L), true);
+    };
+    const auto toggle = [&ic]() {
+      ic.send(Key(FcitxKey_Super_L));
+      require(ic.send(Key(FcitxKey_space, KeyState::Super)),
+              "Meta+Space trigger consumed");
+      ic.send(Key(FcitxKey_space, KeyState::Super), true);
+      ic.send(Key(FcitxKey_Super_L), true);
+    };
+    instance.setCurrentInputMethod(&ic, "keyboard-us", true);
+    shift();
+    require(instance.inputMethod(&ic) == "keyboard-us",
+            "temporary Shift does not activate from ordinary English");
+    toggle();
+    require(instance.inputMethod(&ic) == "jong-bangla",
+            "Meta+Space activates Jong");
+
+    // Using Shift for a character must not trigger a modifier-only shortcut.
+    ic.type("k");
+    ic.send(Key(FcitxKey_Shift_L));
+    require(ic.send(Key(FcitxKey_I, KeyState::Shift)), "uppercase I consumed");
+    ic.send(Key(FcitxKey_I, KeyState::Shift), true);
+    ic.send(Key(FcitxKey_Shift_L), true);
+    require(instance.inputMethod(&ic) == "jong-bangla" &&
+                ic.inputPanel().clientPreedit().toString() == "কী",
+            "Shift+I preserves Jong and phonetic case");
+    ic.reset();
+    ic.type("ki");
+    ic.clear();
+    shift();
+    if (shiftToggle) {
+      require(instance.inputMethod(&ic) == "keyboard-us",
+              "configured temporary Shift deactivates Jong");
+      ic.expect({"key", "preedit:", "commit:কি", "key"});
+      shift();
+      require(instance.inputMethod(&ic) == "jong-bangla",
+              "temporary Shift returns to Jong");
+      ic.type("i");
+      require(ic.inputPanel().clientPreedit().toString() == "ই",
+              "temporary return starts fresh composition");
+      shift();
+      require(instance.inputMethod(&ic) == "keyboard-us",
+              "temporary Shift can toggle repeatedly");
+      shift();
+      require(instance.inputMethod(&ic) == "jong-bangla",
+              "repeated temporary Shift returns to Jong");
+    } else {
+      shift();
+      require(instance.inputMethod(&ic) == "jong-bangla" &&
+                  ic.inputPanel().clientPreedit().toString() == "কি",
+              "without temporary toggle, standalone Shift preserves the word");
+      ic.expect({"key", "key", "key", "key"});
+    }
+    toggle();
+    require(instance.inputMethod(&ic) == "keyboard-us",
+            "Meta+Space returns to ordinary English");
+    ic.clear();
+    shift();
+    shift();
+    require(instance.inputMethod(&ic) == "keyboard-us",
+            "temporary Shift stays inactive after the primary toggle exits");
+    ic.expect({"key", "key", "key", "key"});
+  }
+}
+
 void test_framework_shortcuts(Instance &instance) {
   RawConfig config;
   config["Hotkey/TriggerKeys/0"].setValue("Control+space");
@@ -457,6 +538,7 @@ void test_framework_shortcuts(Instance &instance) {
     require(instance.inputMethod(&ic) == "keyboard-us",
             "framework modifier shortcut switched");
   }
+  test_temporary_trigger(instance);
   disableHotkeys(instance);
 }
 

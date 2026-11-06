@@ -97,6 +97,10 @@ toolkit integrations and the rest of your Fcitx5 configuration.
   installation, then restart the daemon through the same session setup. A
   running process retains its loaded addon. Check for another manual or
   package-managed copy before removing or replacing files.
+- **Standalone Shift switches language:** inspect Fcitx5's **Temporarily Toggle
+  Input Method** binding. It can reserve Left Shift independently of the primary
+  toggle. See the [reversible configuration choice](typing.md#standalone-shift-switching);
+  installing Jong does not change global shortcuts.
 
 If these checks do not explain the result, search or report it in
 [GitHub Issues](https://github.com/shaadahmmed/jong-bangla-keyboard/issues) using

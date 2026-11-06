@@ -36,7 +36,10 @@ package version `0.1.0` does not establish a release date or desktop support cla
   and back while composition is pending. Further reports cover Firefox field
   handoff and English/Bangla switching in both apps, with Meta+X reported for
   switching to English. Firefox follow-ups cover return to the original field,
-  dummy password-field transitions and fresh composition after window closure.
+  dummy password-field transitions, window closure/fresh composition, Enter,
+  Ctrl+A and window-focus return; one English UK AltGr+E → € result is reported.
+- Reversible Fcitx5 temporary-Shift-toggle guidance and dispatcher coverage for
+  its Meta+Space activation cycle, disabled-toggle control and Shift+I case.
 - Weekly GitHub Actions dependency update PR configuration and a documented
   issue-first task workflow with fresh branches, automatic agent commits/PRs,
   relevant review, protected merging and verified branch cleanup. Release
