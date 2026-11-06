@@ -10,98 +10,87 @@ Dates use the project's Asia/Dhaka timezone.
 
 ## Current position
 
-- **Implemented:** independent Rust transliteration/composition, shared private
-  Rust C ABI, experimental C++ Fcitx5 addon and C11/GLib IBus service. The
-  [IBus record](ibus.md) owns boundary decisions, commands and validation limits.
-- **IBus evidence:** the production executable passes private D-Bus factory/key/
-  lifecycle tests and staged source-install/removal checks. No IBus daemon or
-  real GNOME/client route was tested; no beta/stable support is declared.
-- **Shared boundary:** `adapters/ffi` now serves both native adapters. No
-  transliteration/composition semantics or Rust dependencies changed. Native
-  cursor units remain separate: Fcitx5 UTF-8 bytes, IBus Unicode characters.
-- **Fcitx5 baseline:** the previously verified Release build of
-  `72378338e59f399e05ef6a1f0ad688e106440735` matches the installed addon and
-  registrations. This step did not replace it or recheck loaded-process identity.
-  [Desktop evidence](fcitx5-validation.md#installed-route-basic-smoke-result)
-  remains scoped user-reported KWrite/Firefox/Kate results on CachyOS/Plasma
-  Wayland. Fcitx5 beta/stable acceptance remains outstanding.
-- **Workflow handoff corrected:** [PR #18](https://github.com/shaadahmmed/jong-bangla-keyboard/pull/18)
-  was merged as `2f444b0`; its review/merge is no longer the pending next step.
-  Every new PR still needs a separate reviewer chat for its latest revision;
-  implementation self-review and CI cannot authorize merge.
-- **Environment:** CachyOS x86_64, GCC 16.2.1, Rust/Cargo 1.99.1, GLib 2.90.1,
-  CMake 4.4.5; temporary extracted Arch `libibus` 1.5.34-2 development files
-  report pkg-config version 1.5.34-rc2. No system package, input-method setting,
-  installed addon or desktop daemon was changed.
-- **Other delivery:** Linux packages/AUR, Windows TSF and macOS remain planned
-  in the [roadmap](roadmap.md). Publication stays manual. No new performance or
-  full-reference-parity claim is made; earlier 522,933 parity and 60 Unicode
-  policy rows remain prior evidence, not checks rerun in this step.
+- **Implemented:** Rust transliteration/composition, shared private Rust C ABI,
+  experimental Fcitx5 addon and C11/GLib IBus service. The
+  [IBus record](ibus.md) owns native decisions, commands and desktop evidence.
+- **IBus desktop testing has started before merge:** a disposable Fedora 45 /
+  GNOME 51.1 Wayland VM runs the installed adapter. The GTK4, Qt and Firefox
+  normal interaction suites each pass 12 cases. This is bounded smoke evidence,
+  not completed desktop acceptance or beta/stable support.
+- **Pre-merge blocker:** [#22](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/22)
+  owns the programmatic-focus investigation. PR #19 stays open. The final
+  revision still needs affected checks and review in a separate chat; this
+  testing/implementation session cannot recommend its own merge.
+- **Test tooling:** [#21](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/21)
+  is corrected by selecting GIO's local backend in private test children.
+  No production adapter, Rust semantics, ABI or dependencies changed.
+- **Isolation:** QEMU/runtime files, guest disk, temporary credentials and results
+  are under ignored `target/ibus-vm/`; its README has start/stop/SSH instructions.
+  No host packages, Fcitx5 files, desktop daemon or input-method setting changed.
+- **Fcitx5 baseline:** prior verified revision `7237833` still describes the
+  installed baseline. Loaded-process identity and Fcitx5 desktop behavior were
+  not rechecked; [scoped evidence](fcitx5-validation.md#installed-route-basic-smoke-result)
+  and beta/stable acceptance limits remain unchanged.
+- **Other scope:** packages/AUR, Windows TSF and macOS remain planned in the
+  [roadmap](roadmap.md). Earlier parity, memory and performance checks are prior
+  evidence, not results rerun during these desktop tests.
 
 ## Latest completed step
 
-- **2026-11-06 — Implement the experimental IBus service and repair the handoff.**
-  Added the native engine/factory, executable and generated registration, using
-  the existing Rust controller through a shared, renamed private C-ABI crate.
-  IBus/frontend owns focus/switch preedit commits; engine callbacks discard raw
-  state without committing twice. Focus IDs, reset/destruction, restrictions,
-  original-key forwarding and character cursor offsets have synthetic coverage.
-- **Tests and delivery tooling:** production-executable protocol tests use a
-  private D-Bus bus with temporary XDG directories and no display. The staged
-  checker validates exactly two files and IBus XML parsing, runs the staged
-  executable, rejects a missing executable and preserves unrelated files.
-  CI now checks both adapters in checkout and exported-source builds; the
-  existing required job name `Rust and Fcitx5` stays unchanged.
-- **Actual checks:** `bash tools/check-build.sh` passed Rust format, Clippy,
-  workspace tests, Release build, API docs and conversion smoke; Fcitx5 CTest
-  (two tests, ten dispatcher suites) and staged installation; IBus CTest and
-  staged installation. Final native edits received affected IBus checks again.
-  A clean `git archive --format=tar HEAD` export outside the checkout passed
-  the same `bash tools/check-build.sh` block without Git metadata.
-  Temporary dependency paths were supplied through `PKG_CONFIG_PATH` and
-  `LD_LIBRARY_PATH`; the [IBus guide](ibus.md#build-and-synthetic-checks) explains
-  custom-prefix validation.
-- **Native memory checks:** configured/built the documented sanitizer builds;
-  `python3 tools/check-memory.py target/fcitx5-sanitized target/ibus-sanitized`
-  passed: intentional Rust leak detected, 20,000 normal C-ABI lifecycle cycles,
-  ten Fcitx5 suites and the production IBus suite with ASan/UBSan/LSan enabled,
-  without normal-workload reports. System libraries/Rust accesses are not fully
-  instrumented; exceptional panic-payload retention remains documented.
-- **Documentation/tooling checks:** `python3 tools/check-docs.py`,
-  `python3 -m unittest discover -s tools/tests -v` (16 tests),
-  `python3 tools/check-release.py --base origin/main`, `actionlint`,
-  `shellcheck tools/check-build.sh`, native `clang-format --dry-run --Werror`
-  and `git diff --check` passed. No release version was changed.
-- **Tracker/delivery:** no open Issues or PRs at task start. Fresh branch
-  `feat/ibus-adapter` now has [PR #19](https://github.com/shaadahmmed/jong-bangla-keyboard/pull/19).
-  The first hosted run exposed a container prerequisite; reproduction and the
-  correction are tracked in [#20](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/20).
-  CI setup is corrected; verify required hosted checks on the latest PR head.
-  Separate-session review and merge remain pending; self-review is insufficient.
-- **Limits:** no GNOME/IBus installed acceptance, completed Compose-table support,
-  verified AltGr/frontend routing, generic mouse-relocation notification or
-  desktop latency result. These limits are detailed in the IBus record rather
-  than implied support claims. Historical progress entries are unchanged.
+- **2026-11-06–07 — Prepare a GNOME VM and run installed IBus smoke tests.**
+  Verified the Fedora 45 image signature/checksum and 29 signed QEMU runtime
+  packages; used KVM, four virtual CPUs, 6 GiB RAM and a 24 GiB sparse disk.
+  Native source tested: `a1f5ae687fffd2c6baf4aa439132616269a590a3`.
+  The [environment/result table](ibus.md#gnome-vm-smoke-result) records exact
+  versions, including Fedora's pre-release IBus 1.5.35-rc1.
+- **Build/install checks passed on 2026-11-06:** host `cmake --build target/ibus`,
+  `ctest --test-dir target/ibus --output-on-failure` and
+  `python3 tools/check-ibus-install.py target/ibus`, using the prior temporary
+  libibus runtime. In the guest, archive-source Release CMake build,
+  `ctest --test-dir build-ibus --output-on-failure` and
+  `python3 jong-bangla/tools/check-ibus-install.py build-ibus` passed after #21's
+  correction, followed by explicit guest-only `sudo cmake --install build-ibus`.
+- **Actual desktop checks:** QEMU virtual keys through GNOME/IBus exercised 12
+  normal typing/edit/boundary/focus/restriction cases each in native GTK4, native
+  Qt and Firefox Wayland. `python3 target/ibus-vm/gtk-acceptance.py`,
+  `python3 target/ibus-vm/qt-acceptance.py` and
+  `python3 target/ibus-vm/firefox-acceptance.py` each reported 12 passes.
+  Separate programmatic-focus comparisons are recorded in #22, including the
+  passing explicit GTK IBus-module control. Firefox is a real browser with a
+  disposable local-page/remote-inspection profile; no browser typing bypassed
+  the operating-system input route. GNOME Text Editor typing/Ctrl+S and the
+  saved-file Unicode assertion passed, with a US-layout newline-policy control.
+- **Found and tracked:** #21 owns the GVfs test cleanup failure and correction;
+  #22 owns the unresolved frontend/context finding and reproduction. The
+  existing CI prerequisite [#20](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/20)
+  remains open until its fixing PR is merged. Keep all bug detail in Issues.
+- **Current checks passed:** `python3 tools/check-docs.py` (25 Markdown files,
+  845 local links/anchors), `python3 -m unittest discover -s tools/tests -v`
+  (16 tests), `python3 tools/check-release.py --base origin/main` and
+  `git diff --check`. Full Rust/Fcitx5, exported-source and sanitizer runs
+  from the implementation remain prior evidence; native code did not change.
+  Prior hosted CI passed on `a1f5ae6`. Every new head needs its own hosted checks;
+  the PR handoff records the delivered revision and run links.
+- **Limits:** no XWayland, AltGr/complete Compose, full repeat/navigation matrix,
+  complete lifecycle/update/removal acceptance or desktop latency measurement.
+  No source-install support tier or package/release version changed.
 
 ## Next small implementation step
 
-1. Review the IBus implementation PR in a separate chat using the
-   [review protocol](../CONTRIBUTING.md#separate-session-review). Cover the full
-   shared-boundary move, native memory/lifecycle behavior, protocol tests,
-   registration, source export and CI changes. Post the exact reviewed head,
-   findings, limits and explicit merge recommendation on the PR.
-2. Fix findings and renew review/checks after a push. Merge only when the latest
-   revision has the separate recommendation and all gates pass; verify post-merge
-   CI before task-branch cleanup and synchronization.
-3. Validate installed IBus in a named GNOME/IBus Wayland environment using the
-   [desktop acceptance checklist](ibus.md#next-desktop-acceptance), preserving the
-   current Fcitx5 session. Investigate real focus/switch ownership, GTK/Qt/browser
-   routes, restrictions, AltGr/Compose and mouse/selection behavior. Track any
-   reproduced bugs and release decisions in GitHub Issues.
+1. Investigate and correct #22 using the preserved default-route reproductions
+   and alternate frontend controls. Verify actual focus/reset notification
+   delivery before changing lifecycle ownership. Keep PR #19 open.
+2. Repeat affected desktop/build checks and complete remaining applicable
+   acceptance groups. Keep untested routes and reproduced bugs explicit.
+3. Obtain separate-chat review of the final PR head using the
+   [review protocol](../CONTRIBUTING.md#separate-session-review). Merge only after
+   the blocker/findings are resolved, that revision passes required checks and
+   the separate reviewer explicitly recommends merge. Verify post-merge CI
+   before branch cleanup and main synchronization.
 
-**Done when:** this implementation has separate-session review and verified
-PR delivery. IBus desktop acceptance and Fcitx5 beta/stable acceptance remain
-separate, outstanding gates; binary packaging follows the roadmap.
+**Done when:** desktop findings are resolved and documented, final checks and
+separate review pass, and PR delivery is verified. Broader support/packaging
+claims still require their own roadmap gates.
 
 ## Completed steps
 

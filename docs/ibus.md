@@ -12,10 +12,11 @@ declared. Follow the [roadmap](roadmap.md#2-add-ibus) for release acceptance.
 On 2026-11-06, local builds used CachyOS x86_64, GCC 16.2.1, CMake 4.4.5,
 Rust/Cargo 1.99.1, GLib 2.90.1 and Arch's `libibus` 1.5.34-2 package. Its
 pkg-config metadata reports `1.5.34-rc2`. The library and headers were extracted
-into a temporary directory because IBus was not installed. No IBus daemon,
-GNOME session, installed client or input-method setting was started or changed.
-Only synthetic protocol/service and staged-installation evidence is available.
-The current Fcitx5 installation was left intact.
+into a temporary directory because IBus was not installed on the host. Those
+original checks did not start a desktop daemon or change input-method settings.
+The [GNOME VM smoke result](#gnome-vm-smoke-result) now adds installed desktop
+evidence and an open pre-merge finding. The host Fcitx5 installation/session
+remains intact; no beta/stable support is declared.
 
 ## Native boundary and lifecycle
 
@@ -111,7 +112,12 @@ commit signals, return values and ordering. It exercises raw edits, boundaries,
 shortcuts, Escape, releases, modifiers, repeats, digits, non-BMP Unicode,
 invisible input, focus-ID and legacy lifecycle, restrictions, independent engine
 instances and 200 create/type/destroy cycles. It also checks duplicate-service
-rejection and graceful shutdown. It does not simulate a real IBus daemon's
+rejection and graceful shutdown. The runner selects GIO's local filesystem
+backend only for its private child processes, preventing desktop GVfs activation
+and temporary-directory cleanup failures tracked in
+[#21](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/21).
+Production filesystem/backend selection is unchanged.
+The suite does not simulate a real IBus daemon's
 frontend routing; an application-key observation means an unhandled protocol
 reply, not proof that a desktop application received it.
 
@@ -171,7 +177,59 @@ removal. Deselect the engine in the IBus environment first, remove only these tw
 recorded files, then follow that environment's restart/login procedure. No other
 IBus components, user settings or Fcitx5 files belong to this payload.
 
+## GNOME VM smoke result
+
+**2026-11-07, Asia/Dhaka:** a disposable x86_64 Fedora 45 Cloud image was
+customized with GNOME Shell 51.1 and source-installed Jong Bangla. QEMU 11.1.3/KVM
+used four virtual CPUs, 6 GiB RAM and a 24 GiB sparse disk. The official image's
+signed SHA-256 and the locally extracted QEMU packages' signatures/checksums
+were verified. No host packages, input-method settings or Fcitx5 files changed.
+This is a customized VM, not an unmodified Workstation installation.
+
+Native source revision: `a1f5ae687fffd2c6baf4aa439132616269a590a3`.
+The test-runner-only correction for #21 does not change the executable.
+Guest versions: GLib 2.90.1, IBus **1.5.35-rc1**, GTK 3.24.52/4.24.1,
+Qt 6.11.2, Firefox 159.0.1, GNOME Text Editor 51.0, GCC 16.2.1,
+Rust/Cargo 1.99.1 and Python 3.15.0. Fedora's IBus build is a release candidate;
+these desktop results do not establish the same routes on stable IBus 1.5.34.
+
+The guest built the source archive, passed CTest and the staged-install checker,
+installed the two recorded files and discovered/activated `jong-bangla` in an
+actual GNOME Wayland session. Private tests initially exposed #21; the corrected
+runner passes on both the guest and original host without a caller override.
+
+QEMU keyboard events exercised the compositor and real IBus/frontend route.
+Small native GTK4/Qt clients and a local Firefox test page used only synthetic
+text, with snapshots on explicit requests. Browser inspection read/reset fields
+and invoked ordinary DOM focus changes; it did not inject typing into the page.
+The 12-case suite covered raw Backspace, Ctrl+Backspace, Space, Escape, mouse/Tab
+focus changes, password transitions/bypass, multiline Enter, digits, consecutive
+words and invisible-buffer clearing.
+
+| Client route | 12-case suite | Programmatic A → B focus |
+| --- | --- | --- |
+| GTK4, native Wayland, `GTK_IM_MODULE` unset | 12 passed | Failed at all three settling delays; [#22](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/22) |
+| GTK4, Wayland, explicit `GTK_IM_MODULE=ibus` control | Not rerun | All three delays passed |
+| Qt, Wayland, session `QT_IM_MODULE=ibus` | 12 passed | All three delays passed |
+| Firefox, forced Wayland, `GTK_IM_MODULE` unset | 12 passed | Initial two passes/one failure; three additional two-second-delay repeats failed; #22 |
+
+Firefox used a disposable remote-inspection/kiosk profile. XWayland was not
+tested. GNOME Text Editor also passed native Wayland typing and Ctrl+S forwarding:
+the saved synthetic Bangla sample matched exactly. A US-layout control confirmed
+the editor's own implicit trailing newline when interpreting saved files.
+These bounded checks used software rendering. They do not establish performance,
+full frontend acceptance, restart/
+update/removal behavior or universal focus correctness. Test artifacts and VM
+start/stop instructions remain local under ignored `target/ibus-vm/`.
+
 ## Next desktop acceptance
+
+Desktop testing is pre-merge work for PR #19. Investigate and resolve
+[#22](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/22) before merging;
+the passing alternate GTK module is a control, not acceptance of the failing
+default route. Preserve the default-route evidence when comparing frontends.
+Fix findings, rerun affected checks and obtain the required separate-chat review
+of the final revision before merge.
 
 Record source SHA, distro/architecture, GNOME, IBus, library, toolkit and app
 versions and actual Wayland/XWayland route. Test GTK, Qt and browser fields for

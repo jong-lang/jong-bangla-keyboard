@@ -30,7 +30,9 @@ this is bounded coverage, not a claim of full Avro compatibility. Unsupported
 Unicode is preserved without lowercasing or normalization.
 
 An [experimental IBus service](docs/ibus.md) now builds and passes private D-Bus
-and staged-installation checks; installed GNOME/IBus desktop acceptance is pending.
+and staged-installation checks, with initial GNOME Wayland VM smoke evidence.
+Desktop acceptance remains incomplete with an open
+[context-isolation finding](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/22).
 Windows, macOS and binary packages remain planned. Broader application and
 Wayland/XWayland routes remain unverified. Report
 and track bugs in [GitHub Issues](https://github.com/shaadahmmed/jong-bangla-keyboard/issues).

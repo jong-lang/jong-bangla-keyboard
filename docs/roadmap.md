@@ -20,7 +20,7 @@ delivery; this roadmap supersedes its former Fcitx5-only platform scope.
 | Target | Current evidence | Release boundary |
 | --- | --- | --- |
 | Fcitx5 on Linux | Experimental adapter, synthetic dispatcher and staged source installation; limited desktop observations | First scoped release; support claims require the acceptance gate below |
-| IBus on Linux | Experimental C/GLib service, private D-Bus and staged source-installation checks; no desktop observations | Separate adapter and real desktop acceptance |
+| IBus on Linux | Experimental C/GLib service, private D-Bus/staged checks and scoped GNOME Wayland VM smoke evidence; open [#22](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/22) | Separate adapter and complete desktop acceptance |
 | pacman and AUR | Planned | Native package plus maintained `PKGBUILD` and `.SRCINFO` |
 | Debian and RPM | Planned | Packages built and installed on explicitly named distribution releases |
 | Flatpak | Planned; deployment model needs a feasibility experiment | Working engine delivery and sandboxed-client input, independently validated |
@@ -75,9 +75,12 @@ must pass the acceptance gate. Keep platform bugs and release-blocking decisions
 
 Build the smallest IBus engine around the existing Rust controller. Establish
 preedit/commit ownership, key forwarding and per-context isolation before adding
-installation metadata. The [source experiment](ibus.md) now implements these
-boundaries and registration with synthetic service and staged-install checks.
-Installed acceptance remains pending. Test an installed engine in a named GNOME/IBus Wayland
+installation metadata. The [source experiment](ibus.md) now provides the engine
+and registration with synthetic service and staged-install checks.
+Initial [GNOME VM smoke checks](ibus.md#gnome-vm-smoke-result) are recorded;
+installed acceptance remains incomplete. Desktop investigation and correction of
+[#22](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/22) precede merge
+of the current IBus PR. Test an installed engine in a named GNOME/IBus Wayland
 environment with GTK, Qt and browser clients, plus XWayland wherever claimed. Fcitx5 and
 IBus are alternative session integrations; packages must not silently switch the
 user's active framework or enable competing daemons.

@@ -23,6 +23,9 @@ def main():
         for key in ("DISPLAY", "WAYLAND_DISPLAY", "IBUS_ADDRESS", "DBUS_SESSION_BUS_ADDRESS"):
             env.pop(key, None)
         env["G_DEBUG"] = "fatal-warnings"
+        # Desktop GVfs can mount below XDG_RUNTIME_DIR and outlive the private bus.
+        # These protocol tests need only local files and must not activate it.
+        env["GIO_USE_VFS"] = "local"
         result = subprocess.run(
             ["dbus-run-session", "--", *sys.argv[1:]], env=env, check=False,
             timeout=45,
