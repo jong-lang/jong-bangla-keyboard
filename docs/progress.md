@@ -28,22 +28,24 @@ Dates use the project's Asia/Dhaka timezone.
   and Backspace have no reported freeze, lag or stuck-key issue. After clicking,
   the old word stays at its original location and the new word starts at the
   clicked location. See the [scoped Kate record](fcitx5-validation.md#kate-modifiers-case-repeats-and-cursor-relocation).
+- **New Firefox evidence:** Firefox 159.0.1/Wayland has a grouped user-reported
+  pass for standalone Shift/Ctrl, `ki`/`kI`, held letters/Backspace, pointer motion,
+  clicking and selection while composing. Exact relocation outputs and separate
+  key-release observations were not supplied; see the [scoped Firefox record](fcitx5-validation.md#firefox-modifiers-case-repeats-and-cursor-relocation).
 - **Environment:** user reports CachyOS x86_64, Plasma 6.8.2, kernel
   7.3.1-1-cachyos and KWrite Qt 6.12.0. Installed Fcitx5 package inventory is
   5.1.23-1.1; the loaded addon revision, running Fcitx5/Firefox toolkit and exact
   frontend transport remain unconfirmed. Kate's toolkit and route were not
   separately supplied. Package and runtime evidence differ.
-- **Other desktop limits:** Firefox/KWrite modifier/case/repeat and relocation
-  combinations, selection, dead-key/Compose and broader app/frontend coverage
-  still need results. Kate reports do not establish other apps' behavior or a
-  measured latency guarantee; key-release duplication was not separately reported.
+- **Other desktop limits:** corresponding KWrite modifier/case/repeat and
+  relocation combinations, Kate selection, dead-key/Compose and broader
+  app/frontend coverage still need results. Grouped Firefox results do not supply
+  exact relocation output. No measured latency or separate key-release result.
 - **Release tooling:** PR/main CI validates versions/notes and builds/tests the
   checkout and source export, including staged installation. Git-based checks
   need a checkout. Versions, tagging and publication remain maintainer actions.
-- **Delivery prior evidence:** PR #13 merged as `be61714`; its
-  [post-merge CI](https://github.com/shaadahmmed/jong-bangla-keyboard/actions/runs/42189743916)
-  passed both jobs. The present step began on clean, synchronized main with no
-  open Issues or PRs.
+- **Delivery:** the present documentation step began on clean, updated main
+  with no open Issues or PRs. Its PR tracks hosted checks and delivery.
 - **Workflow:** inspect Issues/PRs, prioritize bugs, use fresh branches, validate,
   commit/PR, self-review, protected merge, verify CI and clean only task branches.
   No delegation is authorized; see [contribution rules](../CONTRIBUTING.md#review-merge-and-cleanup).
@@ -53,14 +55,12 @@ Dates use the project's Asia/Dhaka timezone.
 
 ## Latest completed step
 
-- **2026-11-06 — Record Kate 26.08.3 modifier, case, repeat and cursor results.**
-  Added a separate user-reported Kate record, preserving the distinction from
-  KWrite and Firefox. The follow-up confirms the old word stays at its original
-  location after clicking and both case spellings pass. README and Unreleased
-  notes link this evidence to the experimental desktop status.
-- **Evidence limits:** no agent-observed desktop run, new runtime/frontend data,
-  exact next-character output after clicking, separate selection result or
-  key-release duplication confirmation. No production code or settings changed.
+- **2026-11-06 — Record Firefox 159.0.1 Wayland grouped follow-up pass.** Added
+  the user's confirmation for the requested modifier, case, repeat, pointer,
+  click and selection checks. README and Unreleased notes reflect this evidence.
+- **Evidence limits:** grouped user report, no agent-observed desktop run,
+  exact click/selection output, separate key-release observation, running Fcitx5,
+  loaded-addon or toolkit identification. No production code or settings changed.
 - **Actual checks:** `python3 tools/check-docs.py` passed local links/anchors,
   fences and shell syntax; `python3 -m unittest discover -s tools/tests -v`
   passed all 16 tooling tests; `git diff --check` passed. Historical progress
@@ -68,15 +68,15 @@ Dates use the project's Asia/Dhaka timezone.
   checks from earlier steps are prior evidence, not rerun desktop validation.
 - **Review/delivery:** self-review checks evidence scope, app/version attribution,
   link consistency and unchanged historical entries. Prepared on
-  `docs/kate-modifier-cursor-results`; the PR tracks hosted checks and delivery.
-  Next action is the remaining named-app observations and runtime identification.
+  `docs/firefox-modifier-cursor-results`; the PR tracks hosted checks and delivery.
+  Next action is runtime identification and choosing the initial tested scope.
 
 ## Next small implementation step
 
 1. Check Issues/PRs and finish pending delivery through protected gates.
-2. Test modifier/case/repeat and pointer/click relocation in Firefox; retain
-   Kate 26.08.3 as a separate app from KWrite 26.08.2. Where claiming those cases
-   in KWrite too, obtain its own results. Preserve the user's chosen shortcuts.
+2. Identify running Fcitx5 and the loaded addon build. Firefox 159.0.1/Wayland
+   is reconfirmed; keep the grouped follow-up separate from individual output
+   evidence. Obtain KWrite's own results where claiming the same cases there.
 3. Complete the remaining [desktop checklist](fcitx5-validation.md#remaining-desktop-smoke-checklist)
    combinations and missing candidate/runtime details. Clarify selection and
    key-release behavior where needed for the initial scope.

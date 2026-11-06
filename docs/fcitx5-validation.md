@@ -243,7 +243,8 @@ context. They also supplied current environment details and one AltGr result.
 Package inventory does not independently identify running processes or the loaded
 addon revision. The AltGr report does not establish both apps, pending-word
 interaction, the raw modifier route, or dead-key/Compose completion. The remaining
-modifier/case/repeat and pointer/cursor checks were not reported as passes.
+modifier/case/repeat and pointer/cursor checks were not reported as passes in
+that earlier follow-up; the later Firefox record below adds those results.
 The Shift-switching report, investigation, configuration choice and desktop
 retest status are tracked in [Issue #12](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/12).
 After the reversible manual-setting instructions, the user confirmed the unwanted
@@ -279,6 +280,29 @@ selection test or exact next-character output. Kate is a distinct application
 from the earlier KWrite reports; these results do not establish the corresponding
 Firefox or KWrite checks. No new loaded-addon revision, Kate toolkit/runtime or
 frontend/Wayland route evidence was supplied.
+
+### Firefox modifiers, case, repeats and cursor relocation
+
+**2026-11-06 — User-reported follow-up:** the user supplied **Firefox 159.0.1**,
+**Wayland**, and “1. Working perfectly” in response to the next-step list. Its
+first item requested the Firefox checks below. This is a grouped pass report;
+individual output captures and per-case descriptions were not supplied.
+
+| Requested check | Reported result |
+| --- | --- |
+| Standalone Shift and Ctrl with a pending word | User-reported pass |
+| Fresh `ki` → `কি` versus `kI` → `কী` | User-reported pass |
+| Held letters and Backspace | User-reported pass |
+| Pointer motion with a pending word | User-reported pass |
+| Clicking elsewhere while a word is pending | User-reported pass |
+| Selecting text while a word is pending | User-reported pass |
+
+The agent did not observe these interactions. The grouped confirmation does not
+provide exact text/cursor positions after clicking or selection, a separate
+key-release duplication observation, or measured latency. It does not establish
+the corresponding KWrite cases. The version and Wayland route are user-reported;
+the running Fcitx5 version, loaded addon revision, Firefox toolkit version and
+exact input-method frontend transport remain unconfirmed.
 
 ## Remaining desktop smoke checklist
 

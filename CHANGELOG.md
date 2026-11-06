@@ -42,6 +42,8 @@ package version `0.1.0` does not establish a release date or desktop support cla
   its Meta+Space activation cycle, disabled-toggle control and Shift+I case.
 - User-reported Kate 26.08.3 follow-up results for pending-word preservation
   under Ctrl/Shift, `ki`/`kI` case, held keys/Backspace and pointer/click relocation.
+- Grouped user-reported Firefox 159.0.1 Wayland pass for modifiers, `ki`/`kI`,
+  held keys/Backspace, pointer motion, clicking and selection while composing.
 - Weekly GitHub Actions dependency update PR configuration and a documented
   issue-first task workflow with fresh branches, automatic agent commits/PRs,
   relevant review, protected merging and verified branch cleanup. Release
