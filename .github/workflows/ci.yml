@@ -77,7 +77,7 @@ jobs:
         run: |
           export_dir="$(mktemp -d "$RUNNER_TEMP/jong-source.XXXXXX")"
           trap 'rm -rf "$export_dir"' EXIT
-          git archive --format=tar --prefix=jong-bangla/ HEAD | gzip -n > "$export_dir/source.tar.gz"
+          git -c safe.directory="$GITHUB_WORKSPACE" archive --format=tar --prefix=jong-bangla/ HEAD | gzip -n > "$export_dir/source.tar.gz"
           tar -xzf "$export_dir/source.tar.gz" -C "$export_dir"
           cd "$export_dir/jong-bangla"
           test ! -e .git

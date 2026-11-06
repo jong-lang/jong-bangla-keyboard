@@ -55,7 +55,9 @@ rm -rf "$source_check_dir"
 
 This checks `HEAD`, so commit intended changes first. CI uses a temporary directory
 outside the checkout, verifies there is no enclosing Git worktree, and cleans it
-on exit. The archive has the same layout and compression as the release asset;
+on exit. Export trusts only the exact CI workspace for that Git command, covering
+container/checkout ownership differences without changing global Git settings.
+The archive has the same layout and compression as the release asset;
 the version-specific release prefix is substituted only when drafting a release.
 
 ## Build and check the Rust workspace

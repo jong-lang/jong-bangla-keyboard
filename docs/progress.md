@@ -64,9 +64,13 @@ Dates use the project's Asia/Dhaka timezone.
   Rust/Cargo 1.99.1, Fcitx5 5.1.23, CMake 4.4.5, Ninja 1.13.2, Python 3.14.9.
 - **Review/delivery:** self-review found and fixed an initial-baseline omission
   of the required Unreleased heading; regression coverage now rejects it.
-  Prepared on `ci/release-preparation-source-checks`; hosted validation, review
-  and merge evidence belong to its PR. No engine, C ABI or desktop behavior
-  changed; runtime performance and full reference comparisons were not rerun.
+  [PR #6](https://github.com/shaadahmmed/jong-bangla-keyboard/pull/6) is on
+  `ci/release-preparation-source-checks`. Its first hosted run passed checkout
+  checks but failed before archive building; see [Issue #7](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/7).
+  The correction trusts only the exact workspace for the export command; a local
+  ownership-mismatch/control probe and workflow lint passed. Updated hosted
+  checks and merge remain pending. No engine, C ABI or desktop behavior changed;
+  runtime performance and full reference comparisons were not rerun.
 
 ## Next small implementation step
 
