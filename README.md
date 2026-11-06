@@ -16,8 +16,9 @@ for stage boundaries and acceptance gates.
 **Experimental and under development.** The Rust transliteration engine and
 composition controller are implemented, and an experimental Fcitx5 addon builds
 and passes isolated dispatcher tests. Limited desktop typing has been reported
-in GTK3, Firefox, KWrite and Kate. Installation staging has been checked; actual
-installed-route desktop typing still awaits confirmation.
+in GTK3, Firefox, KWrite and Kate. Installation staging has been checked, and
+basic installed-addon typing/editing checks have user-reported passes in KWrite
+and Firefox on Wayland. See the [results and remaining desktop checks](docs/fcitx5-validation.md#installed-route-basic-smoke-result).
 
 The engine targets a [pinned jsAvroPhonetic reference](docs/compatibility.md#phonetic-behavior-reference).
 Recorded evidence covers 522,933 parity cases plus separate Unicode policy cases;

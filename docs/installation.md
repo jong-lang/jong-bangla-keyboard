@@ -2,7 +2,8 @@
 
 Build prerequisites are listed in the [development guide](development.md#build-and-check-the-fcitx5-experiment).
 Run commands from the repository root. Staged installation has been checked;
-actual installed-route desktop typing is still awaiting user confirmation.
+basic installed-route typing/editing checks have user-reported passes in KWrite
+and Firefox on Wayland. See the [recorded scope and limits](fcitx5-validation.md#installed-route-basic-smoke-result).
 This guide covers the current Fcitx5 source installation only. IBus, native Linux
 packages, Flatpak, Windows TSF and macOS delivery are planned in the
 [roadmap](roadmap.md); installation commands for those targets do not exist yet.
