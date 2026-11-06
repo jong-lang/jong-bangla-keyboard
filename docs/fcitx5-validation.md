@@ -159,9 +159,9 @@ and Wayland routes are user-reported. The loaded addon revision, exact frontend
 transport, current distro/Plasma versions and Fcitx5/toolkit runtime versions were
 not supplied with this result; earlier environment records remain prior evidence.
 This establishes a basic installed-route result for these two named apps.
-Follow-up KWrite and Firefox results are recorded below. Remaining app/case
-combinations, relocation, modifiers/repeats and the wider matrix still need
-separate results. These observations do not establish a broader support range.
+Follow-up KWrite, Firefox and Kate results are recorded below. Remaining app/case
+combinations and the wider matrix still need separate results. These observations
+do not establish a broader support range.
 
 ### KWrite lifecycle follow-up
 
@@ -257,6 +257,28 @@ list as a control. Both profiles preserve resolved Shift+I case; the empty-list
 profile also preserves a pending word under standalone Shift. These dispatcher
 results are separate from the user-reported retest. No production adapter policy
 was changed.
+
+### Kate modifiers, case, repeats and cursor relocation
+
+**2026-11-06 — User-reported follow-up:** the user tested the requested three
+groups in **Kate 26.08.3**, then clarified the old word's location after clicking
+and confirmed both case spellings.
+
+| Check | Reported result |
+| --- | --- |
+| Modifier-only keys | Pressing Ctrl or Shift separately leaves the word pending without committing it |
+| Case-sensitive spelling | Fresh `ki` → `কি` and `kI` → `কী` both pass |
+| Held letter and Backspace | No freezing, lag or stuck-key issue reported |
+| Pointer motion | Moving the pointer preserves the pending state |
+| Click to a new location | The old word stays at its original location; the next word starts at the clicked location |
+
+These are user-reported observations, not agent-observed output or latency
+measurements. The held-key report does not separately confirm duplication on key
+release. The click result covers relocation by clicking, without a separate
+selection test or exact next-character output. Kate is a distinct application
+from the earlier KWrite reports; these results do not establish the corresponding
+Firefox or KWrite checks. No new loaded-addon revision, Kate toolkit/runtime or
+frontend/Wayland route evidence was supplied.
 
 ## Remaining desktop smoke checklist
 
