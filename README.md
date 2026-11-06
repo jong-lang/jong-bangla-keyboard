@@ -20,6 +20,8 @@ in GTK3, Firefox, KWrite and Kate. Installation staging has been checked, and
 basic installed-addon typing/editing checks have user-reported passes in KWrite
 and Firefox on Wayland. Kate 26.08.3 follow-up reports cover modifiers, case,
 held keys and cursor relocation. See the [results and remaining desktop checks](docs/fcitx5-validation.md#installed-route-basic-smoke-result).
+Firefox 159.0.1 on Wayland also has a grouped user-reported pass for modifiers,
+case, held keys, pointer motion, clicking and selection while composing.
 
 The engine targets a [pinned jsAvroPhonetic reference](docs/compatibility.md#phonetic-behavior-reference).
 Recorded evidence covers 522,933 parity cases plus separate Unicode policy cases;
