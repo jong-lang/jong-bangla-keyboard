@@ -147,6 +147,12 @@ releases. An administrator must configure these settings separately.
 (app 15368), an up-to-date base and resolved review conversations. Stale approvals
 are dismissed; deletion and force pushes are blocked, and there are no bypass
 actors. Zero external approvals are required for the solo-maintainer setup.
+This remains distinct from the **2026-11-06 workflow requirement**: every PR must
+receive [review in a separate chat](../CONTRIBUTING.md#separate-session-review)
+with a merge recommendation for its latest revision. CI success and author
+self-review alone do not permit merge. The ruleset was reinspected on 2026-11-06;
+zero required approving reviewers remains the live setting. There is no automated
+check enforcing the separate-chat report; agents and maintainers enforce that gate.
 [PR #3](https://github.com/shaadahmmed/jong-bangla-keyboard/pull/3) merged normally;
 its [PR CI](https://github.com/shaadahmmed/jong-bangla-keyboard/actions/runs/42066375680)
 and [post-merge CI](https://github.com/shaadahmmed/jong-bangla-keyboard/actions/runs/42066639505)
@@ -161,8 +167,10 @@ dated evidence; reinspect settings before relying on them in a later session.
   successful hosted run; require the branch to be up to date before merging,
   resolved review conversations and dismissal of stale approvals.
 - For a solo maintainer, require PRs with **zero required approving reviewers**:
-  you cannot approve your own PR. Add a required independent reviewer when one
-  is available. Never bypass the branch rules to finish a task.
+  you cannot approve your own PR. A separate reviewer chat using that account
+  records its review as a PR comment. This does not waive the separate-session
+  review requirement. Add a required independent reviewer when a separate GitHub
+  identity is available. Never bypass the branch rules to finish a task.
 - Add a tag ruleset for `v*` blocking updates and deletion, while allowing
   maintainers to create new release tags.
 - Enable immutable releases. Assemble all assets in the draft before publishing.
