@@ -139,6 +139,29 @@ delivery. Existing observations must not be relabelled as new checks. Track
 product failures, workarounds and release decisions in
 [GitHub Issues](https://github.com/shaadahmmed/jong-bangla-keyboard/issues).
 
+## Installed-route basic smoke result
+
+**2026-11-06 — User-reported result:** in response to the four-case request for
+normally launched applications with the installed Jong Bangla addon selected,
+the user confirmed that the checks work in **KWrite 26.08.2 (Wayland)** and
+**Firefox 159.0.1 (Wayland)**.
+
+| Check | Expected result | KWrite 26.08.2 | Firefox 159.0.1 |
+| --- | --- | --- | --- |
+| Commit boundary | `ki`, Space produces `কি ` | User-reported pass | User-reported pass |
+| Raw Backspace | `ki`, Backspace, `i` produces `কি` | User-reported pass | User-reported pass |
+| Clear active word | `ki`, Ctrl+Backspace, `i` produces fresh `ই` | User-reported pass | User-reported pass |
+| Escape boundary | `ki`, Escape, `i` commits `কি`, then starts fresh pending `ই` | User-reported pass | User-reported pass |
+
+These statuses record the user's combined confirmation of the requested cases;
+the agent did not observe or capture the application output. Application versions
+and Wayland routes are user-reported. The loaded addon revision, exact frontend
+transport, current distro/Plasma versions and Fcitx5/toolkit runtime versions were
+not supplied with this result; earlier environment records remain prior evidence.
+This establishes a basic installed-route result for these two named apps. Focus,
+switching, shortcuts, relocation, restricted fields and the remaining matrix below
+still need separate results. It does not establish a broader support range.
+
 ## Remaining desktop smoke checklist
 
 Use the [installed addon](installation.md) in normally launched GTK3, Firefox

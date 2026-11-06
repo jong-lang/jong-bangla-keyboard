@@ -15,79 +15,70 @@ Dates use the project's Asia/Dhaka timezone.
 - **Delivery scope:** staged Linux Fcitx5 and IBus, Linux packages/AUR, Windows
   TSF and macOS on Apple silicon and Intel. Only the Fcitx5 experiment exists;
   the [roadmap](roadmap.md) distinguishes planned targets from delivered support.
-- **Release tooling:** PR/main CI checks version consistency and prepared release
-  notes, and builds/tests both the checkout and a clean exported source archive.
-  Both routes use `bash tools/check-build.sh`, including staged installation.
-  Git-based documentation/provenance checks still require a checkout. Version
-  selection, tagging and publication remain explicit maintainer actions.
-- **Task workflow:** check Issues/PRs, prioritize existing work and actionable
-  bugs, use a fresh branch from updated main, then validate, commit/push and
-  create a PR. Self-review is explicit; no agent delegation is authorized.
-  Merge only through protected gates, verify post-merge CI, then remove only
-  task branches and synchronize main. See [contribution rules](../CONTRIBUTING.md#review-merge-and-cleanup).
-- **Protected merge prior evidence:** PR #3 merged as `24c1f1e` without bypass;
-  [PR CI](https://github.com/shaadahmmed/jong-bangla-keyboard/actions/runs/42066375680)
-  and [post-merge CI](https://github.com/shaadahmmed/jong-bangla-keyboard/actions/runs/42066639505)
-  passed. The active ruleset was reinspected on 2026-11-06; current task delivery
-  must still verify its own hosted checks and merge. See [repository settings](releases.md#github-repository-settings).
-- **Validation limits:** installed-route typing and the broader desktop matrix
-  remain unconfirmed; additional adapters/packages are unimplemented. Tag-driven
-  draft/API execution remains untested. Tag protections and immutable-release
-  settings were not inspected. Bug investigation/deferral stays in GitHub Issues.
+- **Installed desktop evidence:** on 2026-11-06 the user confirmed the four
+  requested Space, Backspace, Ctrl+Backspace and Escape cases in KWrite 26.08.2
+  and Firefox 159.0.1, reporting both as Wayland. The
+  [validation record](fcitx5-validation.md#installed-route-basic-smoke-result)
+  distinguishes this basic result from the remaining desktop checklist.
+- **Desktop limits:** focus/switching, shortcuts, relocation, restricted fields
+  and the wider frontend matrix still need results. The report did not identify
+  the loaded addon revision or current Fcitx5/toolkit/distro/Plasma versions.
+  Earlier inventories are prior evidence, not newly confirmed runtime details.
+- **Release tooling:** PR/main CI validates versions and prepared notes and
+  builds/tests checkout and exported source, including staged installation.
+  Git-based documentation/provenance checks need a checkout. Version selection,
+  tagging and publication remain explicit maintainer actions.
+- **Delivery prior evidence:** tooling PR #6 merged as `d12ce93` with protected
+  gates, passing [PR CI](https://github.com/shaadahmmed/jong-bangla-keyboard/actions/runs/42159915216)
+  and [post-merge CI](https://github.com/shaadahmmed/jong-bangla-keyboard/actions/runs/42160195789).
+  Its task branches were deleted and main synchronized. The export issue is
+  resolved in [Issue #7](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/7).
+- **Task workflow:** inspect Issues/PRs, use fresh branches, validate and create
+  PRs, identify self-review, fix findings, merge through required gates, verify
+  post-merge CI and clean up only task branches. No agent delegation is authorized.
+  See [contribution rules](../CONTRIBUTING.md#review-merge-and-cleanup).
+- **Other limits:** additional adapters/packages and tag-driven draft/API
+  execution remain unimplemented or untested respectively. Tag protections and
+  immutable-release settings were not inspected. Bug investigation stays in Issues.
 - **Compatibility prior evidence:** 522,933 parity rows plus 60 Unicode policy
   rows. No new reference comparison or performance measurement was run here.
-  Focused guides are linked from the [README](../README.md#documentation).
 
 ## Latest completed step
 
-- **2026-11-06 — Implement release-preparation and exported-source CI checks.**
-  Added base-revision validation that permits the consistent initial unreleased
-  baseline but requires complete dated notes when versions change or either
-  revision contains release headings. Explicit tag/note extraction remains usable
-  without Git; only preparation comparison needs history.
-- Added a shared Rust/Fcitx5 check script and a separate clean archive build in
-  the existing required build job. It exports tracked source, checks it outside
-  a Git worktree, then runs offline Rust checks, CTest and staged installation.
-  Updated development/release instructions, roadmap and Unreleased changelog.
-- **Actual local checks:** `python3 -m unittest discover -s tools/tests -q`
-  passed 16 tests; `python3 tools/check-release.py --base origin/main` passed the
-  initial-baseline gate. `python3 tools/check-docs.py` passed local links/anchors,
-  fences and shell syntax; `git diff --check` passed.
-- `bash tools/check-build.sh` passed in the checkout and a clean `git archive`
-  export: formatting, Clippy, workspace tests (one pre-existing ignored doctest),
-  release build, API docs, conversion smoke, both CTest tests and all staged
-  installation/discovery/missing-library/removal checks. No desktop frontends
-  were used. The archive was exported from the staged source tree before commit.
-- `target/ci-fcitx5/jong-fcitx5-harness --installed /usr/share/fcitx5 /usr/lib/fcitx5`
-  passed all ten suites against the existing system installation. This remains
-  synthetic evidence, not a normal-session application typing result.
-- `actionlint` 1.7.12 with ShellCheck 0.11.0 and
-  `shellcheck tools/check-build.sh` passed. Downloaded official lint tools were
-  confined to `/tmp`; system packages/settings were not changed. Build tools:
-  Rust/Cargo 1.99.1, Fcitx5 5.1.23, CMake 4.4.5, Ninja 1.13.2, Python 3.14.9.
-- **Review/delivery:** self-review found and fixed an initial-baseline omission
-  of the required Unreleased heading; regression coverage now rejects it.
-  Prepared as [PR #6](https://github.com/shaadahmmed/jong-bangla-keyboard/pull/6)
-  from `ci/release-preparation-source-checks`. Its first hosted run passed checkout
-  checks but failed before archive building; see [Issue #7](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/7).
-  The correction trusts only the exact workspace for the export command; a local
-  ownership-mismatch/control probe and workflow lint passed. The PR records
-  current hosted checks and delivery status. No engine, C ABI or desktop behavior changed;
-  runtime performance and full reference comparisons were not rerun.
+- **2026-11-06 — Record basic installed Wayland application smoke results.**
+  The user replied that the four requested cases work in KWrite 26.08.2 and
+  Firefox 159.0.1 on Wayland. Recorded user-reported passes for Space commit,
+  raw Backspace, Ctrl+Backspace clearing and Escape with fresh composition.
+  This is a response to the installed-addon/normal-launch request, not an
+  agent-observed result or confirmation of the entire desktop matrix.
+- Updated the validation record, README, installation guide, roadmap and
+  Unreleased changelog to reflect the bounded result. Kept missing candidate,
+  environment/runtime details and remaining lifecycle checks explicit.
+  No executable source, dependencies, settings or typing behavior changed.
+- **Actual documentation checks:** `python3 tools/check-docs.py` passed local
+  links/anchors, fences and shell-example syntax; `git diff --check` passed.
+  A Python comparison verified unchanged historical progress entries and that
+  only Markdown files changed. Runtime tests were not rerun for this docs-only
+  increment; prior tooling/engine checks are linked above.
+- **Review/delivery:** self-review checks evidence attribution, exact reported
+  versions/routes, scope limits and cross-document consistency. Prepared on
+  `docs/installed-wayland-smoke-results`; its PR records hosted validation and
+  delivery status. No broader desktop acceptance or support range is claimed.
 
 ## Next small implementation step
 
 1. Check open Issues/PRs and finish any pending delivery through protected gates.
-2. Complete the [Fcitx5 installed-route baseline](fcitx5-validation.md#remaining-desktop-smoke-checklist)
-   in normally launched applications. Record actual application/toolkit versions,
-   Wayland/XWayland routes and case-by-case observations; keep failures in Issues.
-   Staged installation and synthetic tests do not establish desktop acceptance.
-3. Choose the initial tested release scope from that evidence, then begin the
-   [IBus stage](roadmap.md#2-add-ibus). C++ formatting CI remains a separate
-   tooling follow-up, not part of this increment.
+2. Continue the [remaining desktop checks](fcitx5-validation.md#remaining-desktop-smoke-checklist),
+   starting with KWrite Enter, Ctrl+A and window-focus/return observations.
+   The next cases were requested from the user; their results are not yet recorded.
+   Capture missing candidate/runtime details alongside further results and keep
+   failures in GitHub Issues.
+3. Choose the tested initial release scope from the collected evidence, then
+   begin the [IBus stage](roadmap.md#2-add-ibus). Other adapters and packaging
+   remain separate roadmap stages.
 
-**Done when:** protected PR delivery and desktop acceptance establish an explicit
-scope. Later platforms remain separate stages, not prerequisites for a scoped alpha.
+**Done when:** desktop evidence and explicit remaining limits establish the
+initial tested scope, followed by protected delivery of each separate increment.
 
 ## Completed steps
 

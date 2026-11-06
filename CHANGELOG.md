@@ -30,6 +30,8 @@ package version `0.1.0` does not establish a release date or desktop support cla
   source archives with SHA-256 checksums, and automated draft releases.
 - Release-preparation validation before PR merge, plus clean exported-source
   Rust/Fcitx5 builds, tests and staged-installation checks in CI.
+- User-reported basic installed-addon smoke results for KWrite 26.08.2 and
+  Firefox 159.0.1 on Wayland: Space, raw Backspace, Ctrl+Backspace and Escape.
 - Weekly GitHub Actions dependency update PR configuration and a documented
   issue-first task workflow with fresh branches, automatic agent commits/PRs,
   relevant review, protected merging and verified branch cleanup. Release
@@ -47,8 +49,9 @@ package version `0.1.0` does not establish a release date or desktop support cla
 ### Known limitations
 
 - Compatibility checks cover a bounded set; full Avro parity is not established.
-- Desktop evidence is limited to recorded environments. Actual installed-route
-  typing and the broader frontend matrix still need confirmation.
+- Desktop evidence is limited to recorded environments and checks. Basic
+  installed-route results cover two Wayland apps; broader lifecycle, frontend
+  and application coverage still needs confirmation.
 - Additional adapters and binary packages remain unimplemented; release scope
   and acceptance gates are defined in the [roadmap](docs/roadmap.md).
 
