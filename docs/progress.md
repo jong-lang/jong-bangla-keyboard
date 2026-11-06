@@ -17,74 +17,76 @@ Dates use the project's Asia/Dhaka timezone.
   [roadmap](roadmap.md) for planned versus delivered support.
 - **Resolved configuration report:** [Issue #12](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/12)
   records the temporary-Shift-toggle diagnosis and user-confirmed manual fix.
-  No production adapter change was needed. The original retest app was unnamed;
-  the new Kate result separately confirms pending-word preservation under Shift.
-- **Installed desktop evidence:** user-reported cases cover basic typing/editing
-  in KWrite 26.08.2 and Firefox 159.0.1 on Wayland, window focus and Enter/Ctrl+A
-  in both, Firefox field return/password transitions/window closure, and language
-  switching. One English UK AltGr+E → € case is reported without app/pending state.
-- **New Kate evidence:** Kate 26.08.3 preserves pending text under standalone
-  Ctrl/Shift and pointer motion; fresh `ki`/`kI` produce `কি`/`কী`. Held letters
-  and Backspace have no reported freeze, lag or stuck-key issue. After clicking,
-  the old word stays at its original location and the new word starts at the
-  clicked location. See the [scoped Kate record](fcitx5-validation.md#kate-modifiers-case-repeats-and-cursor-relocation).
-- **New Firefox evidence:** Firefox 159.0.1/Wayland has a grouped user-reported
-  pass for standalone Shift/Ctrl, `ki`/`kI`, held letters/Backspace, pointer motion,
-  clicking and selection while composing. Exact relocation outputs and separate
-  key-release observations were not supplied; see the [scoped Firefox record](fcitx5-validation.md#firefox-modifiers-case-repeats-and-cursor-relocation).
-- **Environment:** user reports CachyOS x86_64, Plasma 6.8.2, kernel
-  7.3.1-1-cachyos and KWrite Qt 6.12.0. Installed Fcitx5 package inventory is
-  5.1.23-1.1; the loaded addon revision, running Fcitx5/Firefox toolkit and exact
-  frontend transport remain unconfirmed. Kate's toolkit and route were not
-  separately supplied. Package and runtime evidence differ.
-- **Other desktop limits:** corresponding KWrite modifier/case/repeat and
-  relocation combinations, Kate selection, dead-key/Compose and broader
-  app/frontend coverage still need results. Grouped Firefox results do not supply
-  exact relocation output. No measured latency or separate key-release result.
-- **Release tooling:** PR/main CI validates versions/notes and builds/tests the
-  checkout and source export, including staged installation. Git-based checks
-  need a checkout. Versions, tagging and publication remain maintainer actions.
-- **Delivery:** the present documentation step began on clean, updated main
-  with no open Issues or PRs. Its PR tracks hosted checks and delivery.
-- **Workflow:** inspect Issues/PRs, prioritize bugs, use fresh branches, validate,
-  commit/PR, self-review, protected merge, verify CI and clean only task branches.
-  No delegation is authorized; see [contribution rules](../CONTRIBUTING.md#review-merge-and-cleanup).
+  No production adapter change was needed; the original retest app was unnamed.
+- **Installed desktop evidence:** basic typing/editing in KWrite 26.08.2 and
+  Firefox 159.0.1 on Wayland, window focus and Enter/Ctrl+A in both, Firefox field
+  return/password transitions/window closure, and language switching have scoped
+  user-reported passes. One English UK AltGr+E → € report lacks app/pending state.
+- **Modifier/cursor evidence:** Kate 26.08.3 reports pending-word preservation,
+  case, repeats, pointer motion and click relocation. Firefox 159.0.1/Wayland has
+  a grouped modifier/case/repeat/pointer/click/selection pass. Exact Firefox
+  relocation outputs and Kate selection remain unrecorded.
+- **Latest follow-up:** KWrite 26.08.3/Qt 6.12.0 has a grouped modifier/case/repeat
+  pass. Letter and Backspace activity stops immediately on release in KWrite
+  and Firefox. Compose/dead keys have a grouped pass, without per-app sequences
+  or pending-buffer outputs. An additional click/selection pass lacks app
+  attribution; see the [scoped follow-up](fcitx5-validation.md#runtime-kwrite-and-key-release-follow-up).
+- **Environment/build:** user reports Fcitx5 5.1.23 and a post-install restart,
+  CachyOS x86_64, Plasma 6.8.2 and kernel 7.3.1-1-cachyos. Agent SHA-256 checks
+  identify equal installed/local October 30 addon binaries. The source commit
+  and independently identified loaded binary remain unknown; timestamps do not
+  prove installation time. Firefox toolkit/transport and Kate toolkit/route
+  remain unconfirmed. Installed packages are separate from runtime evidence.
+- **Desktop limits:** grouped results do not establish exact output for every
+  app/state. No measured latency or broad app/frontend support claim. Keep
+  older KWrite 26.08.2 cases separate from the 26.08.3 follow-up.
+- **Release tooling:** PR/main CI checks versions/notes and builds/tests checkout
+  and source export with staged installation. Git checks need a checkout.
+  Versions, tagging and publication remain explicit maintainer actions.
+- **Workflow/delivery:** this documentation task began on clean, updated main
+  with no open Issues or PRs. Its PR tracks hosted checks and delivery. Use fresh
+  branches, self-review, protected merge, post-merge verification and task-only
+  cleanup; [no delegation is authorized](../CONTRIBUTING.md#review-merge-and-cleanup).
 - **Other limits:** other adapters/packages are unimplemented; tag-driven draft/
   API execution is untested. Tag protections/immutable releases were not inspected.
   Compatibility parity (522,933 rows plus 60 Unicode-policy rows) is prior evidence.
 
 ## Latest completed step
 
-- **2026-11-06 — Record Firefox 159.0.1 Wayland grouped follow-up pass.** Added
-  the user's confirmation for the requested modifier, case, repeat, pointer,
-  click and selection checks. README and Unreleased notes reflect this evidence.
-- **Evidence limits:** grouped user report, no agent-observed desktop run,
-  exact click/selection output, separate key-release observation, running Fcitx5,
-  loaded-addon or toolkit identification. No production code or settings changed.
+- **2026-11-06 — Record runtime, KWrite and key-release follow-up.** Added the
+  reported Fcitx5 version/restart, KWrite 26.08.3/Qt 6.12.0 modifier/case/repeat
+  pass, grouped Compose/dead-key pass and explicit KWrite/Firefox release-stop
+  observations. Recorded installed/local addon hashes and timestamp limits.
+  README and Unreleased notes reflect the new evidence.
+- **Evidence limits:** no agent-observed desktop run, exact Compose/dead-key
+  sequences/state outputs or independently identified loaded/source revision.
+  The extra clicking/selection confirmation did not name its app. No production
+  code, installation or desktop settings changed.
 - **Actual checks:** `python3 tools/check-docs.py` passed local links/anchors,
   fences and shell syntax; `python3 -m unittest discover -s tools/tests -v`
   passed all 16 tooling tests; `git diff --check` passed. Historical progress
-  preservation was checked against main. Runtime, reference and performance
-  checks from earlier steps are prior evidence, not rerun desktop validation.
-- **Review/delivery:** self-review checks evidence scope, app/version attribution,
-  link consistency and unchanged historical entries. Prepared on
-  `docs/firefox-modifier-cursor-results`; the PR tracks hosted checks and delivery.
-  Next action is runtime identification and choosing the initial tested scope.
+  entries were compared with main and are unchanged. Earlier engine, desktop
+  and performance checks are prior evidence, not rerun runtime validation.
+- **Review/delivery:** prepared on `docs/desktop-runtime-release-results`;
+  self-review checks evidence scope, app/version attribution, hash/timestamp
+  interpretation and documentation consistency. The PR tracks hosted checks
+  and delivery. Next action is candidate provenance and initial tested scope.
 
 ## Next small implementation step
 
 1. Check Issues/PRs and finish pending delivery through protected gates.
-2. Identify running Fcitx5 and the loaded addon build. Firefox 159.0.1/Wayland
-   is reconfirmed; keep the grouped follow-up separate from individual output
-   evidence. Obtain KWrite's own results where claiming the same cases there.
-3. Complete the remaining [desktop checklist](fcitx5-validation.md#remaining-desktop-smoke-checklist)
-   combinations and missing candidate/runtime details. Clarify selection and
-   key-release behavior where needed for the initial scope.
-4. Choose the tested initial scope, then start the [IBus stage](roadmap.md#2-add-ibus).
+2. Identify the source revision for the October 30 installed addon (a current
+   checkout hash is not build provenance), or validate a newly identified build
+   separately. The reported Fcitx5 version and restart no longer need re-asking.
+3. Choose the initial scope from the [recorded desktop results](fcitx5-validation.md#installed-route-basic-smoke-result).
+   Use the [remaining checklist](fcitx5-validation.md#remaining-desktop-smoke-checklist)
+   only for missing evidence required by that scope. Keep grouped Compose/dead-key
+   passes and exact output evidence distinct; broader routes stay unvalidated.
+4. After establishing that scope, start the [IBus stage](roadmap.md#2-add-ibus).
    Other adapters and packaging remain separate stages.
 
-**Done when:** desktop results and explicit limits establish the initial scope,
-with protected task delivery and no unresolved release-blocking bugs.
+**Done when:** desktop results, candidate identity and explicit limits establish
+an initial scope, with protected delivery and no unresolved release-blocking bugs.
 
 ## Completed steps
 

@@ -298,11 +298,49 @@ individual output captures and per-case descriptions were not supplied.
 | Selecting text while a word is pending | User-reported pass |
 
 The agent did not observe these interactions. The grouped confirmation does not
-provide exact text/cursor positions after clicking or selection, a separate
-key-release duplication observation, or measured latency. It does not establish
-the corresponding KWrite cases. The version and Wayland route are user-reported;
-the running Fcitx5 version, loaded addon revision, Firefox toolkit version and
-exact input-method frontend transport remain unconfirmed.
+provide exact text/cursor positions after clicking or selection, or measured
+latency. That report did not separately describe key release or establish the
+corresponding KWrite cases. The follow-up below adds KWrite results, explicit
+KWrite/Firefox key-release observations and Fcitx5 version information. Firefox's
+toolkit version and exact input-method frontend transport remain unconfirmed.
+
+### Runtime, KWrite and key-release follow-up
+
+**2026-11-06 — User-reported follow-up and local file inspection:** the user
+reports **Fcitx5 5.1.23**, confirms restarting Fcitx5 after installing Jong, and
+reports **KWrite 26.08.3 with Qt 6.12.0**. Keep the earlier KWrite 26.08.2
+observations attributed to that version; the new report does not rerun every
+earlier lifecycle case. Firefox remains the previously reported 159.0.1/Wayland
+context. The earlier KWrite route was reported as Wayland; no new frontend
+transport or runtime backend identification was supplied.
+
+| Check | App attribution | Reported result |
+| --- | --- | --- |
+| Standalone Shift/Ctrl with a pending word, fresh `ki` → `কি` versus `kI` → `কী`, held letter and Backspace | KWrite 26.08.3 / Qt 6.12.0 | Grouped user-reported pass in response to the requested KWrite checks |
+| Clicking and selection while composing | App not separately named in this response | User reports both work; exact old-word location and fresh `i` output were not supplied |
+| Compose and dead keys | Grouped response to the KWrite/Firefox request | User reports both work; no per-app sequence, expected/actual character or empty-versus-pending comparison supplied |
+| Release of a held letter | KWrite and Firefox explicitly named | Input stops immediately on release |
+| Release of held Backspace | KWrite and Firefox explicitly named | Deletion stops immediately on release |
+
+These are user reports, not agent-observed desktop runs or latency measurements.
+The release observations add evidence beyond the earlier grouped repeat passes.
+Do not infer missing Compose/dead-key sequences or per-app pending-buffer behavior
+from the grouped pass, or assign the unnamed clicking/selection response to
+KWrite or Kate. The existing Firefox click/selection pass remains separately
+recorded above.
+
+**Local addon identity:** the agent ran
+`stat -c '%n | modified: %y | metadata changed: %z'` and `sha256sum` on both
+`/usr/lib/fcitx5/libjong-bangla.so` and
+`target/fcitx5-install/libjong-bangla.so`. Their SHA-256 values match:
+`a9b9af1f3a99f2f3d4dbd92ca000adea2a521f5396cbf6c83ca31fd6058cc8d4`.
+The local build's modification time is **2026-10-30 12:01:49 +06:00**; the
+installed file has the same modification time to the second and a metadata-change
+time of **2026-10-30 12:10:01 +06:00**. These observations identify equal on-disk
+binaries, not an exact installation time or source commit. The user confirms a
+post-install restart; the agent did not independently identify the running
+process's loaded binary or the source revision used to build it. Do not assign
+the current checkout's commit to this earlier build.
 
 ## Remaining desktop smoke checklist
 

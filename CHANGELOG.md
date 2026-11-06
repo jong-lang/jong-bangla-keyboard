@@ -44,6 +44,10 @@ package version `0.1.0` does not establish a release date or desktop support cla
   under Ctrl/Shift, `ki`/`kI` case, held keys/Backspace and pointer/click relocation.
 - Grouped user-reported Firefox 159.0.1 Wayland pass for modifiers, `ki`/`kI`,
   held keys/Backspace, pointer motion, clicking and selection while composing.
+- User-reported KWrite 26.08.3/Qt 6.12.0 modifier, case and repeat pass, immediate
+  stopping on letter/Backspace release in KWrite and Firefox, and grouped
+  Compose/dead-key success. Exact sequences and pending-word interactions for
+  Compose/dead keys remain unrecorded.
 - Weekly GitHub Actions dependency update PR configuration and a documented
   issue-first task workflow with fresh branches, automatic agent commits/PRs,
   relevant review, protected merging and verified branch cleanup. Release
