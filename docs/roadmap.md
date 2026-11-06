@@ -58,7 +58,8 @@ Validate the real installed addon on CachyOS/KDE Plasma Wayland, using the
 [desktop checklist](fcitx5-validation.md#remaining-desktop-smoke-checklist). Record the exact
 commit, Fcitx5, toolkit, application and actual input route for each result.
 Basic installed-route checks have [user-reported passes](fcitx5-validation.md#installed-route-basic-smoke-result)
-in KWrite 26.08.2 and Firefox 159.0.1 on Wayland; the remaining lifecycle checks
+in KWrite 26.08.2 and Firefox 159.0.1 on Wayland. KWrite also has user-reported
+Enter, Ctrl+A and window-focus/return passes; remaining app/case combinations
 and missing candidate/runtime details still need evidence.
 Choose the initial support matrix from those results. A source alpha may ship
 with explicitly unvalidated routes; a supported route must pass the acceptance

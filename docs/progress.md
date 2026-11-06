@@ -15,24 +15,24 @@ Dates use the project's Asia/Dhaka timezone.
 - **Delivery scope:** staged Linux Fcitx5 and IBus, Linux packages/AUR, Windows
   TSF and macOS on Apple silicon and Intel. Only the Fcitx5 experiment exists;
   the [roadmap](roadmap.md) distinguishes planned targets from delivered support.
-- **Installed desktop evidence:** on 2026-11-06 the user confirmed the four
-  requested Space, Backspace, Ctrl+Backspace and Escape cases in KWrite 26.08.2
-  and Firefox 159.0.1, reporting both as Wayland. The
+- **Installed desktop evidence:** on 2026-11-06 the user confirmed Space,
+  Backspace, Ctrl+Backspace and Escape in KWrite 26.08.2 and Firefox 159.0.1,
+  both reported as Wayland. KWrite follow-up passes cover Enter, Ctrl+A and
+  switching to Firefox and back with composition pending. The
   [validation record](fcitx5-validation.md#installed-route-basic-smoke-result)
-  distinguishes this basic result from the remaining desktop checklist.
-- **Desktop limits:** focus/switching, shortcuts, relocation, restricted fields
-  and the wider frontend matrix still need results. The report did not identify
-  the loaded addon revision or current Fcitx5/toolkit/distro/Plasma versions.
-  Earlier inventories are prior evidence, not newly confirmed runtime details.
+  scopes each result to its named app/case and attributes it to the user.
+- **Desktop limits:** remaining app/case combinations include Firefox field
+  focus, input-method switching, relocation, restricted fields and the wider
+  frontend matrix. The loaded addon revision and current Fcitx5/toolkit/distro/
+  Plasma versions were not reported. Earlier inventories remain prior evidence.
 - **Release tooling:** PR/main CI validates versions and prepared notes and
   builds/tests checkout and exported source, including staged installation.
   Git-based documentation/provenance checks need a checkout. Version selection,
   tagging and publication remain explicit maintainer actions.
-- **Delivery prior evidence:** tooling PR #6 merged as `d12ce93` with protected
-  gates, passing [PR CI](https://github.com/shaadahmmed/jong-bangla-keyboard/actions/runs/42159915216)
-  and [post-merge CI](https://github.com/shaadahmmed/jong-bangla-keyboard/actions/runs/42160195789).
-  Its task branches were deleted and main synchronized. The export issue is
-  resolved in [Issue #7](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/7).
+- **Delivery prior evidence:** tooling PR #6 merged as `d12ce93` and initial
+  desktop-results PR #8 as `9480887`, with passing protected checks. PR #8's
+  [post-merge CI](https://github.com/shaadahmmed/jong-bangla-keyboard/actions/runs/42161085935)
+  passed both jobs; its branches were deleted and main synchronized.
 - **Task workflow:** inspect Issues/PRs, use fresh branches, validate and create
   PRs, identify self-review, fix findings, merge through required gates, verify
   post-merge CI and clean up only task branches. No agent delegation is authorized.
@@ -45,37 +45,36 @@ Dates use the project's Asia/Dhaka timezone.
 
 ## Latest completed step
 
-- **2026-11-06 — Record basic installed Wayland application smoke results.**
-  The user replied that the four requested cases work in KWrite 26.08.2 and
-  Firefox 159.0.1 on Wayland. Recorded user-reported passes for Space commit,
-  raw Backspace, Ctrl+Backspace clearing and Escape with fresh composition.
-  This is a response to the installed-addon/normal-launch request, not an
-  agent-observed result or confirmation of the entire desktop matrix.
-- Updated the validation record, README, installation guide, roadmap and
-  Unreleased changelog to reflect the bounded result. Kept missing candidate,
-  environment/runtime details and remaining lifecycle checks explicit.
-  No executable source, dependencies, settings or typing behavior changed.
+- **2026-11-06 — Record KWrite lifecycle follow-up results.**
+  The user confirmed all three requested KWrite checks pass: Enter commits and
+  inserts one newline, Ctrl+A followed by fresh typing replaces the selection,
+  and switching to Firefox and back leaves one committed word with fresh
+  composition afterward. The app/route context is KWrite 26.08.2 on Wayland,
+  as previously reported; these are user-reported, not agent-observed results.
+- Updated the validation record, roadmap and Unreleased changelog while keeping
+  Firefox field focus, input-method switching and other app/case combinations
+  distinct. No executable source, dependencies, settings or behavior changed.
 - **Actual documentation checks:** `python3 tools/check-docs.py` passed local
   links/anchors, fences and shell-example syntax; `git diff --check` passed.
   A Python comparison verified unchanged historical progress entries and that
-  only Markdown files changed. Runtime tests were not rerun for this docs-only
-  increment; prior tooling/engine checks are linked above.
-- **Review/delivery:** self-review checks evidence attribution, exact reported
-  versions/routes, scope limits and cross-document consistency. Prepared on
-  `docs/installed-wayland-smoke-results`; its PR records hosted validation and
-  delivery status. No broader desktop acceptance or support range is claimed.
+  only Markdown files changed. Runtime tests were not rerun locally for this
+  docs-only increment; earlier hosted results above are prior evidence.
+- **Review/delivery:** self-review covers sequence accuracy, user attribution,
+  exact app/route scope, current/historical evidence and links. Prepared on
+  `docs/kwrite-lifecycle-smoke-results`; its PR records hosted validation and
+  delivery status. These cases do not complete the desktop acceptance matrix.
 
 ## Next small implementation step
 
 1. Check open Issues/PRs and finish any pending delivery through protected gates.
-2. Continue the [remaining desktop checks](fcitx5-validation.md#remaining-desktop-smoke-checklist),
-   starting with KWrite Enter, Ctrl+A and window-focus/return observations.
-   The next cases were requested from the user; their results are not yet recorded.
-   Capture missing candidate/runtime details alongside further results and keep
-   failures in GitHub Issues.
-3. Choose the tested initial release scope from the collected evidence, then
-   begin the [IBus stage](roadmap.md#2-add-ibus). Other adapters and packaging
-   remain separate roadmap stages.
+2. Continue the [remaining desktop checks](fcitx5-validation.md#remaining-desktop-smoke-checklist).
+   Firefox two-field focus and existing input-method switching in Firefox/KWrite
+   were requested; their results are not yet recorded. Include the switching
+   shortcut, missing candidate/runtime details and further case/app results.
+   Keep failures in GitHub Issues.
+3. Choose the tested initial release scope from the evidence, then begin the
+   [IBus stage](roadmap.md#2-add-ibus). Other adapters and packaging remain
+   separate roadmap stages.
 
 **Done when:** desktop evidence and explicit remaining limits establish the
 initial tested scope, followed by protected delivery of each separate increment.

@@ -158,9 +158,28 @@ the agent did not observe or capture the application output. Application version
 and Wayland routes are user-reported. The loaded addon revision, exact frontend
 transport, current distro/Plasma versions and Fcitx5/toolkit runtime versions were
 not supplied with this result; earlier environment records remain prior evidence.
-This establishes a basic installed-route result for these two named apps. Focus,
-switching, shortcuts, relocation, restricted fields and the remaining matrix below
-still need separate results. It does not establish a broader support range.
+This establishes a basic installed-route result for these two named apps.
+Additional KWrite results are recorded below. Other focus/shortcut cases,
+input-method switching, relocation, restricted fields and the wider matrix still
+need separate results. These observations do not establish a broader support range.
+
+### KWrite lifecycle follow-up
+
+**2026-11-06 — User-reported follow-up:** the user confirmed all three requested
+checks pass in the previously reported **KWrite 26.08.2 (Wayland)** environment.
+Each case was requested in a fresh disposable document.
+
+| Check | Requested sequence and expected result | Result |
+| --- | --- | --- |
+| Enter boundary | `ki`, Enter commits `কি` and inserts one newline | User-reported pass |
+| Select-all shortcut | `ki`, Ctrl+A, `i` replaces the selection with fresh `ই` | User-reported pass |
+| Window focus and return | With `ki` pending, switch to Firefox and return, then type `i`: the original `কি` appears once and `i` starts fresh | User-reported pass |
+
+The combined confirmation reported no failure for these cases; the agent did
+not observe or capture the output. The window-focus result covers KWrite as
+the composing application and Firefox as the other window. It does not establish
+Firefox field-focus behavior or the corresponding Firefox composition cases.
+Candidate/runtime details remain limited as described above.
 
 ## Remaining desktop smoke checklist
 
@@ -171,6 +190,8 @@ and Escape for the candidate being tested. First check `ki` then Space
 produces `কি ` to confirm that each new test window reaches Jong. Start each case
 in an empty field/document or a separate disposable line. Here, *pending* means
 the underlined word still being edited before Space or Enter commits it.
+The observations above cover only their named cases and apps; use the checklist
+for the remaining combinations rather than treating one app's pass as another's.
 
 | Case | Procedure and observation to report |
 | --- | --- |
