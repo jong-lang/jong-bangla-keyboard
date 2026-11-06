@@ -19,11 +19,11 @@ class ReleaseFixture:
         self.addCleanup(self.directory.cleanup)
         self.root = Path(self.directory.name)
         self.version = "0.1.0-alpha.1"
-        for name in ("Cargo.toml", "adapters/fcitx5/ffi/Cargo.toml"):
+        for name in ("Cargo.toml", "adapters/ffi/Cargo.toml"):
             self.write(name, f'[package]\nversion = "{self.version}"\n')
         self.write("Cargo.lock", "\n".join(
             f'[[package]]\nname = "{name}"\nversion = "{self.version}"\n'
-            for name in ("jong-bangla-core", "jong-bangla-fcitx5-ffi")
+            for name in ("jong-bangla-core", "jong-bangla-ffi")
         ))
         self.write("adapters/fcitx5/jong-bangla.conf.in", f"[Addon]\nVersion={self.version}\n")
         self.notes = "\n\n".join(f"### {section}\n\nRecorded result." for section in release.REQUIRED_SECTIONS)
@@ -69,7 +69,7 @@ class ReleaseValidation(ReleaseFixture, unittest.TestCase):
                 release.release_notes(self.root, tag)
 
     def test_rejects_each_version_mismatch(self):
-        for name in ("Cargo.toml", "adapters/fcitx5/ffi/Cargo.toml", "Cargo.lock", "adapters/fcitx5/jong-bangla.conf.in"):
+        for name in ("Cargo.toml", "adapters/ffi/Cargo.toml", "Cargo.lock", "adapters/fcitx5/jong-bangla.conf.in"):
             original = (self.root / name).read_text()
             self.write(name, original.replace(self.version, "0.1.0"))
             with self.subTest(name=name), self.assertRaises(ValueError):
@@ -108,7 +108,7 @@ class ReleasePreparation(ReleaseFixture, unittest.TestCase):
         baseline = "# Changelog\n\n## Unreleased\n\nInitial development.\n"
         self.write("CHANGELOG.md", baseline)
         self.assertIsNone(release.preparation_notes(self.root, self.version, baseline))
-        for name in ("Cargo.toml", "adapters/fcitx5/ffi/Cargo.toml", "Cargo.lock",
+        for name in ("Cargo.toml", "adapters/ffi/Cargo.toml", "Cargo.lock",
                      "adapters/fcitx5/jong-bangla.conf.in"):
             original = (self.root / name).read_text()
             self.write(name, original.replace(self.version, "0.2.0"))

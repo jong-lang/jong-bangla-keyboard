@@ -18,12 +18,12 @@ VERSION = r"(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)(?:-(?:alpha|
 
 
 def check_versions(root, version):
-    for name in ("Cargo.toml", "adapters/fcitx5/ffi/Cargo.toml"):
+    for name in ("Cargo.toml", "adapters/ffi/Cargo.toml"):
         package = tomllib.loads((root / name).read_text(encoding="utf-8"))["package"]
         if package["version"] != version:
             raise ValueError(f"{name}: package version must equal {version}")
     lock = tomllib.loads((root / "Cargo.lock").read_text(encoding="utf-8"))
-    for name in ("jong-bangla-core", "jong-bangla-fcitx5-ffi"):
+    for name in ("jong-bangla-core", "jong-bangla-ffi"):
         packages = [p for p in lock["package"] if p["name"] == name]
         if len(packages) != 1 or packages[0]["version"] != version:
             raise ValueError(f"Cargo.lock: {name} version must equal {version}")

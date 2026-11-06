@@ -1,5 +1,5 @@
 // MIT. Fcitx5 events/UI only; all composition and transliteration live in Rust.
-#include "jong.h"
+#include "../ffi/jong.h"
 
 #include <cstdint>
 #include <limits>

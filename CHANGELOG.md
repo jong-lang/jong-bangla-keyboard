@@ -17,6 +17,9 @@ package version `0.1.0` does not establish a release date or desktop support cla
   Ctrl+Backspace clearing, commit, cancel and reset.
 - Experimental Linux Fcitx5 addon with a Rust C ABI, C++ adapter, isolated
   dispatcher harness and staged installation/removal checks.
+- Experimental Linux IBus service reusing the shared Rust C ABI, with private
+  D-Bus protocol tests, staged install/removal checks and explicit source-install
+  guidance. GNOME/IBus desktop acceptance remains pending.
 - Reference fixtures and comparison tooling for a pinned jsAvroPhonetic revision,
   with separate cases for deliberate Unicode preservation differences.
 - Core latency, adapter resource and lifecycle/leak measurement tooling.
@@ -25,11 +28,11 @@ package version `0.1.0` does not establish a release date or desktop support cla
 - A staged release roadmap covering Linux Fcitx5 and IBus, Flatpak/deb/rpm/pacman
   packages and maintained AUR recipes, Windows TSF, and macOS on Apple silicon
   and Intel. These additions describe planned delivery, not implemented support.
-- GitHub CI for documentation/release tooling, Rust workspace and Fcitx5 staged
-  installation checks; version-tag validation, reviewed release-note template,
+- GitHub CI for documentation/release tooling, Rust workspace and Linux-adapter
+  staged installation checks; version-tag validation, reviewed release-note template,
   source archives with SHA-256 checksums, and automated draft releases.
 - Release-preparation validation before PR merge, plus clean exported-source
-  Rust/Fcitx5 builds, tests and staged-installation checks in CI.
+  Rust/Linux-adapter builds, tests and staged-installation checks in CI.
 - User-reported basic installed-addon smoke results for KWrite 26.08.2 and
   Firefox 159.0.1 on Wayland: Space, raw Backspace, Ctrl+Backspace and Escape.
   KWrite follow-up results also cover Enter, Ctrl+A and switching to Firefox
@@ -68,8 +71,8 @@ package version `0.1.0` does not establish a release date or desktop support cla
 - Desktop evidence is limited to recorded environments and checks. Basic
   installed-route results cover two Wayland apps; broader lifecycle, frontend
   and application coverage still needs confirmation.
-- Additional adapters and binary packages remain unimplemented; release scope
-  and acceptance gates are defined in the [roadmap](docs/roadmap.md).
+- Windows/macOS adapters and binary packages remain unimplemented; IBus has
+  synthetic evidence only. Release scope and acceptance gates are defined in the [roadmap](docs/roadmap.md).
 
 Report and track bugs in
 [GitHub Issues](https://github.com/shaadahmmed/jong-bangla-keyboard/issues).

@@ -29,8 +29,10 @@ Recorded evidence covers 522,933 parity cases plus separate Unicode policy cases
 this is bounded coverage, not a claim of full Avro compatibility. Unsupported
 Unicode is preserved without lowercasing or normalization.
 
-IBus, Windows, macOS and binary packages are planned, with no delivered support
-yet. Broader application and Wayland/XWayland routes remain unverified. Report
+An [experimental IBus service](docs/ibus.md) now builds and passes private D-Bus
+and staged-installation checks; installed GNOME/IBus desktop acceptance is pending.
+Windows, macOS and binary packages remain planned. Broader application and
+Wayland/XWayland routes remain unverified. Report
 and track bugs in [GitHub Issues](https://github.com/shaadahmmed/jong-bangla-keyboard/issues).
 See the [current handoff](docs/progress.md#current-position) for implementation
 and validation status.
@@ -69,6 +71,7 @@ library layout, use the [development guide](docs/development.md).
 | --- | --- |
 | [Typing guide](docs/typing.md) | Common spellings and editing controls |
 | [Installation](docs/installation.md) | Build, stage, install, activate, update and remove the addon |
+| [IBus experiment](docs/ibus.md) | Build, ownership, staged installation and desktop acceptance limits |
 | [Development](docs/development.md) | Toolchain, workspace checks, Fcitx5 harness and code layout |
 | [Releases](docs/releases.md) | Pull requests, manual versions, release template and draft publication |
 | [Roadmap](docs/roadmap.md) | Staged platform delivery, package channels and release acceptance gates |

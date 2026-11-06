@@ -13,7 +13,7 @@ and a separate Rust static-library C ABI. This settles the thin C++ bridge as th
 practical boundary for this experiment; it does not make C++ a requirement for
 future platforms. The core's rules and composition implementation are unchanged.
 [Build/check commands](development.md#build-and-check-the-fcitx5-experiment) and the
-[private C header](../adapters/fcitx5/jong.h) make the experiment reproducible.
+[private C header](../adapters/ffi/jong.h) make the experiment reproducible.
 
 The addon handles framework key classification, per-context ownership and Fcitx5
 preedit/UI/commit calls. The boundary crate only wraps existing Rust controller
@@ -21,7 +21,7 @@ actions. Each input-context property uniquely owns one opaque Rust handle;
 properties never copy raw composition between fields. Destruction frees it
 without committing. No installed addon, desktop process or settings were changed.
 
-The current [interoperability contract](adapter-contract.md#fcitx5-interoperability-boundary)
+The current [interoperability contract](adapter-contract.md#shared-rust-c-abi)
 specifies ownership, encoding, lifetimes and failure containment.
 
 **Key and lifecycle evidence:** the actual shared addon is loaded through Fcitx5

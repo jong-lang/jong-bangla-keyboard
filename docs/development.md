@@ -3,9 +3,10 @@
 Run all commands from the repository root. For contribution scope and review
 expectations, read [CONTRIBUTING.md](../CONTRIBUTING.md). Obtain a Git checkout
 for contributor checks; an extracted source archive is sufficient for the Rust
-and Fcitx5 build/test blocks. For installation, use the separate
-[installation guide](installation.md). Only the experimental Fcitx5 adapter is
-implemented; other platform and package work follows the [roadmap](roadmap.md).
+and Linux-adapter build/test blocks. For installation, use the separate
+[installation guide](installation.md) and [IBus experiment guide](ibus.md).
+Experimental Fcitx5 and IBus adapters are implemented; other platform and
+package work follows the [roadmap](roadmap.md).
 
 ## Documentation and release tooling
 
@@ -23,7 +24,7 @@ and shell example syntax. It does not fetch external links or execute examples.
 It uses `git ls-files`, so it and the Git diff checks require a checkout; they
 cannot run on an extracted source archive. The adapter resource measurement tool
 also uses Git for provenance. CI separately builds and tests an exported source
-archive with the same Rust/Fcitx5 checks as the checkout, including staged
+archive with the same Rust/Linux-adapter checks as the checkout, including staged
 installation. This does not make Git-based contributor/provenance checks
 available in an archive. The unit tests exercise release metadata,
 note-validation and release-preparation gates.
@@ -41,8 +42,8 @@ release heading in either revision requires complete dated notes for the current
 version. Existing release notes remain checked on later ordinary PRs.
 
 To run the CI build/test block locally, use `bash tools/check-build.sh` from the
-source root. It runs the Rust checks below and a Release Fcitx5 build, CTest and
-staged-installation check, without changing the desktop or installing system files.
+source root. It runs the Rust checks below and Release Fcitx5/IBus builds, CTest and
+staged-installation checks, without changing the desktop or installing system files.
 To check the committed source export independently of checkout build artifacts:
 
 ```sh
@@ -130,7 +131,7 @@ alongside the product specification.
 For C++ formatting (validated with clang-format 23.1.4):
 
 ```sh
-clang-format --dry-run --Werror adapters/fcitx5/addon.cpp adapters/fcitx5/jong.h \
+clang-format --dry-run --Werror adapters/fcitx5/addon.cpp adapters/ffi/jong.h \
   adapters/fcitx5/tests/harness.cpp adapters/fcitx5/tests/memory.cpp \
   adapters/fcitx5/tests/resources.cpp
 ```
@@ -171,14 +172,16 @@ For a leak check, use the same sanitized build in an ordinary terminal outside
 ptrace/debugger tracing, with Python 3 available:
 
 ```sh
-python3 tools/check-memory.py target/fcitx5-sanitized
+python3 tools/check-memory.py target/fcitx5-sanitized target/ibus-sanitized
 ```
 
 This first requires LeakSanitizer to detect an intentionally lost Rust session,
 then runs 20,000 C-ABI lifecycle cycles and the ten dispatcher suites with
 ASan/UBSan/leak detection enabled. It fails if the detector is unavailable, if
 the build lacks leak detection, or if a normal workload reports an error. The
-normal lifecycle test is also included in CTest. No suppression file is used.
+normal lifecycle test is also included in CTest. The optional second build
+argument runs the production IBus service suite with the same diagnostics;
+configure it using the [IBus sanitizer commands](ibus.md#build-and-synthetic-checks). No suppression file is used.
 Rust heap allocations are observed through the system allocator, as verified by
 the deliberate leak; this does not instrument Rust memory accesses. These
 synthetic tests do not exercise every failure path or a live desktop daemon.
@@ -211,9 +214,19 @@ The transliterator lives in private modules under `src/transliteration/`:
 - [`following_r.rs`](../src/transliteration/following_r.rs): shared following-`r`
   attachment and exceptions based on raw keys.
 
+The shared private Rust boundary and C header are under
+[`adapters/ffi`](../adapters/ffi/Cargo.toml). The experimental IBus service uses
+C11/GLib under [`adapters/ibus`](../adapters/ibus/CMakeLists.txt); build and test
+commands and actual validation scope are in the [IBus guide](ibus.md). Format
+its C/C++ sources with:
+
+```sh
+clang-format --dry-run --Werror adapters/ibus/*.c adapters/ibus/*.h adapters/ibus/tests/*.cpp
+```
+
 The experimental Fcitx5 addon is under
-[`adapters/fcitx5`](../adapters/fcitx5/CMakeLists.txt), with a separate Rust C-ABI
-crate and C++ framework code. The core still forbids unsafe code and has no
+[`adapters/fcitx5`](../adapters/fcitx5/CMakeLists.txt), with shared Rust C-ABI
+usage and C++ framework code. The core still forbids unsafe code and has no
 platform dependencies. See [the architecture plan](v1.md#proposed-architecture).
 
 Source comments keep the API contract and reasons for non-obvious matching

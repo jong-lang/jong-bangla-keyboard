@@ -58,20 +58,20 @@ jobs:
     steps:
       # Arch supplies the documented Fcitx5 headers; older Ubuntu packages do not.
       - name: Prepare Arch build environment
-        run: pacman -Syu --noconfirm --needed git rust cmake ninja fcitx5 python actionlint shellcheck
+        run: pacman -Syu --noconfirm --needed git rust cmake ninja fcitx5 libibus dbus python actionlint shellcheck
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Record environment
         run: |
-          pacman -Q rust fcitx5 gcc cmake ninja python actionlint shellcheck | tee -a "$GITHUB_STEP_SUMMARY"
+          pacman -Q rust fcitx5 libibus dbus gcc cmake ninja python actionlint shellcheck | tee -a "$GITHUB_STEP_SUMMARY"
           rustc --version
           cargo --version
       - name: Check workflows
         run: |
           actionlint
           shellcheck tools/check-build.sh
-      - name: Check Rust workspace and Fcitx5 adapter
+      - name: Check Rust workspace and Linux adapters
         run: bash tools/check-build.sh
       - name: Build and check exported source without Git metadata
         run: |

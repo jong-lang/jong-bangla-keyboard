@@ -1,5 +1,5 @@
-//! C ABI for the experimental Fcitx5 adapter. Pointer safety is confined here;
-//! the reusable core still forbids unsafe code. See the adjacent `jong.h`.
+//! Shared C ABI for the experimental Linux adapters. Pointer safety is confined here;
+//! the reusable core still forbids unsafe code. See the crate’s `jong.h`.
 
 use jong_bangla_core::{Composition, CompositionKey, KeyEffect};
 use std::panic::{AssertUnwindSafe, catch_unwind};

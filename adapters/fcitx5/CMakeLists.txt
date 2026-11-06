@@ -2,28 +2,12 @@ cmake_minimum_required(VERSION 3.25)
 project(jong_bangla_fcitx5 LANGUAGES CXX)
 
 find_package(Fcitx5Core 5.1.23 REQUIRED)
-find_package(Threads REQUIRED)
-find_program(CARGO_EXECUTABLE cargo REQUIRED)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 get_filename_component(JONG_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../.." ABSOLUTE)
-file(GLOB_RECURSE RUST_SOURCES CONFIGURE_DEPENDS
-    "${JONG_ROOT}/src/*.rs" "${CMAKE_CURRENT_SOURCE_DIR}/ffi/src/*.rs")
-set(RUST_LIBRARY "${CMAKE_CURRENT_BINARY_DIR}/rust/release/libjong_bangla_fcitx5_ffi.a")
-add_custom_command(OUTPUT "${RUST_LIBRARY}"
-    COMMAND "${CARGO_EXECUTABLE}" build --offline --locked --release
-        --manifest-path "${JONG_ROOT}/Cargo.toml" -p jong-bangla-fcitx5-ffi
-        --target-dir "${CMAKE_CURRENT_BINARY_DIR}/rust"
-    DEPENDS ${RUST_SOURCES} "${JONG_ROOT}/Cargo.toml" "${JONG_ROOT}/Cargo.lock"
-        "${CMAKE_CURRENT_SOURCE_DIR}/ffi/Cargo.toml"
-    WORKING_DIRECTORY "${JONG_ROOT}"
-    COMMENT "Building the local Rust composition boundary" VERBATIM)
-add_custom_target(jong_rust DEPENDS "${RUST_LIBRARY}")
-add_library(jong_ffi STATIC IMPORTED)
-set_target_properties(jong_ffi PROPERTIES IMPORTED_LOCATION "${RUST_LIBRARY}")
-add_dependencies(jong_ffi jong_rust)
+include("${JONG_ROOT}/adapters/ffi/build.cmake")
 
 add_library(jong-bangla MODULE addon.cpp)
 target_compile_options(jong-bangla PRIVATE -Wall -Wextra -Wpedantic -Werror)

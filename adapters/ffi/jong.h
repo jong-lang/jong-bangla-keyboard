@@ -1,6 +1,7 @@
-// MIT. Private C ABI for the local feasibility addon; not a stable public API.
-#ifndef JONG_FCITX5_FFI_H
-#define JONG_FCITX5_FFI_H
+// MIT. Private C ABI for the experimental Linux adapters; not a stable public
+// API.
+#ifndef JONG_FFI_H
+#define JONG_FFI_H
 
 #include <stddef.h>
 #include <stdint.h>

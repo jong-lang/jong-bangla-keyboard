@@ -74,7 +74,7 @@ documentation and checks, an agent commits, pushes and creates a PR without
 routine confirmation requests. Include only the task's work and use descriptive
 messages. PRs explain the problem, resulting behavior, validation and material
 limitations, and link related issues. Use `Fixes #123` only when the PR fully
-resolves that issue. CI checks documentation/release tooling and the Rust/Fcitx5
+resolves that issue. CI checks documentation/release tooling and the Rust/Linux-adapter
 build; hosted status checks do not replace desktop smoke observations.
 The 2026-11-06 separate-session review requirement below limits autonomous
 delivery: the implementation session leaves the PR open and hands it off.
@@ -117,7 +117,7 @@ the following areas, marking any inapplicable area with a reason:
 
 Use CI results for the exact revision and checks they cover; do not repeat passing
 checks without a reason. Current CI covers documentation/release tooling, workflow
-linting, Rust format/Clippy/tests/docs, Fcitx5 builds/synthetic tests, staged
+linting, Rust format/Clippy/tests/docs, Fcitx5 dispatcher and IBus service tests, staged
 installation and source-export builds. It has no dedicated leak-sanitizer or real
 desktop acceptance job. Passing CI does not establish leak freedom, runtime
 resource budgets, full phonetic parity or architectural correctness. Consult

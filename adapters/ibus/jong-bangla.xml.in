@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component>
+  <name>org.freedesktop.IBus.JongBangla</name>
+  <description>Jong Bangla phonetic input method</description>
+  <exec>@JONG_IBUS_EXEC_XML@ --ibus</exec>
+  <version>@JONG_VERSION@</version>
+  <author>Jong Bangla contributors</author>
+  <license>MIT</license>
+  <homepage>https://github.com/shaadahmmed/jong-bangla-keyboard</homepage>
+  <textdomain>jong-bangla</textdomain>
+  <engines>
+    <engine>
+      <name>jong-bangla</name>
+      <longname>Jong Bangla</longname>
+      <description>Bangla phonetic input with editable preedit</description>
+      <language>bn</language>
+      <license>MIT</license>
+      <author>Jong Bangla contributors</author>
+      <layout>default</layout>
+      <symbol>ব</symbol>
+    </engine>
+  </engines>
+</component>

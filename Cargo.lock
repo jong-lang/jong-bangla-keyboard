@@ -7,7 +7,7 @@ name = "jong-bangla-core"
 version = "0.1.0"
 
 [[package]]
-name = "jong-bangla-fcitx5-ffi"
+name = "jong-bangla-ffi"
 version = "0.1.0"
 dependencies = [
  "jong-bangla-core",

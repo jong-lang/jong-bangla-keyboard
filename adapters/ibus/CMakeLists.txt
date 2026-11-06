@@ -1,0 +1,52 @@
+cmake_minimum_required(VERSION 3.25)
+project(jong_bangla_ibus LANGUAGES C CXX)
+include(GNUInstallDirs)
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(IBUS REQUIRED IMPORTED_TARGET ibus-1.0>=1.5.33)
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_C_EXTENSIONS OFF)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+get_filename_component(JONG_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../.." ABSOLUTE)
+include("${JONG_ROOT}/adapters/ffi/build.cmake")
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${JONG_ROOT}/Cargo.toml")
+file(STRINGS "${JONG_ROOT}/Cargo.toml" VERSION_LINE REGEX "^version = ")
+string(REGEX REPLACE "^version = \"([^\"]+)\"$" "\\1" JONG_VERSION "${VERSION_LINE}")
+
+add_library(jong-ibus-engine STATIC engine.c)
+target_compile_options(jong-ibus-engine PRIVATE -Wall -Wextra -Wpedantic -Werror)
+target_link_libraries(jong-ibus-engine PUBLIC jong_ffi PkgConfig::IBUS Threads::Threads ${CMAKE_DL_LIBS} m)
+add_executable(ibus-engine-jong-bangla main.c)
+target_compile_definitions(ibus-engine-jong-bangla PRIVATE JONG_VERSION="${JONG_VERSION}")
+target_compile_options(ibus-engine-jong-bangla PRIVATE -Wall -Wextra -Wpedantic -Werror)
+target_link_libraries(ibus-engine-jong-bangla PRIVATE jong-ibus-engine)
+target_link_options(ibus-engine-jong-bangla PRIVATE -Wl,--no-undefined -Wl,--exclude-libs,ALL)
+
+# Exec is a shell-style command inside XML: quote the absolute executable path,
+# then XML-escape it. No build paths or automatic activation are installed.
+set(JONG_IBUS_EXEC "${CMAKE_INSTALL_FULL_LIBEXECDIR}/ibus-engine-jong-bangla")
+string(REPLACE "'" "'\\''" JONG_IBUS_EXEC_XML "${JONG_IBUS_EXEC}")
+set(JONG_IBUS_EXEC_XML "'${JONG_IBUS_EXEC_XML}'")
+string(REPLACE "&" "&amp;" JONG_IBUS_EXEC_XML "${JONG_IBUS_EXEC_XML}")
+string(REPLACE "<" "&lt;" JONG_IBUS_EXEC_XML "${JONG_IBUS_EXEC_XML}")
+string(REPLACE ">" "&gt;" JONG_IBUS_EXEC_XML "${JONG_IBUS_EXEC_XML}")
+configure_file(jong-bangla.xml.in jong-bangla.xml @ONLY)
+install(TARGETS ibus-engine-jong-bangla RUNTIME DESTINATION "${CMAKE_INSTALL_LIBEXECDIR}")
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/jong-bangla.xml"
+    DESTINATION "${CMAKE_INSTALL_DATADIR}/ibus/component")
+file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/install-layout.txt"
+    "${JONG_IBUS_EXEC}\n${CMAKE_INSTALL_FULL_DATADIR}/ibus/component/jong-bangla.xml\n")
+
+enable_testing()
+find_program(DBUS_RUN_SESSION dbus-run-session REQUIRED)
+find_package(Python3 3.11 REQUIRED COMPONENTS Interpreter)
+add_executable(jong-ibus-harness tests/harness.cpp)
+target_compile_options(jong-ibus-harness PRIVATE -Wall -Wextra -Wpedantic -Werror)
+target_link_libraries(jong-ibus-harness PRIVATE PkgConfig::IBUS)
+add_dependencies(jong-ibus-harness ibus-engine-jong-bangla)
+add_test(NAME ibus-dbus-synthetic COMMAND "${Python3_EXECUTABLE}"
+    "${JONG_ROOT}/tools/run-ibus-tests.py"
+    $<TARGET_FILE:jong-ibus-harness> $<TARGET_FILE:ibus-engine-jong-bangla>)
+set_tests_properties(ibus-dbus-synthetic PROPERTIES TIMEOUT 60 ENVIRONMENT "G_DEBUG=fatal-warnings")

@@ -10,78 +10,95 @@ Dates use the project's Asia/Dhaka timezone.
 
 ## Current position
 
-- **Implemented:** independent Rust transliteration/composition, private Rust
-  C ABI and experimental C++ Fcitx5 addon with isolated dispatcher tests.
-- **Verified baseline:** a fresh Release build of
-  `72378338e59f399e05ef6a1f0ad688e106440735` exactly matches the installed addon;
-  both installed registrations match. See the
-  [binary evidence and scope](fcitx5-validation.md#verified-source-baseline-and-initial-scope).
-  Historical build provenance and loaded-process identity remain unverified.
-- **Initial scope:** experimental source installation on CachyOS x86_64 / KDE
-  Plasma Wayland. No beta/stable route or published release is declared.
-  IBus feasibility can proceed; release acceptance remains separate.
-- **Desktop evidence:** scoped user-reported KWrite, Firefox and Kate passes;
-  the [validation record](fcitx5-validation.md#installed-route-basic-smoke-result)
-  owns app versions, route attribution and remaining gaps. No new runtime,
-  GTK/Electron/XWayland, broad support or latency acceptance is claimed.
-- **Environment:** user reports Fcitx5 5.1.23, a post-install restart, Plasma
-  6.8.2 and CachyOS; prior local inspection recorded Linux 7.3.1-1-cachyos x86_64.
-  No environment or installed-binary checks were rerun for this workflow change.
-- **Review policy:** the maintainer now requires a separate reviewer chat for
-  every PR, including documentation. Implementation self-review and passing CI
-  alone cannot authorize merge. See the
-  [review protocol](../CONTRIBUTING.md#separate-session-review).
-- **Enforcement:** main's ruleset was inspected on 2026-11-06. PRs, both CI jobs,
-  an up-to-date base and resolved conversations are required; approving reviewer
-  count is zero. Separate-chat review is an agent/maintainer gate, not a CI check.
-- **Other delivery:** IBus, Linux packages/AUR, Windows TSF and macOS remain
-  planned in the [roadmap](roadmap.md). Release publication remains manual.
-  Tag-driven draft execution and tag/release protections remain unverified.
-- **Prior evidence:** 522,933 reference parity rows plus 60 Unicode-policy rows
-  were checked earlier. Compatibility and resource checks were not rerun here.
+- **Implemented:** independent Rust transliteration/composition, shared private
+  Rust C ABI, experimental C++ Fcitx5 addon and C11/GLib IBus service. The
+  [IBus record](ibus.md) owns boundary decisions, commands and validation limits.
+- **IBus evidence:** the production executable passes private D-Bus factory/key/
+  lifecycle tests and staged source-install/removal checks. No IBus daemon or
+  real GNOME/client route was tested; no beta/stable support is declared.
+- **Shared boundary:** `adapters/ffi` now serves both native adapters. No
+  transliteration/composition semantics or Rust dependencies changed. Native
+  cursor units remain separate: Fcitx5 UTF-8 bytes, IBus Unicode characters.
+- **Fcitx5 baseline:** the previously verified Release build of
+  `72378338e59f399e05ef6a1f0ad688e106440735` matches the installed addon and
+  registrations. This step did not replace it or recheck loaded-process identity.
+  [Desktop evidence](fcitx5-validation.md#installed-route-basic-smoke-result)
+  remains scoped user-reported KWrite/Firefox/Kate results on CachyOS/Plasma
+  Wayland. Fcitx5 beta/stable acceptance remains outstanding.
+- **Workflow handoff corrected:** [PR #18](https://github.com/shaadahmmed/jong-bangla-keyboard/pull/18)
+  was merged as `2f444b0`; its review/merge is no longer the pending next step.
+  Every new PR still needs a separate reviewer chat for its latest revision;
+  implementation self-review and CI cannot authorize merge.
+- **Environment:** CachyOS x86_64, GCC 16.2.1, Rust/Cargo 1.99.1, GLib 2.90.1,
+  CMake 4.4.5; temporary extracted Arch `libibus` 1.5.34-2 development files
+  report pkg-config version 1.5.34-rc2. No system package, input-method setting,
+  installed addon or desktop daemon was changed.
+- **Other delivery:** Linux packages/AUR, Windows TSF and macOS remain planned
+  in the [roadmap](roadmap.md). Publication stays manual. No new performance or
+  full-reference-parity claim is made; earlier 522,933 parity and 60 Unicode
+  policy rows remain prior evidence, not checks rerun in this step.
 
 ## Latest completed step
 
-- **2026-11-06 — Prepare the separate-session PR review workflow.** Updated
-  AGENTS.md, CONTRIBUTING.md, the PR template and release guidance to require
-  separate-chat review of every PR's latest revision before merging. Added
-  project-specific review scope, CI limits and a reusable reviewer handoff.
-- **Decision:** this replaces self-review as a sufficient review gate. Task
-  implementation still proceeds through commit, push and PR without routine
-  confirmation; it then waits for a separate session's merge recommendation.
-  New pushes require renewed reviewer coverage and an updated recommendation.
-- **Actual checks:** `python3 tools/check-docs.py`,
+- **2026-11-06 — Implement the experimental IBus service and repair the handoff.**
+  Added the native engine/factory, executable and generated registration, using
+  the existing Rust controller through a shared, renamed private C-ABI crate.
+  IBus/frontend owns focus/switch preedit commits; engine callbacks discard raw
+  state without committing twice. Focus IDs, reset/destruction, restrictions,
+  original-key forwarding and character cursor offsets have synthetic coverage.
+- **Tests and delivery tooling:** production-executable protocol tests use a
+  private D-Bus bus with temporary XDG directories and no display. The staged
+  checker validates exactly two files and IBus XML parsing, runs the staged
+  executable, rejects a missing executable and preserves unrelated files.
+  CI now checks both adapters in checkout and exported-source builds; the
+  existing required job name `Rust and Fcitx5` stays unchanged.
+- **Actual checks:** `bash tools/check-build.sh` passed Rust format, Clippy,
+  workspace tests, Release build, API docs and conversion smoke; Fcitx5 CTest
+  (two tests, ten dispatcher suites) and staged installation; IBus CTest and
+  staged installation. Final native edits received affected IBus checks again.
+  A clean `git archive --format=tar HEAD` export outside the checkout passed
+  the same `bash tools/check-build.sh` block without Git metadata.
+  Temporary dependency paths were supplied through `PKG_CONFIG_PATH` and
+  `LD_LIBRARY_PATH`; the [IBus guide](ibus.md#build-and-synthetic-checks) explains
+  custom-prefix validation.
+- **Native memory checks:** configured/built the documented sanitizer builds;
+  `python3 tools/check-memory.py target/fcitx5-sanitized target/ibus-sanitized`
+  passed: intentional Rust leak detected, 20,000 normal C-ABI lifecycle cycles,
+  ten Fcitx5 suites and the production IBus suite with ASan/UBSan/LSan enabled,
+  without normal-workload reports. System libraries/Rust accesses are not fully
+  instrumented; exceptional panic-payload retention remains documented.
+- **Documentation/tooling checks:** `python3 tools/check-docs.py`,
   `python3 -m unittest discover -s tools/tests -v` (16 tests),
-  `python3 tools/check-release.py --base origin/main` and `git diff --check`
-  passed. Rust/Fcitx5 runtime checks are not needed for documentation-only edits;
-  hosted CI is separate evidence and must be checked on the committed revision.
-- **Tracker and delivery:** no open Issues or PRs at task start; confirmed
-  [PR #17](https://github.com/shaadahmmed/jong-bangla-keyboard/pull/17) was merged.
-  Work uses fresh `docs/separate-pr-review` from updated main. Implementation
-  self-review does not satisfy the new gate; separate-session review and merge
-  remain pending. No GitHub ruleset or CI workflow was changed.
-- **Limits:** no automatic chat creation or automated review-report enforcement
-  is claimed. Current CI has no dedicated leak-sanitizer or desktop acceptance
-  job. A separate chat using the author's account posts a review comment,
-  not a formal GitHub approval. Historical progress entries are unchanged.
+  `python3 tools/check-release.py --base origin/main`, `actionlint`,
+  `shellcheck tools/check-build.sh`, native `clang-format --dry-run --Werror`
+  and `git diff --check` passed. No release version was changed.
+- **Tracker/delivery:** no open Issues or PRs at task start. Work uses fresh
+  `feat/ibus-adapter` from synchronized main. Separate-session review and merge
+  of this implementation remain pending; do not treat self-review as that gate.
+- **Limits:** no GNOME/IBus installed acceptance, completed Compose-table support,
+  verified AltGr/frontend routing, generic mouse-relocation notification or
+  desktop latency result. These limits are detailed in the IBus record rather
+  than implied support claims. Historical progress entries are unchanged.
 
 ## Next small implementation step
 
-1. Review this workflow PR in a separate chat using the
-   [review handoff](../CONTRIBUTING.md#separate-session-review). Post findings and
-   an explicit merge recommendation for the exact head commit on the PR.
-2. Fix findings, renew review after any push, then merge only after the separate
-   session recommends it and all other gates pass. Verify post-merge CI before
-   task-branch cleanup and synchronize main.
-3. Begin [IBus feasibility](roadmap.md#2-add-ibus): inspect development libraries,
-   define the smallest native boundary around the shared Rust controller and
-   validate initial event ownership/forwarding/context isolation synthetically.
-   Installed acceptance needs a named GNOME/IBus environment; do not switch the
-   current Fcitx5 session or activate competing daemons as a side effect.
+1. Review the IBus implementation PR in a separate chat using the
+   [review protocol](../CONTRIBUTING.md#separate-session-review). Cover the full
+   shared-boundary move, native memory/lifecycle behavior, protocol tests,
+   registration, source export and CI changes. Post the exact reviewed head,
+   findings, limits and explicit merge recommendation on the PR.
+2. Fix findings and renew review/checks after a push. Merge only when the latest
+   revision has the separate recommendation and all gates pass; verify post-merge
+   CI before task-branch cleanup and synchronization.
+3. Validate installed IBus in a named GNOME/IBus Wayland environment using the
+   [desktop acceptance checklist](ibus.md#next-desktop-acceptance), preserving the
+   current Fcitx5 session. Investigate real focus/switch ownership, GTK/Qt/browser
+   routes, restrictions, AltGr/Compose and mouse/selection behavior. Track any
+   reproduced bugs and release decisions in GitHub Issues.
 
-**Done when:** this PR has separate-session review and verified delivery. The
-next product increment remains IBus feasibility, with local prerequisites and
-validation limits recorded; Fcitx5 beta/stable acceptance remains outstanding.
+**Done when:** this implementation has separate-session review and verified
+PR delivery. IBus desktop acceptance and Fcitx5 beta/stable acceptance remain
+separate, outstanding gates; binary packaging follows the roadmap.
 
 ## Completed steps
 

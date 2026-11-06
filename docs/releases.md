@@ -60,8 +60,10 @@ The current Cargo `0.1.0` baseline is not a published release.
 ## Prepare a release PR
 
 1. Create a release branch and select the next version. Update `version` in
-   [the core manifest](../Cargo.toml) and [the FFI manifest](../adapters/fcitx5/ffi/Cargo.toml),
+   [the core manifest](../Cargo.toml) and [the FFI manifest](../adapters/ffi/Cargo.toml),
    and `Version` in [the addon metadata](../adapters/fcitx5/jong-bangla.conf.in).
+   IBus executable/XML versions are generated from the core manifest by CMake;
+   reconfigure and build after a version change.
    Regenerate `Cargo.lock` with `cargo generate-lockfile --offline`; inspect its diff.
    These are the currently implemented artifacts. When adding adapters/packages,
    extend the validator and asset workflow to cover their version metadata before
@@ -99,7 +101,7 @@ The current Cargo `0.1.0` baseline is not a published release.
    The unchanged initial unreleased baseline may omit dated notes. This also
    catches a first release prepared at the existing version. CI builds and tests
    both the checkout and an exported source archive, including staged Fcitx5
-   installation. Git-based documentation/provenance checks still need a checkout;
+   and IBus installation. Git-based documentation/provenance checks still need a checkout;
    see [development checks](development.md#documentation-and-release-tooling).
    Tag pushes repeat explicit tag validation before preparing a draft.
 6. Review the complete diff, commit and submit the release PR through the same

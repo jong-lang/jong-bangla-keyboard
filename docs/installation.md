@@ -4,9 +4,10 @@ Build prerequisites are listed in the [development guide](development.md#build-a
 Run commands from the repository root. Staged installation has been checked;
 basic installed-route typing/editing checks have user-reported passes in KWrite
 and Firefox on Wayland. See the [recorded scope and limits](fcitx5-validation.md#installed-route-basic-smoke-result).
-This guide covers the current Fcitx5 source installation only. IBus, native Linux
-packages, Flatpak, Windows TSF and macOS delivery are planned in the
-[roadmap](roadmap.md); installation commands for those targets do not exist yet.
+This guide covers Fcitx5 source installation. The separate [IBus experiment
+guide](ibus.md) covers its source build, staged install and unvalidated desktop
+route. Native Linux packages, Flatpak, Windows TSF and macOS delivery remain
+planned in the [roadmap](roadmap.md).
 
 ## Install the experimental addon
 

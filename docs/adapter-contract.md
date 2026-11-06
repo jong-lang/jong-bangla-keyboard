@@ -1,9 +1,9 @@
 # Adapter interaction and interoperability contract
 
-This document owns native event/lifecycle behavior and the implemented Fcitx5
+This document owns native event/lifecycle behavior and the shared Rust
 interop boundary. Shared product requirements are in [v1.md](v1.md); platform
-implementation stages are in the [roadmap](roadmap.md). The Fcitx5-specific C ABI
-below does not impose a binding choice on other adapters.
+implementation stages are in the [roadmap](roadmap.md). The private C ABI
+below is reused by Fcitx5 and IBus; future adapters choose their native bindings.
 
 ## Adapter interaction contract
 
@@ -144,18 +144,20 @@ preedit/commit/application-key effects using only synthetic text such as
 | Focus A → B → A and duplicate lifecycle callbacks | No cross-context text or restored raw buffer; next `i` is ই |
 | Pointer motion, preedit click, relocation before/after reset | Motion preserves; valid pre-relocation commit or post-relocation discard |
 
-## Fcitx5 interoperability boundary
+## Shared Rust C ABI
 
 **Interoperability contract:**
 
-- Rust allocates/frees the handle; C++ never constructs or deletes its contents.
-  Calls use exclusive, non-reentrant access on Fcitx's event thread. Null handles
-  are accepted only as an error/no-op; fabricated or freed pointers are invalid.
+- Rust allocates/frees the handle; native code never constructs or deletes its
+  contents. Calls use exclusive, non-reentrant access on the framework event
+  thread. Null handles are accepted only as an error/no-op; fabricated or freed
+  pointers are invalid.
 - Insertion passes a Unicode scalar (`uint32_t`), rejecting surrogates/out-of-range
   values. Rust returns UTF-8 pointer/byte-length spans, without a NUL terminator.
-  They are borrowed until the next action/free; C++ copies both spans before
-  calling back into Fcitx. Empty spans are never dereferenced. Preedit cursor
-  offsets use UTF-8 bytes, including six bytes for synthetic `কি`.
+  They are borrowed until the next action/free; native code copies both spans
+  before calling back into the framework. Empty spans are never dereferenced.
+  Fcitx5 preedit cursors use UTF-8 bytes (six for `কি`); IBus uses Unicode
+  character counts (two). See the [IBus boundary](ibus.md#native-boundary-and-lifecycle).
 - Status 0 means success; 1 means invalid argument without mutation; 2 means a
   caught Rust panic with state discarded. The separate crate contains the unsafe
   pointer operations; `jong-bangla-core` continues to forbid unsafe code. Rust
@@ -166,7 +168,7 @@ preedit/commit/application-key effects using only synthetic text such as
   [failure-policy review](#c-abi-caught-panic-policy-review) records the evidence
   and tradeoff. Do not build this boundary with `panic=abort` if unwinding
   containment is required. The normal Cargo profiles use unwinding.
-- C++ catches exceptions in engine callbacks, discards state and clears preedit
+- The Fcitx5 C++ bridge catches exceptions in engine callbacks, discards state and clears preedit
   where possible. An internal key-processing failure consumes that event rather
   than replaying a possibly applied edit. The factory returns null on failure.
   Neither boundary nor addon logs or persists typed text. Standard runtime panic
@@ -197,7 +199,7 @@ Production code leaves the process-global panic hook untouched. Rust documents
 and the [global hook's execution before unwinding](https://doc.rust-lang.org/stable/std/panic/fn.set_hook.html).
 
 **Focused evidence:** Linux-only
-[`panic_tests.rs`](../adapters/fcitx5/ffi/src/panic_tests.rs) runs five scenarios in
+[`panic_tests.rs`](../adapters/ffi/src/panic_tests.rs) runs five scenarios in
 separate copies of the Rust test executable, behind a test-only `extern "C"`
 function using the production containment/operation helpers. Core dumps are
 disabled only in each child; aborts and the test hook do not affect the parent,

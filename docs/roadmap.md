@@ -7,7 +7,7 @@ The delivery targets are Linux with Fcitx5 and IBus; Flatpak, Debian `.deb`, RPM
 `.rpm` and pacman `.pkg.tar.zst` packages with maintained AUR recipes; Windows
 using Text Services Framework (TSF); and macOS on Apple silicon and Intel.
 These are planned deliverables. Only the Rust core, composition controller and
-experimental Fcitx5 adapter exist today. No package or additional platform is
+experimental Fcitx5 and IBus adapters exist today. No package or additional platform is
 available or supported merely because it appears here.
 
 The stage order below is an engineering plan based on the existing implementation.
@@ -20,7 +20,7 @@ delivery; this roadmap supersedes its former Fcitx5-only platform scope.
 | Target | Current evidence | Release boundary |
 | --- | --- | --- |
 | Fcitx5 on Linux | Experimental adapter, synthetic dispatcher and staged source installation; limited desktop observations | First scoped release; support claims require the acceptance gate below |
-| IBus on Linux | Planned | Separate adapter and real desktop acceptance |
+| IBus on Linux | Experimental C/GLib service, private D-Bus and staged source-installation checks; no desktop observations | Separate adapter and real desktop acceptance |
 | pacman and AUR | Planned | Native package plus maintained `PKGBUILD` and `.SRCINFO` |
 | Debian and RPM | Planned | Packages built and installed on explicitly named distribution releases |
 | Flatpak | Planned; deployment model needs a feasibility experiment | Working engine delivery and sandboxed-client input, independently validated |
@@ -36,7 +36,8 @@ adapters; it must not contain a second transliteration implementation. Typing
 stays local and does not require a network service.
 
 The Fcitx5 experiment already uses a small C++ adapter and a private Rust C ABI.
-Keep that working boundary. For IBus, TSF and macOS, select bindings and any native
+The IBus experiment reuses that ABI through C/GLib; see the
+[boundary and validation record](ibus.md). For TSF and macOS, select bindings and any native
 glue during their feasibility steps, based on API coverage, maintenance and
 ownership requirements. Do not impose the Fcitx5 C ABI or C++ implementation on
 every platform, or build a generic adapter framework before actual reuse exists.
@@ -74,7 +75,9 @@ must pass the acceptance gate. Keep platform bugs and release-blocking decisions
 
 Build the smallest IBus engine around the existing Rust controller. Establish
 preedit/commit ownership, key forwarding and per-context isolation before adding
-installation metadata. Test an installed engine in a named GNOME/IBus Wayland
+installation metadata. The [source experiment](ibus.md) now implements these
+boundaries and registration with synthetic service and staged-install checks.
+Installed acceptance remains pending. Test an installed engine in a named GNOME/IBus Wayland
 environment with GTK, Qt and browser clients, plus XWayland wherever claimed. Fcitx5 and
 IBus are alternative session integrations; packages must not silently switch the
 user's active framework or enable competing daemons.
@@ -174,7 +177,7 @@ one stage does not assert support for every roadmap target.
 ## Implementation follow-ups from the documentation review
 
 Release-preparation PR CI now checks versions and dated notes before tag creation.
-CI also builds and tests an exported source archive with Rust/Fcitx5 and staged
+CI also builds and tests an exported source archive with Rust/Linux-adapter and staged
 installation checks. Git-based documentation and provenance checks still require
 a checkout; see the [development guide](development.md#documentation-and-release-tooling).
 

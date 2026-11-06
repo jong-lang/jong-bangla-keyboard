@@ -1,5 +1,5 @@
 // MIT. Synthetic C-ABI lifecycle stress; no frontend or desktop configuration.
-#include "../jong.h"
+#include "../../ffi/jong.h"
 #include <cstdlib>
 #include <iostream>
 #include <memory>

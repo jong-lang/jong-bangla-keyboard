@@ -24,7 +24,7 @@ Follow the [installation guide](https://github.com/shaadahmmed/jong-bangla-keybo
 ### Tested environments
 
 - Automated: {{Record checks and outcomes; distinguish CI from local checks.}}
-- Desktop: {{Record distro, desktop, Fcitx5, application/toolkit versions and
+- Desktop: {{Record distro, desktop, input framework (Fcitx5/IBus), application/toolkit versions and
   Wayland/XWayland route, or explicitly state Not tested for this release.}}
 
 ### Known issues

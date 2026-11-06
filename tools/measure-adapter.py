@@ -126,7 +126,7 @@ def main():
     repo = Path(__file__).resolve().parent.parent
     tracked_sources = ["adapters/fcitx5/tests/resources.cpp", "adapters/fcitx5/CMakeLists.txt",
                        "tools/measure-adapter.py", "adapters/fcitx5/addon.cpp",
-                       "adapters/fcitx5/ffi/src/lib.rs", "src/composition.rs"]
+                       "adapters/ffi/src/lib.rs", "src/composition.rs"]
     metadata = {
         "started_utc": datetime.now(timezone.utc).isoformat(),
         "runs": args.runs, "build": str(build), "platform": platform.platform(),
