@@ -58,18 +58,21 @@ Dates use the project's Asia/Dhaka timezone.
   release build, API docs, conversion smoke, both CTest tests and all staged
   installation/discovery/missing-library/removal checks. No desktop frontends
   were used. The archive was exported from the staged source tree before commit.
+- `target/ci-fcitx5/jong-fcitx5-harness --installed /usr/share/fcitx5 /usr/lib/fcitx5`
+  passed all ten suites against the existing system installation. This remains
+  synthetic evidence, not a normal-session application typing result.
 - `actionlint` 1.7.12 with ShellCheck 0.11.0 and
   `shellcheck tools/check-build.sh` passed. Downloaded official lint tools were
   confined to `/tmp`; system packages/settings were not changed. Build tools:
   Rust/Cargo 1.99.1, Fcitx5 5.1.23, CMake 4.4.5, Ninja 1.13.2, Python 3.14.9.
 - **Review/delivery:** self-review found and fixed an initial-baseline omission
   of the required Unreleased heading; regression coverage now rejects it.
-  [PR #6](https://github.com/shaadahmmed/jong-bangla-keyboard/pull/6) is on
-  `ci/release-preparation-source-checks`. Its first hosted run passed checkout
+  Prepared as [PR #6](https://github.com/shaadahmmed/jong-bangla-keyboard/pull/6)
+  from `ci/release-preparation-source-checks`. Its first hosted run passed checkout
   checks but failed before archive building; see [Issue #7](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/7).
   The correction trusts only the exact workspace for the export command; a local
-  ownership-mismatch/control probe and workflow lint passed. Updated hosted
-  checks and merge remain pending. No engine, C ABI or desktop behavior changed;
+  ownership-mismatch/control probe and workflow lint passed. The PR records
+  current hosted checks and delivery status. No engine, C ABI or desktop behavior changed;
   runtime performance and full reference comparisons were not rerun.
 
 ## Next small implementation step
