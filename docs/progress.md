@@ -10,79 +10,88 @@ Dates use the project's Asia/Dhaka timezone.
 
 ## Current position
 
-- **Implemented:** independent Rust transliteration/composition, a private Rust
-  C ABI and an experimental C++ Fcitx5 addon with isolated dispatcher tests.
-- **Delivery scope:** staged Linux Fcitx5 and IBus, Linux packages/AUR, Windows
-  TSF and macOS on Apple silicon and Intel. Only the Fcitx5 experiment exists;
-  the [roadmap](roadmap.md) distinguishes planned targets from delivered support.
-- **Installed desktop evidence:** the user reports basic editing/boundaries in
-  KWrite 26.08.2 and Firefox 159.0.1, both Wayland. Further passes cover KWrite
-  Enter/Ctrl+A/window-focus return; Firefox field handoff/return, dummy password
-  transitions and window closure/fresh composition; and English/Bangla switching
-  in both apps, with Meta+X reported for English. The
-  [validation record](fcitx5-validation.md#installed-route-basic-smoke-result)
-  scopes each 2026-11-06 report to its app/case and describes evidence limits.
-- **Desktop limits:** remaining app/case combinations, modifiers/repeats,
-  relocation, optional layout/Compose sequences and the wider frontend matrix
-  still need results. The loaded addon revision and current Fcitx5/toolkit/distro/
-  Plasma versions were not reported. Earlier inventories remain prior evidence.
-- **Release tooling:** PR/main CI validates versions and prepared notes and
-  builds/tests checkout and exported source, including staged installation.
-  Git-based documentation/provenance checks need a checkout. Version selection,
-  tagging and publication remain explicit maintainer actions.
-- **Delivery prior evidence:** tooling PR #6 merged as `d12ce93`; desktop-result
-  PR #10 merged as `416f735`. Its
-  [post-merge CI](https://github.com/shaadahmmed/jong-bangla-keyboard/actions/runs/42166734183)
-  passed both jobs; its branches were deleted and main synchronized.
-- **Task workflow:** inspect Issues/PRs, use fresh branches, validate and create
-  PRs, identify self-review, fix findings, merge through required gates, verify
-  post-merge CI and clean up only task branches. No agent delegation is authorized.
-  See [contribution rules](../CONTRIBUTING.md#review-merge-and-cleanup).
-- **Other limits:** additional adapters/packages and tag-driven draft/API
-  execution remain unimplemented or untested respectively. Tag protections and
-  immutable-release settings were not inspected. Bug investigation stays in Issues.
-- **Compatibility prior evidence:** 522,933 parity rows plus 60 Unicode policy
-  rows. No new reference comparison or performance measurement was run here.
+- **Implemented:** independent Rust transliteration/composition, private Rust
+  C ABI and experimental C++ Fcitx5 addon with isolated dispatcher tests.
+- **Delivery scope:** staged Linux Fcitx5/IBus, Linux packages/AUR, Windows TSF
+  and macOS on both architectures. Only the Fcitx5 experiment exists; see the
+  [roadmap](roadmap.md) for planned versus delivered support.
+- **Resolved configuration report:** [Issue #12](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/12)
+  records the standalone-Shift switching investigation and manual retest. Read-only
+  configuration inspection, upstream 5.1.23 code and an isolated reproduction
+  identify Fcitx's configured temporary toggle. An empty-list control preserves
+  standalone Shift and phonetic case; no production adapter change is needed.
+  The user chose reversible manual changes and confirmed the problem is fixed.
+  The retest app was not named, so it is not attributed separately to both apps.
+- **Installed desktop evidence:** user-reported cases cover basic typing/editing
+  in KWrite 26.08.2 and Firefox 159.0.1 on Wayland, window focus and Enter/Ctrl+A
+  in both, Firefox field return/password transitions/window closure, and language
+  switching. One English UK AltGr+E → € case is reported without app/pending state.
+  See the [scoped validation record](fcitx5-validation.md#installed-route-basic-smoke-result).
+- **Environment:** user reports CachyOS x86_64, Plasma 6.8.2, kernel
+  7.3.1-1-cachyos and KWrite Qt 6.12.0. Installed Fcitx5 package inventory is
+  5.1.23-1.1; the loaded addon revision, running Fcitx5/Firefox toolkit and exact
+  frontend transport remain unconfirmed. Package and runtime evidence differ.
+- **Other desktop limits:** remaining modifiers/case/repeats, cursor relocation,
+  dead-key/Compose and broader app/frontend combinations still need results.
+- **Release tooling:** PR/main CI validates versions/notes and builds/tests the
+  checkout and source export, including staged installation. Git-based checks
+  need a checkout. Versions, tagging and publication remain maintainer actions.
+- **Delivery prior evidence:** PR #11 merged as `cef8200`; its
+  [post-merge CI](https://github.com/shaadahmmed/jong-bangla-keyboard/actions/runs/42167762764)
+  passed both jobs. Task branches were removed and main synchronized.
+- **Workflow:** inspect Issues/PRs, prioritize bugs, use fresh branches, validate,
+  commit/PR, self-review, protected merge, verify CI and clean only task branches.
+  No delegation is authorized; see [contribution rules](../CONTRIBUTING.md#review-merge-and-cleanup).
+- **Other limits:** other adapters/packages are unimplemented; tag-driven draft/
+  API execution is untested. Tag protections/immutable releases were not inspected.
+  Compatibility parity (522,933 rows plus 60 Unicode-policy rows) is prior evidence.
 
 ## Latest completed step
 
-- **2026-11-06 — Record Firefox field-return and context-closure results.**
-  The user replied `pass` to the three requested Firefox checks: fresh typing
-  after returning to field A, dummy password-field transitions without unexpected
-  composition/stale text, and fresh composition after closing/opening a window.
-  The context is the previously reported Firefox 159.0.1 on Wayland; these are
-  user-reported, not agent-observed results.
-- Closed the earlier return-to-A evidence gap. The password transition's original
-  pending-word commit/discard disposition was not separately described. No output
-  capture, new candidate/runtime details or direct callback/ownership evidence
-  were supplied. Broader app/case combinations remain distinct.
-- Updated validation, Unreleased changelog and handoff. No executable source,
-  dependencies, settings or typing behavior changed.
-- **Actual documentation checks:** `python3 tools/check-docs.py` passed local
-  links/anchors, fences and shell-example syntax; `git diff --check` passed.
-  A Python comparison verified unchanged historical progress entries and that
-  only Markdown files changed. Runtime tests were not rerun locally for this
-  docs-only increment; earlier hosted results above are prior evidence.
-- **Review/delivery:** self-review covers exact requested outcomes, combined
-  confirmation, prior app/route context, closed versus remaining evidence gaps
-  and links. Prepared on `docs/firefox-context-lifecycle-results`; its PR records
-  hosted validation and delivery status. Desktop acceptance remains partial.
+- **2026-11-06 — Diagnose the temporary Shift toggle and extend dispatcher tests.**
+  The framework-shortcuts suite now covers ordinary English, Meta+Space activation,
+  repeated temporary Shift toggles, primary-toggle exit and an empty-list control.
+  It verifies exactly-once word commit, fresh return, Shift+I case and modifier
+  passthrough. Both configured profiles pass; production engine/addon code is
+  unchanged. Investigation/retest details stay in Issue #12.
+- Recorded user-reported Firefox Enter/Ctrl+A/window-focus passes, the additional
+  environment information and the scoped AltGr+E result. Unreported modifier,
+  repeat and cursor checks were not marked as passes.
+- Added reversible temporary-toggle instructions, troubleshooting and a contract
+  clarification: framework shortcuts take precedence over adapter modifier rules.
+  A temporary candidate config with only `AltTriggerKeys=` added under `[Hotkey]`
+  was validated using Fcitx's parser; primary triggers remained unchanged. The
+  user chose manual changes and confirmed the correction works in response to
+  the primary-toggle/Shift/case retest; the app was not named. The agent did not
+  edit settings or restart a daemon.
+- **Actual checks:** `bash tools/check-build.sh` passed Rust fmt/Clippy/workspace
+  tests/release/docs/conversion, both CTest tests and staged installation/loading/
+  missing-library/removal controls. One pre-existing ignored doctest remains.
+  Earlier targeted `cmake --build target/ci-fcitx5` and
+  `ctest --test-dir target/ci-fcitx5 --output-on-failure` also passed.
+- C++ formatting via the development guide's `clang-format --dry-run --Werror`
+  command, `python3 tools/check-docs.py`, `git diff --check` and historical-progress
+  preservation passed. No reference comparison or performance measurement was
+  rerun; no new performance, full AltGr or secure-context guarantee is claimed.
+- **Review/delivery:** self-review covers shortcut ownership, actual key events,
+  state/commit controls, lifetimes, configuration isolation and evidence limits.
+  Prepared on `test/fcitx-temporary-shift-toggle`; the PR tracks hosted checks
+  and delivery. Issue #12 is resolved by the user-confirmed manual configuration
+  change.
 
 ## Next small implementation step
 
-1. Check open Issues/PRs and finish any pending delivery through protected gates.
-2. Continue the [remaining desktop checks](fcitx5-validation.md#remaining-desktop-smoke-checklist).
-   Requested modifiers/case/repeats and pointer/cursor tests in both apps;
-   Firefox Enter/Ctrl+A/window-focus cases; current environment/runtime versions;
-   and any already-configured AltGr/dead-key/Compose result or unavailability.
-   These replies are not yet recorded. Capture candidate details and keep failures
-   in GitHub Issues; do not infer direct callbacks from visible application results.
-3. Choose the tested initial release scope from the evidence, then begin the
-   [IBus stage](roadmap.md#2-add-ibus). Other adapters and packaging remain
-   separate roadmap stages.
+1. Check Issues/PRs and finish pending delivery through protected gates.
+2. Continue the remaining modifier/case/repeat and cursor-relocation observations
+   in named apps. The user confirmed the temporary-toggle correction works but
+   did not name the retest app. Keep this confirmation scoped accordingly and
+   preserve the user's chosen shortcuts.
+3. Complete remaining desktop observations and missing candidate/runtime details,
+   choose the tested initial scope, then start the [IBus stage](roadmap.md#2-add-ibus).
+   Other adapters and packaging remain separate stages.
 
-**Done when:** desktop evidence and explicit remaining limits establish the
-initial tested scope, followed by protected delivery of each separate increment.
+**Done when:** the reported problem has an evidenced disposition and desktop
+results/explicit limits establish the initial scope, with protected task delivery.
 
 ## Completed steps
 

@@ -83,5 +83,24 @@ a word is pending finalizes it when the frontend permits delivery, and returning
 starts a fresh word. For literal Latin words or ASCII numbers, use that English
 input method. The v1 preedit has no raw-Latin candidate or digit-mode toggle.
 
+### Standalone Shift switching
+
+Fcitx5 can reserve Left Shift for **Temporarily Toggle Input Method**. With that
+binding enabled, a standalone Shift can switch between Bangla and English after
+activation, while doing nothing in English reached with the primary toggle.
+This is a framework shortcut; Jong leaves configured switching shortcuts to Fcitx.
+See Fcitx5's [option definition](https://github.com/fcitx/fcitx5/blob/5.1.23/src/lib/fcitx/globalconfig.cpp#L82-L98).
+
+If you prefer standalone Shift to preserve composition, make this choice yourself
+in **Fcitx5 Configuration → Global Options**: remove **Left Shift (`Shift_L`)**
+from **Temporarily Toggle Input Method**, then click **Apply**. Leave **Toggle
+Input Method** and its primary shortcut unchanged. This option affects all input
+methods, not only Jong. To reverse the change, add Left Shift back to the same
+temporary-toggle option and apply it. Do not reset the whole configuration.
+
+After changing it, test the primary toggle, standalone Shift with `ki` pending,
+and `kI` → `কী`. The equivalent empty-list setting is `AltTriggerKeys=` under
+`[Hotkey]`; merely leaving the default Shift entry commented does not disable it.
+
 Report unexpected behavior in
 [GitHub Issues](https://github.com/shaadahmmed/jong-bangla-keyboard/issues).

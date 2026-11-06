@@ -10,8 +10,9 @@ below does not impose a binding choice on other adapters.
 **Updated by the user on 2026-10-29:** Escape commits active Bangla, clears the
 raw buffer and consumes that press; it must preserve the typed word. This
 supersedes the earlier Escape-cancels decision. Navigation, Tab, Delete and
-application shortcuts commit first, then forward. Modifier-only presses preserve
-composition. Focus loss and input-method switching commit to the original field when the framework still permits it, then
+application shortcuts commit first, then forward. Modifier-only presses that
+reach the adapter preserve composition; configured framework switching shortcuts
+take precedence. Focus loss and input-method switching commit to the original field when the framework still permits it, then
 clear state. Explicit resets and destroyed contexts discard pending input.
 These decisions settle the earlier interaction proposals. They preserve typed
 text before application editing; Escape finishes a word without inserting a
