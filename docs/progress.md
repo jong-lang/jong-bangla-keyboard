@@ -12,81 +12,76 @@ Dates use the project's Asia/Dhaka timezone.
 
 - **Implemented:** independent Rust transliteration/composition, private Rust
   C ABI and experimental C++ Fcitx5 addon with isolated dispatcher tests.
-- **Delivery scope:** staged Linux Fcitx5/IBus, Linux packages/AUR, Windows TSF
-  and macOS on both architectures. Only the Fcitx5 experiment exists; see the
-  [roadmap](roadmap.md) for planned versus delivered support.
-- **Resolved configuration report:** [Issue #12](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/12)
-  records the temporary-Shift-toggle diagnosis and user-confirmed manual fix.
-  No production adapter change was needed; the original retest app was unnamed.
-- **Installed desktop evidence:** basic typing/editing in KWrite 26.08.2 and
-  Firefox 159.0.1 on Wayland, window focus and Enter/Ctrl+A in both, Firefox field
-  return/password transitions/window closure, and language switching have scoped
-  user-reported passes. One English UK AltGr+E → € report lacks app/pending state.
-- **Modifier/cursor evidence:** Kate 26.08.3 reports pending-word preservation,
-  case, repeats, pointer motion and click relocation. Firefox 159.0.1/Wayland has
-  a grouped modifier/case/repeat/pointer/click/selection pass. Exact Firefox
-  relocation outputs and Kate selection remain unrecorded.
-- **Latest follow-up:** KWrite 26.08.3/Qt 6.12.0 has a grouped modifier/case/repeat
-  pass. Letter and Backspace activity stops immediately on release in KWrite
-  and Firefox. Compose/dead keys have a grouped pass, without per-app sequences
-  or pending-buffer outputs. An additional click/selection pass lacks app
-  attribution; see the [scoped follow-up](fcitx5-validation.md#runtime-kwrite-and-key-release-follow-up).
-- **Environment/build:** user reports Fcitx5 5.1.23 and a post-install restart,
-  CachyOS x86_64, Plasma 6.8.2 and kernel 7.3.1-1-cachyos. Agent SHA-256 checks
-  identify equal installed/local October 30 addon binaries. The source commit
-  and independently identified loaded binary remain unknown; timestamps do not
-  prove installation time. Firefox toolkit/transport and Kate toolkit/route
-  remain unconfirmed. Installed packages are separate from runtime evidence.
-- **Desktop limits:** grouped results do not establish exact output for every
-  app/state. No measured latency or broad app/frontend support claim. Keep
-  older KWrite 26.08.2 cases separate from the 26.08.3 follow-up.
-- **Release tooling:** PR/main CI checks versions/notes and builds/tests checkout
-  and source export with staged installation. Git checks need a checkout.
-  Versions, tagging and publication remain explicit maintainer actions.
-- **Workflow/delivery:** this documentation task began on clean, updated main
-  with no open Issues or PRs. Its PR tracks hosted checks and delivery. Use fresh
-  branches, self-review, protected merge, post-merge verification and task-only
-  cleanup; [no delegation is authorized](../CONTRIBUTING.md#review-merge-and-cleanup).
-- **Other limits:** other adapters/packages are unimplemented; tag-driven draft/
-  API execution is untested. Tag protections/immutable releases were not inspected.
-  Compatibility parity (522,933 rows plus 60 Unicode-policy rows) is prior evidence.
+- **Verified baseline:** a fresh Release build of
+  `72378338e59f399e05ef6a1f0ad688e106440735` exactly matches the installed addon;
+  both installed registrations match too. See the
+  [binary evidence and scope](fcitx5-validation.md#verified-source-baseline-and-initial-scope).
+  The historical October 30 source commit remains unknown; this identifies a
+  verified source for equal bytes, not the historical build invocation.
+- **Initial scope:** experimental source installation on CachyOS x86_64 / KDE
+  Plasma Wayland. No beta/stable route or published release is declared.
+  IBus feasibility can proceed; release acceptance remains separate.
+- **Desktop evidence:** KWrite, Firefox and Kate have scoped user-reported
+  passes for typing/editing and selected lifecycle/modifier/cursor cases. Keep
+  app versions and grouped passes distinct; the
+  [validation record](fcitx5-validation.md#installed-route-basic-smoke-result)
+  owns exact attribution and remaining gaps.
+- **Environment:** user reports Fcitx5 5.1.23, a post-install restart, Plasma
+  6.8.2 and CachyOS; local Linux is 7.3.1-1-cachyos x86_64. No Fcitx5 process was
+  visible during this inspection, so loaded-binary identity remains unverified.
+  Firefox toolkit/transport and Kate toolkit/route remain incomplete.
+- **Desktop limits:** exact Compose/dead-key sequences and some relocation/
+  selection outputs are missing. Grouped reports do not prove every app/state.
+  GTK/Electron/XWayland and broader routes have no acceptance claim. No desktop
+  latency budget, broad support range or new runtime test is claimed.
+- **Resolved configuration:** [Issue #12](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/12)
+  records the user-confirmed temporary-Shift-toggle fix; no production change.
+- **Other delivery:** IBus, Linux packages/AUR, Windows TSF and macOS remain
+  planned in the [roadmap](roadmap.md). CI checks checkout/source-export builds,
+  staged installation and release metadata. Versions/publication remain manual;
+  tag-driven draft/API execution and release protections remain unverified.
+- **Prior evidence:** 522,933 reference parity rows plus 60 Unicode-policy rows
+  were checked earlier; compatibility comparisons and performance measurements
+  were not rerun in this step.
 
 ## Latest completed step
 
-- **2026-11-06 — Record runtime, KWrite and key-release follow-up.** Added the
-  reported Fcitx5 version/restart, KWrite 26.08.3/Qt 6.12.0 modifier/case/repeat
-  pass, grouped Compose/dead-key pass and explicit KWrite/Firefox release-stop
-  observations. Recorded installed/local addon hashes and timestamp limits.
-  README and Unreleased notes reflect the new evidence.
-- **Evidence limits:** no agent-observed desktop run, exact Compose/dead-key
-  sequences/state outputs or independently identified loaded/source revision.
-  The extra clicking/selection confirmation did not name its app. No production
-  code, installation or desktop settings changed.
-- **Actual checks:** `python3 tools/check-docs.py` passed local links/anchors,
-  fences and shell syntax; `python3 -m unittest discover -s tools/tests -v`
-  passed all 16 tooling tests; `git diff --check` passed. Historical progress
-  entries were compared with main and are unchanged. Earlier engine, desktop
-  and performance checks are prior evidence, not rerun runtime validation.
-- **Review/delivery:** prepared on `docs/desktop-runtime-release-results`;
-  self-review checks evidence scope, app/version attribution, hash/timestamp
-  interpretation and documentation consistency. The PR tracks hosted checks
-  and delivery. Next action is candidate provenance and initial tested scope.
+- **2026-11-06 — Verify installed-binary source equivalence and initial scope.**
+  Built clean revision `7237833` in fresh `target/fcitx5-baseline-7237833`.
+  SHA-256 and `cmp` establish exact equality with the installed addon; `cmp`
+  also matches both registrations. Documented experimental scope and shortened
+  README status. No installation, session settings or production code changed.
+- **Actual checks:** `bash tools/check-build.sh` passed Rust formatting, Clippy,
+  workspace tests, Release build, API docs, conversion example, both CTest cases
+  and staged-installation controls. Fresh candidate CMake configure/build,
+  `ctest --test-dir target/fcitx5-baseline-7237833 --output-on-failure` and
+  `python3 tools/check-install.py target/fcitx5-baseline-7237833` also passed.
+- **Documentation checks:** `python3 tools/check-docs.py`,
+  `python3 -m unittest discover -s tools/tests -v` (16 tests),
+  `python3 tools/check-release.py --base origin/main` and `git diff --check`
+  passed. Historical progress entries are unchanged.
+- **Review/delivery:** fresh `docs/fcitx5-baseline-identity` branch from updated
+  main; no open Issues/PRs at task start. Self-review covers binary/source
+  attribution, scope, remaining gates and documentation consistency. The PR
+  tracks hosted checks, review and delivery.
+- **Manual work:** none for binary equivalence; no reinstall or repeated desktop
+  checks needed solely for that result. Existing reports remain user-reported,
+  and loaded-process identity was not independently established.
 
 ## Next small implementation step
 
-1. Check Issues/PRs and finish pending delivery through protected gates.
-2. Identify the source revision for the October 30 installed addon (a current
-   checkout hash is not build provenance), or validate a newly identified build
-   separately. The reported Fcitx5 version and restart no longer need re-asking.
-3. Choose the initial scope from the [recorded desktop results](fcitx5-validation.md#installed-route-basic-smoke-result).
-   Use the [remaining checklist](fcitx5-validation.md#remaining-desktop-smoke-checklist)
-   only for missing evidence required by that scope. Keep grouped Compose/dead-key
-   passes and exact output evidence distinct; broader routes stay unvalidated.
-4. After establishing that scope, start the [IBus stage](roadmap.md#2-add-ibus).
-   Other adapters and packaging remain separate stages.
+1. Finish this PR through required checks, self-review, protected merge and
+   post-merge verification before task-branch cleanup.
+2. Begin [IBus feasibility](roadmap.md#2-add-ibus): inspect available development
+   libraries and choose the smallest native boundary around the shared Rust
+   controller. Keep event ownership, forwarding and context isolation explicit.
+3. Validate initially with isolated synthetic input. Installed IBus acceptance
+   needs a named GNOME/IBus environment; do not switch the current Fcitx5 session
+   or install/activate competing daemons as a development side effect.
 
-**Done when:** desktop results, candidate identity and explicit limits establish
-an initial scope, with protected delivery and no unresolved release-blocking bugs.
+**Done when:** the IBus boundary and first testable increment are defined, with
+actual local prerequisites and desktop-validation limits recorded. Fcitx5
+beta/stable scope still requires the roadmap acceptance gates.
 
 ## Completed steps
 

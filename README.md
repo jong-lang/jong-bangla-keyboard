@@ -15,17 +15,14 @@ for stage boundaries and acceptance gates.
 
 **Experimental and under development.** The Rust transliteration engine and
 composition controller are implemented, and an experimental Fcitx5 addon builds
-and passes isolated dispatcher tests. Limited desktop typing has been reported
-in GTK3, Firefox, KWrite and Kate. Installation staging has been checked, and
-basic installed-addon typing/editing checks have user-reported passes in KWrite
-and Firefox on Wayland. Kate 26.08.3 follow-up reports cover modifiers, case,
-held keys and cursor relocation. See the [results and remaining desktop checks](docs/fcitx5-validation.md#installed-route-basic-smoke-result).
-Firefox 159.0.1 on Wayland also has a grouped user-reported pass for modifiers,
-case, held keys, pointer motion, clicking and selection while composing.
-Further reports cover KWrite 26.08.3/Qt 6.12.0 modifiers, case and repeats,
-immediate key-release stopping in KWrite and Firefox, and grouped Compose/dead-key
-success. Exact sequences and runtime/build identification limits are recorded in
-the [follow-up](docs/fcitx5-validation.md#runtime-kwrite-and-key-release-follow-up).
+and passes isolated dispatcher and staged-installation checks. A fresh build of
+revision `7237833` exactly matches the installed addon; see the
+[verified baseline and initial scope](docs/fcitx5-validation.md#verified-source-baseline-and-initial-scope).
+The initial scope is experimental source installation on CachyOS x86_64 with
+KDE Plasma Wayland. KWrite, Firefox and Kate have scoped user-reported desktop
+results; exact app versions, cases and missing evidence are in the
+[validation record](docs/fcitx5-validation.md#installed-route-basic-smoke-result).
+No beta or stable desktop support is declared.
 
 The engine targets a [pinned jsAvroPhonetic reference](docs/compatibility.md#phonetic-behavior-reference).
 Recorded evidence covers 522,933 parity cases plus separate Unicode policy cases;
