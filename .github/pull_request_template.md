@@ -11,15 +11,24 @@ synthetic harness checks separate from actual desktop tests.
 
 ## Review
 
-Identify self-review or independent review and the reviewed revision. Assess
-correctness, architecture, regressions and tests; cover memory ownership/leaks,
-unsafe boundaries, performance, security and compatibility where relevant.
-Explain why a category is not applicable when useful.
+Implementation self-review: record scope and results. Leave this PR open for
+review in a separate chat; self-review and passing CI alone do not permit merge.
+Follow [the review protocol](../CONTRIBUTING.md#separate-session-review).
+
+Separate reviewer session/report: **pending**. Record the reviewer chat label,
+reviewed head SHA, findings, CI evidence, additional checks, validation limits
+and explicit ready-to-merge or changes-required recommendation on this PR.
+Assess correctness, architecture, regressions and tests; cover memory
+ownership/leaks, unsafe boundaries, performance, security, privacy, compatibility
+and delivery where relevant. Explain inapplicable areas. A separate chat using
+the author's account supplies a review comment, not a formal GitHub approval.
 
 Post findings with location, severity, evidence, impact and recommended correction.
 Fix findings and repeat affected checks and review. Merge only after required
-checks pass on the latest revision, findings/conversations are resolved and there
-are no conflicts. Verify the merge and post-merge CI before task-branch cleanup.
+checks pass on the latest revision, the separate session recommends merging that
+revision, findings/conversations are resolved and there are no conflicts. New
+pushes need renewed separate-session review. Verify the merge and post-merge CI
+before task-branch cleanup.
 
 ## Documentation and limitations
 

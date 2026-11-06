@@ -14,74 +14,74 @@ Dates use the project's Asia/Dhaka timezone.
   C ABI and experimental C++ Fcitx5 addon with isolated dispatcher tests.
 - **Verified baseline:** a fresh Release build of
   `72378338e59f399e05ef6a1f0ad688e106440735` exactly matches the installed addon;
-  both installed registrations match too. See the
+  both installed registrations match. See the
   [binary evidence and scope](fcitx5-validation.md#verified-source-baseline-and-initial-scope).
-  The historical October 30 source commit remains unknown; this identifies a
-  verified source for equal bytes, not the historical build invocation.
+  Historical build provenance and loaded-process identity remain unverified.
 - **Initial scope:** experimental source installation on CachyOS x86_64 / KDE
   Plasma Wayland. No beta/stable route or published release is declared.
   IBus feasibility can proceed; release acceptance remains separate.
-- **Desktop evidence:** KWrite, Firefox and Kate have scoped user-reported
-  passes for typing/editing and selected lifecycle/modifier/cursor cases. Keep
-  app versions and grouped passes distinct; the
-  [validation record](fcitx5-validation.md#installed-route-basic-smoke-result)
-  owns exact attribution and remaining gaps.
+- **Desktop evidence:** scoped user-reported KWrite, Firefox and Kate passes;
+  the [validation record](fcitx5-validation.md#installed-route-basic-smoke-result)
+  owns app versions, route attribution and remaining gaps. No new runtime,
+  GTK/Electron/XWayland, broad support or latency acceptance is claimed.
 - **Environment:** user reports Fcitx5 5.1.23, a post-install restart, Plasma
-  6.8.2 and CachyOS; local Linux is 7.3.1-1-cachyos x86_64. No Fcitx5 process was
-  visible during this inspection, so loaded-binary identity remains unverified.
-  Firefox toolkit/transport and Kate toolkit/route remain incomplete.
-- **Desktop limits:** exact Compose/dead-key sequences and some relocation/
-  selection outputs are missing. Grouped reports do not prove every app/state.
-  GTK/Electron/XWayland and broader routes have no acceptance claim. No desktop
-  latency budget, broad support range or new runtime test is claimed.
-- **Resolved configuration:** [Issue #12](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/12)
-  records the user-confirmed temporary-Shift-toggle fix; no production change.
+  6.8.2 and CachyOS; prior local inspection recorded Linux 7.3.1-1-cachyos x86_64.
+  No environment or installed-binary checks were rerun for this workflow change.
+- **Review policy:** the maintainer now requires a separate reviewer chat for
+  every PR, including documentation. Implementation self-review and passing CI
+  alone cannot authorize merge. See the
+  [review protocol](../CONTRIBUTING.md#separate-session-review).
+- **Enforcement:** main's ruleset was inspected on 2026-11-06. PRs, both CI jobs,
+  an up-to-date base and resolved conversations are required; approving reviewer
+  count is zero. Separate-chat review is an agent/maintainer gate, not a CI check.
 - **Other delivery:** IBus, Linux packages/AUR, Windows TSF and macOS remain
-  planned in the [roadmap](roadmap.md). CI checks checkout/source-export builds,
-  staged installation and release metadata. Versions/publication remain manual;
-  tag-driven draft/API execution and release protections remain unverified.
+  planned in the [roadmap](roadmap.md). Release publication remains manual.
+  Tag-driven draft execution and tag/release protections remain unverified.
 - **Prior evidence:** 522,933 reference parity rows plus 60 Unicode-policy rows
-  were checked earlier; compatibility comparisons and performance measurements
-  were not rerun in this step.
+  were checked earlier. Compatibility and resource checks were not rerun here.
 
 ## Latest completed step
 
-- **2026-11-06 — Verify installed-binary source equivalence and initial scope.**
-  Built clean revision `7237833` in fresh `target/fcitx5-baseline-7237833`.
-  SHA-256 and `cmp` establish exact equality with the installed addon; `cmp`
-  also matches both registrations. Documented experimental scope and shortened
-  README status. No installation, session settings or production code changed.
-- **Actual checks:** `bash tools/check-build.sh` passed Rust formatting, Clippy,
-  workspace tests, Release build, API docs, conversion example, both CTest cases
-  and staged-installation controls. Fresh candidate CMake configure/build,
-  `ctest --test-dir target/fcitx5-baseline-7237833 --output-on-failure` and
-  `python3 tools/check-install.py target/fcitx5-baseline-7237833` also passed.
-- **Documentation checks:** `python3 tools/check-docs.py`,
+- **2026-11-06 — Prepare the separate-session PR review workflow.** Updated
+  AGENTS.md, CONTRIBUTING.md, the PR template and release guidance to require
+  separate-chat review of every PR's latest revision before merging. Added
+  project-specific review scope, CI limits and a reusable reviewer handoff.
+- **Decision:** this replaces self-review as a sufficient review gate. Task
+  implementation still proceeds through commit, push and PR without routine
+  confirmation; it then waits for a separate session's merge recommendation.
+  New pushes require renewed reviewer coverage and an updated recommendation.
+- **Actual checks:** `python3 tools/check-docs.py`,
   `python3 -m unittest discover -s tools/tests -v` (16 tests),
   `python3 tools/check-release.py --base origin/main` and `git diff --check`
-  passed. Historical progress entries are unchanged.
-- **Review/delivery:** fresh `docs/fcitx5-baseline-identity` branch from updated
-  main; no open Issues/PRs at task start. Self-review covers binary/source
-  attribution, scope, remaining gates and documentation consistency. The PR
-  tracks hosted checks, review and delivery.
-- **Manual work:** none for binary equivalence; no reinstall or repeated desktop
-  checks needed solely for that result. Existing reports remain user-reported,
-  and loaded-process identity was not independently established.
+  passed. Rust/Fcitx5 runtime checks are not needed for documentation-only edits;
+  hosted CI is separate evidence and must be checked on the committed revision.
+- **Tracker and delivery:** no open Issues or PRs at task start; confirmed
+  [PR #17](https://github.com/shaadahmmed/jong-bangla-keyboard/pull/17) was merged.
+  Work uses fresh `docs/separate-pr-review` from updated main. Implementation
+  self-review does not satisfy the new gate; separate-session review and merge
+  remain pending. No GitHub ruleset or CI workflow was changed.
+- **Limits:** no automatic chat creation or automated review-report enforcement
+  is claimed. Current CI has no dedicated leak-sanitizer or desktop acceptance
+  job. A separate chat using the author's account posts a review comment,
+  not a formal GitHub approval. Historical progress entries are unchanged.
 
 ## Next small implementation step
 
-1. Finish this PR through required checks, self-review, protected merge and
-   post-merge verification before task-branch cleanup.
-2. Begin [IBus feasibility](roadmap.md#2-add-ibus): inspect available development
-   libraries and choose the smallest native boundary around the shared Rust
-   controller. Keep event ownership, forwarding and context isolation explicit.
-3. Validate initially with isolated synthetic input. Installed IBus acceptance
-   needs a named GNOME/IBus environment; do not switch the current Fcitx5 session
-   or install/activate competing daemons as a development side effect.
+1. Review this workflow PR in a separate chat using the
+   [review handoff](../CONTRIBUTING.md#separate-session-review). Post findings and
+   an explicit merge recommendation for the exact head commit on the PR.
+2. Fix findings, renew review after any push, then merge only after the separate
+   session recommends it and all other gates pass. Verify post-merge CI before
+   task-branch cleanup and synchronize main.
+3. Begin [IBus feasibility](roadmap.md#2-add-ibus): inspect development libraries,
+   define the smallest native boundary around the shared Rust controller and
+   validate initial event ownership/forwarding/context isolation synthetically.
+   Installed acceptance needs a named GNOME/IBus environment; do not switch the
+   current Fcitx5 session or activate competing daemons as a side effect.
 
-**Done when:** the IBus boundary and first testable increment are defined, with
-actual local prerequisites and desktop-validation limits recorded. Fcitx5
-beta/stable scope still requires the roadmap acceptance gates.
+**Done when:** this PR has separate-session review and verified delivery. The
+next product increment remains IBus feasibility, with local prerequisites and
+validation limits recorded; Fcitx5 beta/stable acceptance remains outstanding.
 
 ## Completed steps
 

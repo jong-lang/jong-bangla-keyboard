@@ -102,16 +102,25 @@ User instructions take precedence over this guide; update the docs when they cha
   create a PR to `main` without routine confirmation requests. Use descriptive
   commit/PR messages and include only the task's work. This workflow was approved
   on 2026-11-05 and supersedes the previous per-commit confirmation requirement.
-- Review the complete PR for correctness, architecture, regressions and test
+- **Separate review session required (2026-11-06):** after implementation and
+  self-review, leave every PR open for review in a separate chat, including
+  documentation and maintenance PRs. Supply the PR URL, head commit, validation
+  evidence and a review handoff. Do not merge based on implementation-session
+  self-review or passing CI alone. Do not substitute a sub-agent for the requested
+  separate chat or claim another session was started without evidence.
+- Follow the [separate-session review protocol](CONTRIBUTING.md#separate-session-review)
+  to review the complete PR for correctness, architecture, regressions and test
   coverage. Assess memory ownership/leaks, unsafe boundaries, performance,
-  security and compatibility where relevant. State whether the review is
-  self-review or independent review; do not imply self-review is independent
-  approval. Match validation to the changed behavior and document its limits.
+  security, privacy and compatibility where relevant. Passing CI can supply
+  evidence for checks it actually runs; it does not replace engineering review
+  or prove leak freedom or desktop acceptance. Record the reviewer session,
+  reviewed revision, findings, limits and explicit merge recommendation on the PR.
 - Post findings on the PR with precise locations, severity, evidence, impact and
   recommended corrections. Distinguish optional suggestions from defects. Fix
   findings, repeat affected checks and review the updated diff. Track bugs in
   GitHub Issues and link them from the PR without duplicating reports in docs.
-- Merge only when the latest revision has passed all required checks, all review
+- Merge only when the separate review session has explicitly recommended merging
+  the latest revision, that revision has passed all required checks, all review
   findings and conversations are resolved, and there are no merge conflicts.
   Never bypass protections to finish a task. If any gate is blocked, explain it
   on the PR and keep the work open; lack of findings is not a defect-free guarantee.

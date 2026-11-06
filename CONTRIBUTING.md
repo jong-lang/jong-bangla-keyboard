@@ -76,15 +76,75 @@ messages. PRs explain the problem, resulting behavior, validation and material
 limitations, and link related issues. Use `Fixes #123` only when the PR fully
 resolves that issue. CI checks documentation/release tooling and the Rust/Fcitx5
 build; hosted status checks do not replace desktop smoke observations.
+The 2026-11-06 separate-session review requirement below limits autonomous
+delivery: the implementation session leaves the PR open and hands it off.
 
 ## Review, merge and cleanup
 
-Review the complete PR for correctness, architecture, regressions and test
-coverage. Assess memory ownership/leaks, unsafe boundaries, performance,
-security and compatibility when relevant. Documentation-only changes need link
-and consistency checks, rather than runtime measurements. Identify self-review
-explicitly; do not present it as independent approval. Independent review is
-useful when available, but agents must not delegate without the user's request.
+### Separate-session review
+
+Every PR, including documentation and maintenance, needs a review in a separate
+chat before merging. The implementation session completes checks and self-review,
+then leaves the PR open. Provide its URL, exact head commit, purpose, changed
+areas, validation results and known limits. A sub-agent in the implementation
+chat does not satisfy this requirement. Do not claim to have opened another chat
+unless that actually happened; give the maintainer a handoff to start one.
+
+The reviewer session inspects the applicable project instructions, PR discussion,
+complete base-to-head diff and relevant surrounding code/tests. Assess the change
+independently of the author's summary. Record the reviewed head commit and cover
+the following areas, marking any inapplicable area with a reason:
+
+- Correctness, architecture and maintainability: preserve the Rust engine and
+  composition boundaries, keep native event handling in adapters, avoid premature
+  abstractions, and check errors, regressions and meaningful test coverage.
+- Memory and native safety: inspect ownership, lifetimes, allocations, cleanup,
+  context destruction, C ABI encoding/pointers and panic containment. Consider
+  leaks and use-after-free on success, failure and reset paths; run targeted
+  native diagnostics when warranted and available. State what was not measured.
+- Input behavior and compatibility: check exact Unicode and pinned-reference
+  evidence, raw-keystroke editing, commit/cancel/reset, key forwarding, modifiers,
+  focus changes and per-context isolation where affected. Keep synthetic tests
+  distinct from real app/toolkit and Wayland/XWayland evidence.
+- Performance and resources: consider per-keystroke work, buffer growth and
+  responsiveness; require measurements for performance claims.
+- Security, privacy and provenance: keep typing local, avoid typed-text logging,
+  inspect unsafe/native and dependency boundaries, and check licenses and source
+  provenance where affected.
+- Delivery and documentation: verify applicable build/install/export checks,
+  package and release scope, user instructions and an accurate handoff. Do not
+  change desktop settings or activate competing input daemons during review.
+
+Use CI results for the exact revision and checks they cover; do not repeat passing
+checks without a reason. Current CI covers documentation/release tooling, workflow
+linting, Rust format/Clippy/tests/docs, Fcitx5 builds/synthetic tests, staged
+installation and source-export builds. It has no dedicated leak-sanitizer or real
+desktop acceptance job. Passing CI does not establish leak freedom, runtime
+resource budgets, full phonetic parity or architectural correctness. Consult
+the [development guide](docs/development.md) for actual commands and run additional
+targeted checks when the changed behavior needs them. Documentation-only review
+needs link and consistency evidence, not runtime measurements.
+
+Post a review report on the PR identifying the separate reviewer chat, exact head
+commit, scope, findings, CI evidence, additional checks, untested risks and an
+explicit recommendation: **ready to merge** or **changes required**. A chat label
+or session identifier is sufficient; do not publish private chat content. Separate
+chat review is not a separate human identity or a formal GitHub approval. When
+both sessions use the PR author's GitHub account, post the report as a comment;
+do not attempt to approve the account's own PR. Author self-review remains useful
+but cannot satisfy this gate. GitHub currently requires zero approving reviewers,
+so this separate-session gate is a documented agent/maintainer responsibility,
+not an automated branch-rule check.
+
+A new reviewer chat can start with this handoff (replace the placeholders):
+
+> Review PR `<URL>` at head `<SHA>` in this separate review session. Follow AGENTS.md
+> and CONTRIBUTING.md's separate-session review protocol. Inspect the complete
+> diff and relevant code/tests, verify CI evidence, post findings and a merge
+> recommendation for the reviewed revision on the PR. Do not merge until the
+> review and all other merge gates are satisfied.
+
+### Findings and merge gates
 
 Post each finding on the PR with its file/line or affected setting, severity,
 evidence or reproduction, impact and recommended correction. Distinguish
@@ -92,9 +152,12 @@ optional suggestions from defects. Fix findings, rerun affected checks and
 review the updated diff. Keep bug reports and investigation in linked GitHub
 Issues; PR comments describe the actionable review finding.
 
-Merge only when the latest revision passes required checks, all review findings
-and conversations are resolved, and there are no merge conflicts. A new push
-requires review of the changes and checks for that revision. Never bypass branch
+Merge only when the separate reviewer session explicitly recommends merging the
+latest revision, that revision passes required checks, all review findings and
+conversations are resolved, and there are no merge conflicts. A new push requires
+the separate reviewer session to review the changes and update its recommendation
+for that revision, plus checks for that revision. An implementation-session fix
+does not clear its own finding. Never bypass branch
 protections to finish a task. Explain any blocked gate on the PR and leave the
 work open; a clean review does not guarantee the absence of defects.
 
