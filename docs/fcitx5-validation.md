@@ -172,7 +172,7 @@ Each case was requested in a fresh disposable document.
 | Check | Requested sequence and expected result | Result |
 | --- | --- | --- |
 | Enter boundary | `ki`, Enter commits `কি` and inserts one newline | User-reported pass |
-| Select-all shortcut | `ki`, Ctrl+A, `i` commits before selection, then replaces it with fresh `ই` | User-reported pass |
+| Select-all shortcut | `ki`, Ctrl+A, `i` replaces the selection with fresh `ই` | User-reported pass |
 | Window focus and return | With `ki` pending, switch to Firefox and return, then type `i`: the original `কি` appears once and `i` starts fresh | User-reported pass |
 
 The combined confirmation reported no failure for these cases; the agent did

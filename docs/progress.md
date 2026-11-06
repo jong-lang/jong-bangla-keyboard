@@ -47,8 +47,8 @@ Dates use the project's Asia/Dhaka timezone.
 
 - **2026-11-06 — Record KWrite lifecycle follow-up results.**
   The user confirmed all three requested KWrite checks pass: Enter commits and
-  inserts one newline, Ctrl+A commits before selection and fresh typing replaces
-  it, and switching to Firefox and back leaves one committed word with fresh
+  inserts one newline, Ctrl+A followed by fresh typing replaces the selection,
+  and switching to Firefox and back leaves one committed word with fresh
   composition afterward. The app/route context is KWrite 26.08.2 on Wayland,
   as previously reported; these are user-reported, not agent-observed results.
 - Updated the validation record, roadmap and Unreleased changelog while keeping
