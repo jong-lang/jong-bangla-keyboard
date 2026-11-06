@@ -35,7 +35,8 @@ package version `0.1.0` does not establish a release date or desktop support cla
   KWrite follow-up results also cover Enter, Ctrl+A and switching to Firefox
   and back while composition is pending. Further reports cover Firefox field
   handoff and English/Bangla switching in both apps, with Meta+X reported for
-  switching to English.
+  switching to English. Firefox follow-ups cover return to the original field,
+  dummy password-field transitions and fresh composition after window closure.
 - Weekly GitHub Actions dependency update PR configuration and a documented
   issue-first task workflow with fresh branches, automatic agent commits/PRs,
   relevant review, protected merging and verified branch cleanup. Release

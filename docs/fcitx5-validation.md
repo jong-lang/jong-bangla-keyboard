@@ -159,9 +159,9 @@ and Wayland routes are user-reported. The loaded addon revision, exact frontend
 transport, current distro/Plasma versions and Fcitx5/toolkit runtime versions were
 not supplied with this result; earlier environment records remain prior evidence.
 This establishes a basic installed-route result for these two named apps.
-Follow-up KWrite and Firefox results are recorded below. Remaining focus/shortcut
-cases, relocation, restricted fields and the wider matrix still need separate
-results. These observations do not establish a broader support range.
+Follow-up KWrite and Firefox results are recorded below. Remaining app/case
+combinations, relocation, modifiers/repeats and the wider matrix still need
+separate results. These observations do not establish a broader support range.
 
 ### KWrite lifecycle follow-up
 
@@ -194,12 +194,31 @@ context remains the previously reported Firefox 159.0.1 and KWrite 26.08.2 on Wa
 | Field A to B | Firefox | Pending `ki` in A, Tab to B, `i`: one `কি` in A and fresh `ই` in B | User-reported working A-to-B flow |
 | Input-method switch | Firefox and KWrite | Pending `ki`, switch to English, type literal `x`, return to Jong and type `i`: committed `কি`, literal `x`, fresh `ই` | User-reported pass, no issues |
 
-The field response describes A-to-B typing; return-to-A stale-buffer behavior
-was requested but not separately described, so remains unconfirmed. The switching
-response is a combined confirmation for the two requested apps; it does not
+The initial field response describes A-to-B typing; return-to-A stale-buffer
+behavior is covered by the follow-up below. The switching response is a combined
+confirmation for the two requested apps; it does not
 provide separate output captures. Meta+X was specified for switching to English;
 the return-to-Jong action was not separately specified. These are user reports,
 not agent-observed checks, and add no new candidate/runtime details.
+
+### Firefox field return and context closure
+
+**2026-11-06 — User-reported follow-up:** the user replied `pass` to all three
+requested checks in the previously reported **Firefox 159.0.1 (Wayland)** context.
+Disposable fields and dummy text were requested, including for the password field.
+
+| Check | Requested behavior | Reported result |
+| --- | --- | --- |
+| Return to field A | After the Tab test, return to A and type `i`: fresh composition without restoring the old `ki` buffer | User-reported pass |
+| Dummy password-field transition | With `ki` pending, move to a dummy password field and back: no unexpected Bangla composition or stale text | User-reported pass |
+| Window closure and fresh composition | Close a test window with `ki` pending, open a new one, type `i`: fresh `ই` | User-reported pass |
+
+This combined confirmation closes the previously unconfirmed return-to-A case.
+It reports no unexpected composition/stale text for the dummy password-field
+transition; whether the original pending word committed or was discarded was
+not separately described. The agent did not observe or capture these results.
+No new candidate/runtime details or direct callback/commit-ownership evidence
+were supplied; those limits and remaining app/case combinations still apply.
 
 ## Remaining desktop smoke checklist
 

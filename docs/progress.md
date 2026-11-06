@@ -16,22 +16,23 @@ Dates use the project's Asia/Dhaka timezone.
   TSF and macOS on Apple silicon and Intel. Only the Fcitx5 experiment exists;
   the [roadmap](roadmap.md) distinguishes planned targets from delivered support.
 - **Installed desktop evidence:** the user reports basic editing/boundaries in
-  KWrite 26.08.2 and Firefox 159.0.1, both Wayland, plus KWrite Enter, Ctrl+A and
-  window-focus/return. Further reports cover Firefox A-to-B field handoff and
-  English/Bangla switching in both apps, with Meta+X reported for English. The
+  KWrite 26.08.2 and Firefox 159.0.1, both Wayland. Further passes cover KWrite
+  Enter/Ctrl+A/window-focus return; Firefox field handoff/return, dummy password
+  transitions and window closure/fresh composition; and English/Bangla switching
+  in both apps, with Meta+X reported for English. The
   [validation record](fcitx5-validation.md#installed-route-basic-smoke-result)
-  scopes each 2026-11-06 result to its app/case and distinguishes partial reports.
-- **Desktop limits:** Firefox return-to-A behavior, remaining focus/shortcut
-  cases, relocation, restricted fields and the wider frontend matrix still need
-  results. The loaded addon revision and current Fcitx5/toolkit/distro/Plasma
-  versions were not reported. Earlier inventories remain prior evidence.
+  scopes each 2026-11-06 report to its app/case and describes evidence limits.
+- **Desktop limits:** remaining app/case combinations, modifiers/repeats,
+  relocation, optional layout/Compose sequences and the wider frontend matrix
+  still need results. The loaded addon revision and current Fcitx5/toolkit/distro/
+  Plasma versions were not reported. Earlier inventories remain prior evidence.
 - **Release tooling:** PR/main CI validates versions and prepared notes and
   builds/tests checkout and exported source, including staged installation.
   Git-based documentation/provenance checks need a checkout. Version selection,
   tagging and publication remain explicit maintainer actions.
 - **Delivery prior evidence:** tooling PR #6 merged as `d12ce93`; desktop-result
-  PRs #8 and #9 merged as `9480887` and `e7c36da`. PR #9's
-  [post-merge CI](https://github.com/shaadahmmed/jong-bangla-keyboard/actions/runs/42165402983)
+  PR #10 merged as `416f735`. Its
+  [post-merge CI](https://github.com/shaadahmmed/jong-bangla-keyboard/actions/runs/42166734183)
   passed both jobs; its branches were deleted and main synchronized.
 - **Task workflow:** inspect Issues/PRs, use fresh branches, validate and create
   PRs, identify self-review, fix findings, merge through required gates, verify
@@ -45,35 +46,37 @@ Dates use the project's Asia/Dhaka timezone.
 
 ## Latest completed step
 
-- **2026-11-06 — Record Firefox field handoff and input-method switching.**
-  The user described working `ki` in field A, Tab, then `i` in B. They also
-  confirmed the requested English/Bangla switching case works without issues
-  for the Firefox/KWrite request, specifying Meta+X for switching to English.
-  These are user-reported results in the previously supplied app/Wayland context.
-- Recorded only the described A-to-B flow; return-to-A stale-buffer behavior
-  remains unconfirmed. The switching response is a combined confirmation for
-  both apps; the return-to-Jong action was not separately specified. No output
-  capture or new candidate/runtime details were supplied.
-- Updated validation, roadmap, Unreleased changelog and handoff. No executable
-  source, dependencies, settings or typing behavior changed.
+- **2026-11-06 — Record Firefox field-return and context-closure results.**
+  The user replied `pass` to the three requested Firefox checks: fresh typing
+  after returning to field A, dummy password-field transitions without unexpected
+  composition/stale text, and fresh composition after closing/opening a window.
+  The context is the previously reported Firefox 159.0.1 on Wayland; these are
+  user-reported, not agent-observed results.
+- Closed the earlier return-to-A evidence gap. The password transition's original
+  pending-word commit/discard disposition was not separately described. No output
+  capture, new candidate/runtime details or direct callback/ownership evidence
+  were supplied. Broader app/case combinations remain distinct.
+- Updated validation, Unreleased changelog and handoff. No executable source,
+  dependencies, settings or typing behavior changed.
 - **Actual documentation checks:** `python3 tools/check-docs.py` passed local
   links/anchors, fences and shell-example syntax; `git diff --check` passed.
   A Python comparison verified unchanged historical progress entries and that
   only Markdown files changed. Runtime tests were not rerun locally for this
   docs-only increment; earlier hosted results above are prior evidence.
-- **Review/delivery:** self-review checks exact reported actions, partial versus
-  complete confirmation, app/route attribution, historical evidence and links.
-  Prepared on `docs/firefox-focus-input-switch-results`; its PR records hosted
-  validation and delivery status. The desktop acceptance matrix remains partial.
+- **Review/delivery:** self-review covers exact requested outcomes, combined
+  confirmation, prior app/route context, closed versus remaining evidence gaps
+  and links. Prepared on `docs/firefox-context-lifecycle-results`; its PR records
+  hosted validation and delivery status. Desktop acceptance remains partial.
 
 ## Next small implementation step
 
 1. Check open Issues/PRs and finish any pending delivery through protected gates.
 2. Continue the [remaining desktop checks](fcitx5-validation.md#remaining-desktop-smoke-checklist).
-   Firefox return-to-A, dummy password-field transitions and window closure/fresh
-   composition were requested; their results are not yet recorded. Capture
-   missing candidate/runtime details and remaining case/app results, including
-   the return-to-Jong switching action. Keep failures in GitHub Issues.
+   Requested modifiers/case/repeats and pointer/cursor tests in both apps;
+   Firefox Enter/Ctrl+A/window-focus cases; current environment/runtime versions;
+   and any already-configured AltGr/dead-key/Compose result or unavailability.
+   These replies are not yet recorded. Capture candidate details and keep failures
+   in GitHub Issues; do not infer direct callbacks from visible application results.
 3. Choose the tested initial release scope from the evidence, then begin the
    [IBus stage](roadmap.md#2-add-ibus). Other adapters and packaging remain
    separate roadmap stages.
