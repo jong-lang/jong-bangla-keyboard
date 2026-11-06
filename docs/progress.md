@@ -18,9 +18,16 @@ Dates use the project's Asia/Dhaka timezone.
   normal interaction suites each pass 12 cases. This is bounded smoke evidence,
   not completed desktop acceptance or beta/stable support.
 - **Pre-merge blocker:** [#22](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/22)
-  owns the programmatic-focus investigation. PR #19 stays open. The final
-  revision still needs affected checks and review in a separate chat; this
-  testing/implementation session cannot recommend its own merge.
+  owns the programmatic-focus investigation. GTK4 delivers lifecycle callbacks;
+  the traced Firefox failures do not. No safe adapter-only correction has been
+  established. PR #19 stays open pending a default-route fix, final validation
+  and separate-chat review; this implementation session cannot recommend merge.
+- **Manual workaround confirmed:** the maintainer reports that Firefox launched
+  with `GTK_IM_MODULE=ibus` retains the old word in A and commits only the new
+  word in B. This is one manual result, not default-route acceptance.
+- **Testing direction, 2026-11-07:** the maintainer requested no further
+  agent-run tests. Supply focused manual steps and await reported results.
+  Do not treat this instruction as evidence that pending checks have passed.
 - **Test tooling:** [#21](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/21)
   is corrected by selecting GIO's local backend in private test children.
   No production adapter, Rust semantics, ABI or dependencies changed.
@@ -37,51 +44,43 @@ Dates use the project's Asia/Dhaka timezone.
 
 ## Latest completed step
 
-- **2026-11-06–07 — Prepare a GNOME VM and run installed IBus smoke tests.**
-  Verified the Fedora 45 image signature/checksum and 29 signed QEMU runtime
-  packages; used KVM, four virtual CPUs, 6 GiB RAM and a 24 GiB sparse disk.
-  Native source tested: `a1f5ae687fffd2c6baf4aa439132616269a590a3`.
-  The [environment/result table](ibus.md#gnome-vm-smoke-result) records exact
-  versions, including Fedora's pre-release IBus 1.5.35-rc1.
-- **Build/install checks passed on 2026-11-06:** host `cmake --build target/ibus`,
-  `ctest --test-dir target/ibus --output-on-failure` and
-  `python3 tools/check-ibus-install.py target/ibus`, using the prior temporary
-  libibus runtime. In the guest, archive-source Release CMake build,
-  `ctest --test-dir build-ibus --output-on-failure` and
-  `python3 jong-bangla/tools/check-ibus-install.py build-ibus` passed after #21's
-  correction, followed by explicit guest-only `sudo cmake --install build-ibus`.
-- **Actual desktop checks:** QEMU virtual keys through GNOME/IBus exercised 12
-  normal typing/edit/boundary/focus/restriction cases each in native GTK4, native
-  Qt and Firefox Wayland. `python3 target/ibus-vm/gtk-acceptance.py`,
-  `python3 target/ibus-vm/qt-acceptance.py` and
-  `python3 target/ibus-vm/firefox-acceptance.py` each reported 12 passes.
-  Separate programmatic-focus comparisons are recorded in #22, including the
-  passing explicit GTK IBus-module control. Firefox is a real browser with a
-  disposable local-page/remote-inspection profile; no browser typing bypassed
-  the operating-system input route. GNOME Text Editor typing/Ctrl+S and the
-  saved-file Unicode assertion passed, with a US-layout newline-policy control.
-- **Found and tracked:** #21 owns the GVfs test cleanup failure and correction;
-  #22 owns the unresolved frontend/context finding and reproduction. The
-  existing CI prerequisite [#20](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/20)
-  remains open until its fixing PR is merged. Keep all bug detail in Issues.
-- **Current checks passed:** `python3 tools/check-docs.py` (25 Markdown files,
-  845 local links/anchors), `python3 -m unittest discover -s tools/tests -v`
-  (16 tests), `python3 tools/check-release.py --base origin/main` and
-  `git diff --check`. Full Rust/Fcitx5, exported-source and sanitizer runs
-  from the implementation remain prior evidence; native code did not change.
-  Prior hosted CI passed on `a1f5ae6`. Every new head needs its own hosted checks;
-  the PR handoff records the delivered revision and run links.
-- **Limits:** no XWayland, AltGr/complete Compose, full repeat/navigation matrix,
-  complete lifecycle/update/removal acceptance or desktop latency measurement.
-  No source-install support tier or package/release version changed.
+- **2026-11-07 — Trace frontend lifecycle delivery and record a manual workaround.**
+  Diagnostic evidence and the distinct GTK4/Firefox failure paths live in #22.
+  A temporary CLEAR-mode control lost the unfinished word and was rejected as
+  a production fix. No production adapter, Rust semantics or ABI changed.
+- **Investigation checks before the testing instruction:**
+  `python3 target/ibus-vm/gtk-programmatic-focus.py` reproduced three failures
+  with the original policy and three word-loss failures with the CLEAR control;
+  `python3 target/ibus-vm/firefox-programmatic-focus-repeat.py` reproduced three
+  further default-route failures. Temporary diagnostic builds used
+  `cmake --build` in the guest. Method names, callback timing and output byte
+  lengths were traced without text/key payload logging. These runs do not
+  establish a correction. Diagnostic processes were stopped afterward.
+- **Maintainer manual check:** after closing Firefox and launching it with
+  `env GTK_IM_MODULE=ibus firefox` in the requested GNOME/IBus VM, the maintainer
+  reports PASS for `ki` in A, programmatic focus to B, then `i` and Space:
+  A contains `কি` and B contains `ই `. This was not independently rerun and
+  does not validate the failing default route or a full direct-IBus suite.
+- **Current documentation increment:** no tests/check commands were run after
+  the maintainer's instruction to leave testing to them. Documentation/release
+  checks and hosted CI on `72bcfe4` are prior evidence only, not validation of
+  this new revision. Required checks and separate review remain merge gates.
+- **Prior evidence:** native source `a1f5ae6` passed the 12-case GTK4, Qt and
+  Firefox normal suites; the [IBus record](ibus.md#gnome-vm-smoke-result) owns
+  exact environment and scope. No XWayland, complete layout/lifecycle matrix
+  or desktop latency acceptance is established. #20 and #21 remain open until
+  their fixing PR merges. Next action: correct the default-route frontend
+  behavior while preserving the original-field commit requirement.
 
 ## Next small implementation step
 
-1. Investigate and correct #22 using the preserved default-route reproductions
-   and alternate frontend controls. Verify actual focus/reset notification
-   delivery before changing lifecycle ownership. Keep PR #19 open.
-2. Repeat affected desktop/build checks and complete remaining applicable
-   acceptance groups. Keep untested routes and reproduced bugs explicit.
+1. Continue #22 at the frontend boundary: correct GTK4's old-preedit delivery
+   and Firefox's missing field-change notifications. Keep the passing direct
+   IBus route explicitly a workaround. Do not ship CLEAR mode as a fix or infer
+   field identity from caret rectangles/surrounding text. Keep PR #19 open.
+2. Give the maintainer focused manual checks for any correction; do not run
+   tests on their behalf under the current instruction. Required build/check
+   evidence and remaining desktop acceptance are still pending merge gates.
 3. Obtain separate-chat review of the final PR head using the
    [review protocol](../CONTRIBUTING.md#separate-session-review). Merge only after
    the blocker/findings are resolved, that revision passes required checks and

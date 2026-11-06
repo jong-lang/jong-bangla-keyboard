@@ -212,6 +212,16 @@ words and invisible-buffer clearing.
 | GTK4, Wayland, explicit `GTK_IM_MODULE=ibus` control | Not rerun | All three delays passed |
 | Qt, Wayland, session `QT_IM_MODULE=ibus` | 12 passed | All three delays passed |
 | Firefox, forced Wayland, `GTK_IM_MODULE` unset | 12 passed | Initial two passes/one failure; three additional two-second-delay repeats failed; #22 |
+| Firefox, explicit `GTK_IM_MODULE=ibus` | Not rerun | Maintainer-reported manual A → B pass on 2026-11-07; exact expected field contents confirmed |
+
+The Firefox direct-IBus result is a maintainer's manual report, not an
+agent-executed suite or a fresh environment/binary identity check. To use that
+workaround for one Firefox process, close Firefox completely and launch
+`env GTK_IM_MODULE=ibus firefox` inside the GNOME/IBus session. This does not
+validate the default Wayland route or establish broader application support.
+Keep diagnosis, reproduction and correction work in #22. At the maintainer's
+request, further testing is manual; agents should supply focused test steps
+instead of running tests themselves.
 
 Firefox used a disposable remote-inspection/kiosk profile. XWayland was not
 tested. GNOME Text Editor also passed native Wayland typing and Ctrl+S forwarding:
