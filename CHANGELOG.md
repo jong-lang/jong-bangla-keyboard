@@ -9,7 +9,7 @@ version and date. Release preparation follows [CONTRIBUTING.md](CONTRIBUTING.md#
 
 - Conventional Commits release-note candidates, reproducibility-checked x86-64
   Fcitx5 payloads, build provenance, and complete checksummed release drafts.
-- Debian testing, Fedora 44 and Arch x86-64 Fcitx5 packages, source-pinned AUR
+- Debian testing, Fedora 45 and Arch x86-64 Fcitx5 packages, source-pinned AUR
   recipes, clean-image install/upgrade/removal checks and package verification
   records in release drafts. Desktop acceptance on other distributions remains
   required before claiming support.

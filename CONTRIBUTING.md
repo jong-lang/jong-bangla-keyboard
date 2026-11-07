@@ -145,7 +145,7 @@ prepares a draft with these assets:
 | `jong-bangla-X.Y.Z-fcitx5-x86_64-linux-gnu.tar.gz` | Staged addon and registration files under `usr/`, licenses and guides |
 | `build-info.json` | Source commit, epoch, build image, snapshot, installed package versions, compiler identities and comparison result |
 | `jong-bangla_VERSION-1_amd64.deb` | Debian testing package with generated shared-library dependencies |
-| `jong-bangla-VERSION-1.x86_64.rpm` | Fedora 44 package with automatic ELF requirements |
+| `jong-bangla-VERSION-1.x86_64.rpm` | Fedora 45 package with automatic ELF requirements |
 | `jong-bangla-VERSION-1-x86_64.pkg.tar.zst` | Arch package with framework and C/C++ runtime dependencies |
 | `jong-bangla-VERSION-aur.tar.gz` | Release-source-pinned PKGBUILD and generated .SRCINFO |
 | `package-check-{deb,rpm,arch}.json` | Exact images, source/package hashes, environments and lifecycle results |

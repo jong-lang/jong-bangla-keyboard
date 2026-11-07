@@ -14,7 +14,7 @@ import sys
 IMAGES = {
     "arch": "archlinux@sha256:624bdc7fc6615155d67bc34cf7146c0c9fd0e3c92943977da63a630e4ca49c30",
     "deb": "debian@sha256:c6343ac5a6f7952485fc804a1cf700bdb8af7408d4c549faf682bed42b1c7f96",
-    "rpm": "fedora@sha256:15da97ed9aa94dd3d92c3925eb89520f6c80e07ea7ee24cba848d1f8b6912b3e",
+    "rpm": "fedora@sha256:53d138f25f6738257c78553d51369b662efc0e0eb1cd1556a2fe0ad5a115be88",
 }
 BUILD_SETUP = {
     "arch": "sed -i '/^NoExtract.*usr\\/share\\/doc/d' /etc/pacman.conf && pacman -Syu --noconfirm --needed base-devel rust cmake ninja fcitx5 python pkgconf && useradd -m builder",

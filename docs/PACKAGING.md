@@ -17,7 +17,7 @@ Checksums detect corruption; obtain the manifest from the trusted release too.
 | --- | --- | --- |
 | Arch x86-64 | `sudo pacman -U ./jong-bangla-*.pkg.tar.zst` | `sudo pacman -R jong-bangla` |
 | Debian testing x86-64 | `sudo apt install ./jong-bangla_*_amd64.deb` | `sudo apt purge jong-bangla` |
-| Fedora 44 x86-64 | `sudo dnf install ./jong-bangla-*.x86_64.rpm` | `sudo dnf remove jong-bangla` |
+| Fedora 45 x86-64 | `sudo dnf install ./jong-bangla-*.x86_64.rpm` | `sudo dnf remove jong-bangla` |
 
 Use a single explicitly selected file for installation; avoid keeping multiple
 versions matched by a wildcard. Package managers resolve framework, C++ and
@@ -49,7 +49,7 @@ standard-library notices and license texts beside the project license.
 
 The release workflow builds the source and Arch payload twice, then runs three
 independent package jobs using official digest-pinned Arch, Debian testing,
-and Fedora 44 images. Distribution repositories supply signed packages; their
+and Fedora 45 images. Distribution repositories supply signed packages; their
 versions may change. Each `package-check-FORMAT.json` records image identity,
 source hash, compilers, build and runtime package versions, and actual results.
 These records accompany release packages and checksums. Package builds are

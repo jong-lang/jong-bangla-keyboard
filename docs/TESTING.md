@@ -13,7 +13,7 @@ the check list. Use synthetic input, never real typing or credentials.
 | Documentation examples | `cargo test --offline --locked --workspace --doc` | Included in the full workspace test run |
 | Synthetic Fcitx5 and FFI lifecycle | `ctest --test-dir target/ci-fcitx5 --output-on-failure` | Yes, after the full script builds this directory |
 | Staged installation | `python3 tools/check-install.py target/ci-fcitx5` | Yes; does not configure a desktop |
-| Native package lifecycle | [Container commands and coverage](PACKAGING.md#recipes-and-verification) | Yes; separate Arch, Debian testing and Fedora 44 runtime images |
+| Native package lifecycle | [Container commands and coverage](PACKAGING.md#recipes-and-verification) | Yes; separate Arch, Debian testing and Fedora 45 runtime images |
 | Documentation links | `python3 tools/check-docs.py` | Yes |
 | Tool regression tests | `python3 -m unittest discover -s tools/tests -v` | Yes; real cargo-deny cases run in the policy job |
 | Synthetic benchmark smoke | `python3 tools/measure-baseline.py smoke --output target/perf-smoke` | Yes; protocol/workload checks only, no timing thresholds; [full local baseline](PERFORMANCE.md) |
@@ -356,7 +356,7 @@ tests. Report only checks actually run in this task.
 ### Package desktop acceptance
 
 The maintainer runs this checklist in disposable x86-64 KDE Plasma Wayland VMs
-for Debian testing and Fedora 44, plus the CachyOS reference desktop or an Arch
+for Debian testing and Fedora 45, plus the CachyOS reference desktop or an Arch
 VM. Use a fresh snapshot and repositories supplying Fcitx5 5.1.23 or newer.
 Record the ISO URL/checksum or VM image identity, distro update date, kernel,
 Plasma, Fcitx5, package version/hash, application/toolkit versions and backend.
