@@ -6,8 +6,9 @@ Avro-compatible behavior as its target. Original project code is MIT licensed.
 ## Current status
 
 Working on CachyOS KDE Plasma Wayland through Fcitx5. The maintainer considers
-that desktop implementation complete; release preparation remains. Other
-Linux distributions are untested. Exhaustive Avro parity is unverified.
+that desktop implementation complete; release preparation remains. Debian and
+Fedora test reports and their limits are in the [platform matrix](docs/FEATURES.md#platform-matrix).
+Exhaustive Avro parity is unverified.
 
 Release order: Fcitx5, then IBus, then Windows TSF. The first release targets
 x86-64. Native packages come first; Flatpak is a later prototype. macOS is out
