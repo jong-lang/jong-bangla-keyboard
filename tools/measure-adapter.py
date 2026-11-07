@@ -25,7 +25,8 @@ TIMING_FIELDS = ["run", "mode", "workload", "raw_scalars", "actions_per_iteratio
                  "iterations", "min_ns", "median_ns", "p95_ns"]
 WORKLOADS = [("type_commit:ami", 3, 4), ("type_commit:bangla", 6, 7),
              ("type_commit:shadhInota", 10, 11), ("type_commit:mixed", 13, 14),
-             *[("insert_backspace_pair", n, 2) for n in (32, 128, 1024, 8192)]]
+             *[("insert_backspace_pair", n, 2) for n in (32, 128, 1024, 8192)],
+             ("context_lifecycle", 13, 1)]
 
 
 def command(args, cwd=None):

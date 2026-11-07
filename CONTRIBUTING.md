@@ -42,8 +42,8 @@ Use the exact commands in AGENTS.md and the task-specific testing guide. Report
 actual commands and outcomes in a short table. Identify skipped or unavailable
 checks and their reasons. Do not report old results as newly run checks.
 Benchmark comparisons run locally on the reference machine. CI smoke benchmarks
-cannot establish performance parity. The performance baseline still requires
-implementation in [#28](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/28).
+cannot establish performance parity. Use the collector and comparison commands in
+[PERFORMANCE.md](docs/PERFORMANCE.md); thresholds require agreement after repeated evidence.
 Use the implemented [memory recipes](docs/TESTING.md#memory-checks) for native
 sanitizers and separate release Memcheck; do not describe them as full Rust
 sanitizer instrumentation.
@@ -121,7 +121,7 @@ Review enforces rules that do not have an automated check.
 | No explicit panics or fallible unwraps in the FFI input path | Implemented by validated action decoding and exhaustive dispatch, with action/scalar regressions; [#25](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/25). Panic containment remains defensive; review enforces this policy |
 | Compatibility coverage audit and useful property tests | Implemented: [finite corpus, selected-rule inventory, and limits](docs/TESTING.md#reference-coverage-audit); external reference checks run manually |
 | Reproducible Rust/native memory-check recipes | Implemented: [native ASan/UBSan, allocator LSan, release Memcheck and exceptional-retention controls](docs/TESTING.md#memory-checks) in CI; Rust instructions are not sanitizer-instrumented |
-| Committed performance baseline and CI smoke benchmark | Planned: [#28](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/28) |
+| Committed performance baseline and CI smoke benchmark | [Collector, evidence and limits](docs/PERFORMANCE.md); CI has no timing thresholds |
 
 ## Release policy and checklist
 

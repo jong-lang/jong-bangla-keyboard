@@ -202,7 +202,8 @@ void memory(Instance &instance, bool jong) {
 }
 
 template <typename Work>
-void measure(const char *name, size_t scalars, size_t actions, Work work) {
+void measure(const char *name, size_t scalars, size_t actions, bool smoke,
+             Work work) {
   using Clock = std::chrono::steady_clock;
   size_t iterations = 1;
   for (;;) {
@@ -210,28 +211,37 @@ void measure(const char *name, size_t scalars, size_t actions, Work work) {
     for (size_t i = 0; i < iterations; ++i) {
       work();
     }
-    if (Clock::now() - start >= std::chrono::milliseconds(5) ||
+    if (smoke || Clock::now() - start >= std::chrono::milliseconds(5) ||
         iterations >= (1U << 20)) {
       break;
     }
     iterations *= 2;
   }
   std::array<double, 31> samples{};
-  for (auto &sample : samples) {
+  const size_t count = smoke ? 3 : samples.size();
+  for (size_t index = 0; index < count; ++index) {
     const auto start = Clock::now();
     for (size_t i = 0; i < iterations; ++i) {
       work();
     }
-    sample =
+    samples[index] =
         std::chrono::duration<double, std::nano>(Clock::now() - start).count() /
         static_cast<double>(iterations) / static_cast<double>(actions);
   }
-  std::sort(samples.begin(), samples.end());
+  std::sort(samples.begin(), samples.begin() + count);
   std::printf("%s,%zu,%zu,%zu,%.1f,%.1f,%.1f\n", name, scalars, actions,
-              iterations, samples[0], samples[15], samples[29]);
+              iterations, samples[0], samples[count / 2],
+              samples[(count * 95 + 99) / 100 - 1]);
 }
 
-void timing(Instance &instance, bool jong) {
+void lifecycle(Instance &instance, bool jong, const std::vector<Key> &events) {
+  Context context(instance, jong);
+  context.type(events);
+  context.clear();
+  context.type(events); // Destroy with pending input.
+}
+
+void timing(Instance &instance, bool jong, bool smoke) {
   Context context(instance, jong);
   std::puts(
       "workload,raw_scalars,actions_per_iteration,iterations,min_ns,median_ns,"
@@ -243,7 +253,7 @@ void timing(Instance &instance, bool jong) {
             {"type_commit:shadhInota", U"shadhInota"},
             {"type_commit:mixed", mixed}}}) {
     const auto events = keys(word);
-    measure(name, events.size(), events.size() + 1, [&] {
+    measure(name, events.size(), events.size() + 1, smoke, [&] {
       context.type(events);
       context.send(Key(FcitxKey_space), false);
     });
@@ -251,26 +261,36 @@ void timing(Instance &instance, bool jong) {
             "commit cleared word");
   }
   for (const size_t length : {32, 128, 1024, 8192}) {
+    if (smoke && length > 128) {
+      continue;
+    }
     context.type(keys(mixed, length)); // Setup deliberately outside timer.
     context.pending();
-    measure("insert_backspace_pair", length, 2, [&] {
+    measure("insert_backspace_pair", length, 2, smoke, [&] {
       context.send(Key(FcitxKey_i), true);
       context.send(Key(FcitxKey_BackSpace), true);
     });
     context.clear();
   }
+  const auto events = keys(mixed);
+  // One action is a whole create/type/clear/type/destroy cycle, not a key.
+  measure("context_lifecycle", events.size(), 1, smoke,
+          [&] { lifecycle(instance, jong, events); });
 }
 } // namespace
 
 int main(int argc, char **argv) {
   try {
     require(JONG_RESOURCE_RELEASE, "configure with -DCMAKE_BUILD_TYPE=Release");
-    require(argc == 3 &&
+    require((argc == 3 ||
+             (argc == 4 && std::string_view(argv[3]) == "--smoke" &&
+              std::string_view(argv[2]) == "timing")) &&
                 (std::string_view(argv[1]) == "baseline" ||
                  std::string_view(argv[1]) == "jong") &&
                 (std::string_view(argv[2]) == "memory" ||
-                 std::string_view(argv[2]) == "timing"),
-            "usage: jong-fcitx5-resources baseline|jong memory|timing");
+                 std::string_view(argv[2]) == "timing" ||
+                 std::string_view(argv[2]) == "allocations"),
+            "usage: jong-fcitx5-resources baseline|jong memory|timing|allocations [--smoke]");
     const bool jong = std::string_view(argv[1]) == "jong";
     // Prime stdio before the first heap sample. No buffered phase history.
     require(std::setvbuf(stdout, nullptr, _IONBF, 0) == 0, "unbuffer stdout");
@@ -309,8 +329,13 @@ int main(int argc, char **argv) {
     instance.inputMethodManager().setCurrentGroup(group.name());
     if (std::string_view(argv[2]) == "memory") {
       memory(instance, jong);
+    } else if (std::string_view(argv[2]) == "timing") {
+      timing(instance, jong, argc == 4);
     } else {
-      timing(instance, jong);
+      const auto events = keys(mixed);
+      for (unsigned i = 0; i < 1000; ++i) {
+        lifecycle(instance, jong, events);
+      }
     }
     bool sawJong = false;
     bool sawNull = false;

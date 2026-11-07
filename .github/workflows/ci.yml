@@ -112,6 +112,15 @@ jobs:
           shellcheck tools/check-build.sh
       - name: Check Rust workspace and Fcitx5 adapter
         run: bash tools/check-build.sh
+      - name: Smoke benchmark without timing thresholds
+        run: python3 tools/measure-baseline.py smoke --output target/perf-smoke
+      - name: Retain smoke observations
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: performance-smoke
+          path: target/perf-smoke/baseline.json
+          if-no-files-found: error
+          retention-days: 14
       - name: Build and check exported source without Git metadata
         run: |
           export_dir="$(mktemp -d "$RUNNER_TEMP/jong-source.XXXXXX")"

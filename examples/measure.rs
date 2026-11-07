@@ -7,20 +7,21 @@ const SAMPLES: usize = 31;
 const TARGET: Duration = Duration::from_millis(5);
 
 // Percentiles describe batch means, not individual keystroke tail latency.
-fn measure(label: &str, scalars: usize, actions: usize, mut run: impl FnMut()) {
+fn measure(label: &str, scalars: usize, actions: usize, smoke: bool, mut run: impl FnMut()) {
+    let count = if smoke { 3 } else { SAMPLES };
     let mut iterations = 1_u64;
     loop {
         let start = Instant::now();
         for _ in 0..iterations {
             run();
         }
-        if start.elapsed() >= TARGET || iterations >= 1 << 20 {
+        if smoke || start.elapsed() >= TARGET || iterations >= 1 << 20 {
             break;
         }
         iterations *= 2;
     }
-    let mut samples = Vec::with_capacity(SAMPLES);
-    for _ in 0..SAMPLES {
+    let mut samples = Vec::with_capacity(count);
+    for _ in 0..count {
         let start = Instant::now();
         for _ in 0..iterations {
             run();
@@ -31,8 +32,8 @@ fn measure(label: &str, scalars: usize, actions: usize, mut run: impl FnMut()) {
     println!(
         "{label},{scalars},{actions},{iterations},{:.1},{:.1},{:.1}",
         samples[0],
-        samples[SAMPLES / 2],
-        samples[29]
+        samples[count / 2],
+        samples[(count * 95).div_ceil(100) - 1]
     );
 }
 
@@ -41,7 +42,27 @@ fn main() {
         eprintln!("use --release for measurements");
         std::process::exit(2);
     }
-    println!("# 31 samples; adaptive >=5 ms calibration; warm process; no CPU pinning");
+    let args: Vec<String> = std::env::args().skip(1).collect();
+    let smoke = args.as_slice() == ["--smoke"];
+    if args.as_slice() == ["--allocations"] {
+        // Fixed work, independent of adaptive timing and its iteration counts.
+        for _ in 0..1000 {
+            black_box(transliterate(black_box("kShmri12`aকি🙂")));
+            let mut composition = Composition::new();
+            for key in "kShmri12`aকি🙂".chars() {
+                assert!(composition.insert(black_box(key)));
+            }
+            assert!(composition.backspace());
+            assert!(composition.insert('i'));
+            black_box(composition.commit());
+        }
+        return;
+    }
+    if !args.is_empty() && !smoke {
+        eprintln!("usage: measure [--smoke|--allocations]");
+        std::process::exit(2);
+    }
+    println!("# smoke={smoke}; batch means; warm process; no CPU pinning");
     println!(
         "# ns/action includes allocations and output destruction; p95 is a batch-mean percentile"
     );
@@ -55,13 +76,20 @@ fn main() {
         "k`a",
         "কি🙂",
     ] {
-        measure(&format!("convert:{word}"), word.chars().count(), 1, || {
-            black_box(transliterate(black_box(word)));
-        });
+        measure(
+            &format!("convert:{word}"),
+            word.chars().count(),
+            1,
+            smoke,
+            || {
+                black_box(transliterate(black_box(word)));
+            },
+        );
         measure(
             &format!("type_commit:{word}"),
             word.chars().count(),
             word.chars().count() + 1,
+            smoke,
             || {
                 let mut composition = Composition::new();
                 for key in word.chars() {
@@ -73,8 +101,11 @@ fn main() {
         );
     }
     for length in [32, 128, 1024, 8192] {
+        if smoke && length > 128 {
+            continue;
+        }
         let raw: String = "kShmri12`a🙂".chars().cycle().take(length).collect();
-        measure("convert_mixed", length, 1, || {
+        measure("convert_mixed", length, 1, smoke, || {
             black_box(transliterate(black_box(&raw)));
         });
         // Setup is untimed. Measure editing at a long buffer's end rather than
@@ -83,7 +114,7 @@ fn main() {
         for key in raw.chars() {
             assert!(composition.insert(key));
         }
-        measure("insert_backspace_pair", length, 2, || {
+        measure("insert_backspace_pair", length, 2, smoke, || {
             assert!(composition.insert(black_box('i')));
             black_box(composition.preedit());
             assert!(composition.backspace());
