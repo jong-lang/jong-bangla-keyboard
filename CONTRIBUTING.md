@@ -127,7 +127,8 @@ Review enforces rules that do not have an automated check.
 
 Finish and release Fcitx5 before IBus, then Windows TSF. The first Fcitx5 release
 targets x86-64. Native packages come first; Flatpak is a later prototype.
-Keep macOS out of scope unless a viable free path is established.
+ARM64 is outside the initial scope. Keep macOS out of scope unless a viable
+free path is established.
 
 Use semantic versions, staying in `0.x` until stable. Prepare a release through
 an issue branch and reviewed PR. Keep commits and squash titles consistent with
@@ -135,22 +136,66 @@ an issue branch and reviewed PR. Keep commits and squash titles consistent with
 changelog entries focused on user-visible changes rather than a raw commit log,
 following [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-Current tag automation validates versions, runs CI, and prepares a source archive
-and `SHA256SUMS` in a draft GitHub Release. It does not deliver binary archives
-or native packages. The maintainer publishes drafts explicitly.
+Tag automation validates versions and reviewed notes, runs all CI jobs, and
+prepares a draft with these assets:
+
+| Asset | Contents |
+| --- | --- |
+| `jong-bangla-X.Y.Z.tar.gz` | Tagged source, including licenses and build instructions |
+| `jong-bangla-X.Y.Z-fcitx5-x86_64-linux-gnu.tar.gz` | Staged addon and registration files under `usr/`, licenses and guides |
+| `build-info.json` | Source commit, epoch, build image, snapshot, installed package versions, compiler identities and comparison result |
+| `SHA256SUMS` | SHA-256 for every other attached asset; excludes itself |
+
+The native payload is built against the signed packages from a fixed Arch
+archive snapshot and a digest-pinned official Arch image in
+[CI](.github/workflows/ci.yml). It is an input to native packaging, not a
+cross-distribution compatibility claim or a package-manager installer. Package
+installation, upgrades and removal in clean images remain in #30. Only the
+maintainer publishes drafts; the tag workflow never publishes.
+
+The native CI job also runs on PRs. It exports the checked-out commit, builds
+twice in separate source/build directories with offline locked Cargo, normalizes
+source paths and archive metadata, and compares all three staged files byte for
+byte. Both builds run CTest and staged discovery/removal checks. A mismatch
+fails before checksums or a release draft are prepared. This establishes repeat
+builds in that environment, not reproducibility across arbitrary toolchains.
+To reproduce, use the image, snapshot and dependency command pinned in the CI
+job, then run `python3 tools/build-release.py --output target/release-dist` from
+the checkout. The output directory must not exist. Only committed source is
+exported; local edits are not release inputs. Record a new successful CI run
+whenever updating the image or snapshot pins.
+
+Generate changelog candidates before the release preparation PR:
+
+```sh
+python3 tools/check-release.py --generate 0.1.0 --date 2026-11-07 > /tmp/jong-release-candidates.md
+```
+
+Choose the intended version and date explicitly. The generator uses the nearest
+reachable semantic version tag through `HEAD`, or all history for the first
+release. Use `--since vX.Y.Z` and `--until COMMIT` to choose an explicit ancestor
+range. First-parent history uses merge/squash summaries without repeating PR
+commits. `feat` and `perf` become highlight candidates, `fix` and `revert` become
+fix candidates, and `!` or `BREAKING CHANGE:`/`BREAKING-CHANGE:` footers become
+breaking-change candidates. Other types and legacy subjects remain visible in
+`Other changes` for review. Curate the output into user-visible changelog notes;
+replace every placeholder with accurate installation, compatibility, tested
+environment and known-issue notes. Generated candidates cannot pass validation
+until placeholders are replaced. Tag automation extracts the reviewed entry
+from `CHANGELOG.md`; it does not append GitHub-generated notes.
 
 Planned delivery:
 
 | Work | Issue |
 | --- | --- |
-| Conventional Commits changelog generation and complete artifact drafts | [#29](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/29) |
-| Binary archive, .deb, .rpm, maintained AUR recipe, and clean-image checks | [#30](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/30) |
+| Native packaging integration, .deb, .rpm, maintained AUR recipe, and clean-image checks | [#30](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/30) |
 | Flatpak Fcitx5 add-on prototype after the native release | [#31](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/31) |
 
 For each release:
 
-1. Update both Cargo manifests, their lockfile entries, addon version metadata,
-   and dated changelog notes together. Retain `## Unreleased`. The current
+1. Generate and curate candidates, then update both Cargo manifests, their
+   lockfile entries, addon version metadata, and dated changelog notes together.
+   Retain `## Unreleased`. The current
    validator requires nonempty `Highlights`, `Fixes`, `Breaking changes`,
    `Installation and upgrade`, `Tested environments`, and `Known issues` sections.
    Run `python3 tools/check-release.py --base origin/main` before the PR.
@@ -163,8 +208,14 @@ For each release:
 3. Complete separate review and obtain explicit merge authorization. After
    merging and verifying CI, obtain the maintainer's release instruction before
    creating or pushing a `vX.Y.Z` tag. Do not overwrite tags or existing releases.
-4. Inspect the resulting draft, notes, artifacts, and every checksum. Leave an
-   incomplete draft unpublished. The maintainer performs publication.
+4. Inspect the resulting draft, notes, artifacts, and every checksum. The draft
+   tool rejects missing, unexpected, stale or corrupt assets, mismatched source
+   identity and existing releases. It downloads all uploaded assets and compares
+   their bytes. API/listing errors fail closed. Only the draft job has write
+   permission; build/check jobs have read permission. A failed upload or check
+   leaves any partial draft unpublished. Do not rerun uploads over it: inspect
+   and resolve the failure manually without overwriting an existing release.
+   The maintainer performs publication after inspecting the complete draft.
 
 When TSF lands, add a Windows installer and Windows acceptance checks. Initially
 the installer is unsigned; document the SmartScreen warning. Revisit IBus

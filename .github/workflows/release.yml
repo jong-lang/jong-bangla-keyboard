@@ -38,7 +38,7 @@ jobs:
     uses: ./.github/workflows/ci.yml
 
   draft:
-    name: Prepare source release draft
+    name: Prepare complete release draft
     needs: [validate, checks]
     runs-on: ubuntu-24.04
     timeout-minutes: 5
@@ -49,28 +49,15 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-      - name: Prepare notes and source archive
-        env:
-          RELEASE_TAG: ${{ github.ref_name }}
-        run: |
-          python3 tools/check-release.py "$RELEASE_TAG" --notes-file "$RUNNER_TEMP/release-notes.md"
-          printf '\n\nAutomated validation: %s/%s/actions/runs/%s\n' "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY" "$GITHUB_RUN_ID" >> "$RUNNER_TEMP/release-notes.md"
-          version="${RELEASE_TAG#v}"
-          git archive --format=tar --prefix="jong-bangla-$version/" HEAD | gzip -n > "$RUNNER_TEMP/jong-bangla-$version.tar.gz"
-          cd "$RUNNER_TEMP"
-          sha256sum "jong-bangla-$version.tar.gz" > SHA256SUMS
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          name: release-bundle
+          path: ${{ runner.temp }}/release-bundle
       - name: Create draft for maintainer review
         env:
           GH_TOKEN: ${{ github.token }}
-          GH_REPO: ${{ github.repository }}
+          RELEASE_REPOSITORY: ${{ github.repository }}
           RELEASE_TAG: ${{ github.ref_name }}
         run: |
-          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
-            echo 'A release already exists for this tag; review it instead of overwriting it.' >&2
-            exit 1
-          fi
-          args=(--draft --verify-tag --latest=false --generate-notes --notes-file "$RUNNER_TEMP/release-notes.md" --title "Jong Bangla $RELEASE_TAG")
-          if [[ "$RELEASE_TAG" == *-* ]]; then
-            args+=(--prerelease)
-          fi
-          gh release create "$RELEASE_TAG" "$RUNNER_TEMP/jong-bangla-${RELEASE_TAG#v}.tar.gz" "$RUNNER_TEMP/SHA256SUMS" "${args[@]}"
+          python3 tools/draft-release.py "$RELEASE_TAG" \
+            --artifacts "$RUNNER_TEMP/release-bundle" --repo "$RELEASE_REPOSITORY"

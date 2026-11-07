@@ -14,6 +14,40 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  release-native:
+    name: Reproducible x86-64 release payload
+    runs-on: ubuntu-24.04
+    container: archlinux@sha256:624bdc7fc6615155d67bc34cf7146c0c9fd0e3c92943977da63a630e4ca49c30
+    timeout-minutes: 25
+    defaults:
+      run:
+        shell: bash
+    env:
+      RELEASE_BUILD_IMAGE: archlinux@sha256:624bdc7fc6615155d67bc34cf7146c0c9fd0e3c92943977da63a630e4ca49c30
+      RELEASE_ARCH_SNAPSHOT: '2026/11/01'
+    steps:
+      - name: Install signed build dependencies from the fixed Arch snapshot
+        run: |
+          # Pacman expands these literal repository/architecture variables.
+          # shellcheck disable=SC2016
+          printf 'Server = https://archive.archlinux.org/repos/%s/$repo/os/$arch\n' "$RELEASE_ARCH_SNAPSHOT" > /etc/pacman.d/mirrorlist
+          pacman -Syyuu --noconfirm --needed git rust cmake ninja fcitx5 python
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Build twice, compare bytes, and prepare checksummed artifacts
+        env:
+          GIT_CONFIG_COUNT: '1'
+          GIT_CONFIG_KEY_0: safe.directory
+          GIT_CONFIG_VALUE_0: ${{ github.workspace }}
+        run: python3 tools/build-release.py --output target/release-dist
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release-bundle
+          path: target/release-dist/
+          if-no-files-found: error
+          retention-days: 14
+
   policy:
     name: Dependency and privacy policy
     runs-on: ubuntu-24.04
