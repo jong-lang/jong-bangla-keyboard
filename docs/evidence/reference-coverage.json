@@ -1,0 +1,3093 @@
+{
+  "schema": 1,
+  "referenceSha256": "312ed3438ebf0a69f6de38036572ec39cdbafe3ef53f500caa402aaa704c2b32",
+  "checkerSha256": "eedd11b536137ad5bf9a80aa32e0c26cede7f4b235b2622c2e94433807685296",
+  "node": "v24.21.0",
+  "fixturesSha256": "c2eaf5f9f9035520deff60afd3522bfb8db27d93c307373d8deb0723abba1857",
+  "fixtureFiles": 304,
+  "fixtureRows": 522973,
+  "uniqueInputs": 493369,
+  "duplicateRows": 29604,
+  "policyCases": 60,
+  "policyDifferences": 51,
+  "families": {
+    "digraphs-and-conjuncts": {
+      "patterns": 169,
+      "selected": 168,
+      "contextualRules": 0,
+      "selectedRules": 0
+    },
+    "single-consonants": {
+      "patterns": 28,
+      "selected": 28,
+      "contextualRules": 5,
+      "selectedRules": 5
+    },
+    "symbols": {
+      "patterns": 8,
+      "selected": 8,
+      "contextualRules": 0,
+      "selectedRules": 0
+    },
+    "escapes": {
+      "patterns": 19,
+      "selected": 18,
+      "contextualRules": 0,
+      "selectedRules": 0
+    },
+    "digits": {
+      "patterns": 10,
+      "selected": 10,
+      "contextualRules": 0,
+      "selectedRules": 0
+    },
+    "nasal-prefixed": {
+      "patterns": 30,
+      "selected": 30,
+      "contextualRules": 0,
+      "selectedRules": 0
+    },
+    "vowels": {
+      "patterns": 16,
+      "selected": 15,
+      "contextualRules": 28,
+      "selectedRules": 17
+    },
+    "r-and-reph": {
+      "patterns": 9,
+      "selected": 9,
+      "contextualRules": 5,
+      "selectedRules": 5
+    }
+  },
+  "patternCount": 289,
+  "contextualRules": 38,
+  "missingSpellings": [],
+  "unselectedPatterns": [
+    {
+      "index": 233,
+      "spelling": "Sc"
+    },
+    {
+      "index": 258,
+      "spelling": "AZ"
+    },
+    {
+      "index": 260,
+      "spelling": "A`"
+    }
+  ],
+  "unselectedRules": [
+    {
+      "index": 178,
+      "spelling": "OI",
+      "rule": 1
+    },
+    {
+      "index": 179,
+      "spelling": "OU",
+      "rule": 1
+    },
+    {
+      "index": 180,
+      "spelling": "O",
+      "rule": 1
+    },
+    {
+      "index": 193,
+      "spelling": "rri",
+      "rule": 1
+    },
+    {
+      "index": 242,
+      "spelling": "oo",
+      "rule": 1
+    },
+    {
+      "index": 263,
+      "spelling": "i",
+      "rule": 1
+    },
+    {
+      "index": 265,
+      "spelling": "I",
+      "rule": 1
+    },
+    {
+      "index": 267,
+      "spelling": "u",
+      "rule": 1
+    },
+    {
+      "index": 269,
+      "spelling": "U",
+      "rule": 1
+    },
+    {
+      "index": 271,
+      "spelling": "ee",
+      "rule": 1
+    },
+    {
+      "index": 273,
+      "spelling": "e",
+      "rule": 1
+    }
+  ],
+  "fixtureCounts": {
+    "audit-interactions.tsv": 40,
+    "b-following-r.tsv": 577,
+    "bh-following-r.tsv": 576,
+    "case-alias-a.tsv": 7543,
+    "case-alias-b.tsv": 5743,
+    "case-alias-c.tsv": 5767,
+    "case-alias-e.tsv": 2747,
+    "case-alias-f.tsv": 2980,
+    "case-alias-h.tsv": 14627,
+    "case-alias-k.tsv": 9211,
+    "case-alias-l.tsv": 14048,
+    "case-alias-m.tsv": 11455,
+    "case-alias-mixed.tsv": 18577,
+    "case-alias-p.tsv": 8423,
+    "case-alias-q.tsv": 893,
+    "case-alias-resolved.tsv": 113,
+    "case-alias-v.tsv": 2948,
+    "case-alias-w.tsv": 1590,
+    "case-alias-x.tsv": 2581,
+    "conjunct-bb.tsv": 2236,
+    "conjunct-bhl.tsv": 1904,
+    "conjunct-bl.tsv": 1889,
+    "conjunct-completion-bd.tsv": 3548,
+    "conjunct-completion-bdh.tsv": 3561,
+    "conjunct-completion-bj.tsv": 3548,
+    "conjunct-completion-c-following-r.tsv": 3511,
+    "conjunct-completion-c-nya.tsv": 3523,
+    "conjunct-completion-cc.tsv": 3540,
+    "conjunct-completion-cch.tsv": 3561,
+    "conjunct-completion-ch-following-r.tsv": 3548,
+    "conjunct-completion-controls.tsv": 6113,
+    "conjunct-completion-gdh.tsv": 3561,
+    "conjunct-completion-j-following-r.tsv": 3511,
+    "conjunct-completion-j-nya.tsv": 3528,
+    "conjunct-completion-jh-following-r.tsv": 3548,
+    "conjunct-completion-jj.tsv": 3540,
+    "conjunct-completion-jjh.tsv": 3561,
+    "conjunct-completion-mth.tsv": 3561,
+    "conjunct-completion-nc.tsv": 3548,
+    "conjunct-completion-nch.tsv": 3561,
+    "conjunct-completion-nj.tsv": 3548,
+    "conjunct-completion-njh.tsv": 3561,
+    "conjunct-completion-nya-c.tsv": 3492,
+    "conjunct-completion-nya-ch.tsv": 3505,
+    "conjunct-completion-nya-j.tsv": 3492,
+    "conjunct-completion-nya-jh.tsv": 3505,
+    "conjunct-completion-p-retroflex-t.tsv": 3548,
+    "conjunct-completion-pt.tsv": 3548,
+    "conjunct-completion-s-uppercase-c.tsv": 3548,
+    "conjunct-completion-s-uppercase-ch.tsv": 3561,
+    "conjunct-completion-sh-c.tsv": 3561,
+    "conjunct-completion-sh-ch.tsv": 3574,
+    "conjunct-d-retroflex-pair.tsv": 957,
+    "conjunct-dbh.tsv": 958,
+    "conjunct-dd.tsv": 956,
+    "conjunct-ddh.tsv": 961,
+    "conjunct-dg.tsv": 648,
+    "conjunct-dgh.tsv": 647,
+    "conjunct-dhm.tsv": 955,
+    "conjunct-dhn.tsv": 955,
+    "conjunct-dm.tsv": 955,
+    "conjunct-dv.tsv": 958,
+    "conjunct-fl.tsv": 1889,
+    "conjunct-g-n.tsv": 692,
+    "conjunct-gg.tsv": 716,
+    "conjunct-ghn.tsv": 659,
+    "conjunct-gl.tsv": 1903,
+    "conjunct-gm.tsv": 858,
+    "conjunct-gn.tsv": 664,
+    "conjunct-h-n.tsv": 691,
+    "conjunct-hl.tsv": 855,
+    "conjunct-hm.tsv": 864,
+    "conjunct-hn.tsv": 658,
+    "conjunct-k-t-retroflex.tsv": 1442,
+    "conjunct-kk.tsv": 501,
+    "conjunct-kkh.tsv": 330,
+    "conjunct-kkhm.tsv": 399,
+    "conjunct-kkhn.tsv": 410,
+    "conjunct-kl.tsv": 1440,
+    "conjunct-ks.tsv": 1730,
+    "conjunct-ksh-priority.tsv": 1745,
+    "conjunct-ksh.tsv": 332,
+    "conjunct-kshm.tsv": 399,
+    "conjunct-kshn.tsv": 411,
+    "conjunct-kt.tsv": 1443,
+    "conjunct-kxm.tsv": 398,
+    "conjunct-kxn.tsv": 410,
+    "conjunct-l-d-retroflex.tsv": 2094,
+    "conjunct-l-t-retroflex.tsv": 2095,
+    "conjunct-lb.tsv": 2094,
+    "conjunct-lbh.tsv": 2109,
+    "conjunct-ldh.tsv": 2109,
+    "conjunct-lg.tsv": 2094,
+    "conjunct-lgh.tsv": 2109,
+    "conjunct-lk.tsv": 1687,
+    "conjunct-lkh.tsv": 1668,
+    "conjunct-ll.tsv": 1904,
+    "conjunct-lm.tsv": 1984,
+    "conjunct-lp.tsv": 2095,
+    "conjunct-lph.tsv": 2109,
+    "conjunct-lv.tsv": 2094,
+    "conjunct-mb.tsv": 1985,
+    "conjunct-mbh.tsv": 2000,
+    "conjunct-mf.tsv": 1984,
+    "conjunct-ml.tsv": 859,
+    "conjunct-mm.tsv": 860,
+    "conjunct-mn.tsv": 861,
+    "conjunct-mp.tsv": 1985,
+    "conjunct-mph.tsv": 1999,
+    "conjunct-mpl.tsv": 1999,
+    "conjunct-mv.tsv": 1984,
+    "conjunct-n-d-retroflex.tsv": 1164,
+    "conjunct-n-lower-pair.tsv": 856,
+    "conjunct-n-mixed-pair.tsv": 855,
+    "conjunct-n-retroflex-d-retroflex.tsv": 1122,
+    "conjunct-n-retroflex-dh-retroflex.tsv": 1129,
+    "conjunct-n-retroflex-m.tsv": 856,
+    "conjunct-n-retroflex-t-retroflex.tsv": 1122,
+    "conjunct-n-retroflex-th-retroflex.tsv": 1136,
+    "conjunct-n-t-retroflex.tsv": 1140,
+    "conjunct-n-th-retroflex.tsv": 1154,
+    "conjunct-nd.tsv": 1135,
+    "conjunct-ndh.tsv": 1155,
+    "conjunct-ng-m.tsv": 869,
+    "conjunct-ngg.tsv": 531,
+    "conjunct-nggh.tsv": 531,
+    "conjunct-ngh.tsv": 843,
+    "conjunct-ngk.tsv": 433,
+    "conjunct-ngkh.tsv": 454,
+    "conjunct-ngkkh.tsv": 458,
+    "conjunct-ngksh.tsv": 468,
+    "conjunct-ngkx.tsv": 432,
+    "conjunct-ngx.tsv": 322,
+    "conjunct-nk.tsv": 1737,
+    "conjunct-nkh.tsv": 1717,
+    "conjunct-nm.tsv": 865,
+    "conjunct-nn.tsv": 677,
+    "conjunct-ns.tsv": 2300,
+    "conjunct-nsh.tsv": 2300,
+    "conjunct-nt.tsv": 1139,
+    "conjunct-nth.tsv": 1155,
+    "conjunct-phl.tsv": 1890,
+    "conjunct-pl.tsv": 1882,
+    "conjunct-pn.tsv": 2240,
+    "conjunct-pp.tsv": 2236,
+    "conjunct-ps.tsv": 2300,
+    "conjunct-psh.tsv": 2300,
+    "conjunct-r-g.tsv": 648,
+    "conjunct-s-t-retroflex.tsv": 2362,
+    "conjunct-s-uppercase-l.tsv": 1910,
+    "conjunct-s-uppercase-m.tsv": 1984,
+    "conjunct-s-uppercase-n.tsv": 2240,
+    "conjunct-s-uppercase-t.tsv": 2361,
+    "conjunct-sf.tsv": 2160,
+    "conjunct-sh-f.tsv": 2189,
+    "conjunct-sh-k.tsv": 1779,
+    "conjunct-sh-lowercase-l.tsv": 1911,
+    "conjunct-sh-lowercase-m.tsv": 1985,
+    "conjunct-sh-lowercase-n.tsv": 2241,
+    "conjunct-sh-lowercase-t.tsv": 2376,
+    "conjunct-sh-p.tsv": 2192,
+    "conjunct-sh-ph.tsv": 2204,
+    "conjunct-sh-t-retroflex.tsv": 2377,
+    "conjunct-sh-th-retroflex.tsv": 2391,
+    "conjunct-shm.tsv": 468,
+    "conjunct-shn.tsv": 465,
+    "conjunct-sk.tsv": 1750,
+    "conjunct-skh.tsv": 1731,
+    "conjunct-skl.tsv": 1731,
+    "conjunct-sl.tsv": 1897,
+    "conjunct-sm.tsv": 1970,
+    "conjunct-sn.tsv": 2227,
+    "conjunct-sp.tsv": 2163,
+    "conjunct-sph.tsv": 2175,
+    "conjunct-spl.tsv": 2175,
+    "conjunct-st.tsv": 2362,
+    "conjunct-sth.tsv": 2377,
+    "conjunct-t-retroflex-m.tsv": 1346,
+    "conjunct-t-retroflex-pair.tsv": 1344,
+    "conjunct-tm.tsv": 1358,
+    "conjunct-tn.tsv": 1359,
+    "conjunct-tt.tsv": 1357,
+    "conjunct-tth.tsv": 1366,
+    "conjunct-vl.tsv": 1896,
+    "consonant-q.tsv": 132,
+    "consonant-v.tsv": 136,
+    "consonant-w.tsv": 311,
+    "consonant-x.tsv": 392,
+    "consonant-y-lowercase.tsv": 338,
+    "consonant-y-uppercase.tsv": 142,
+    "consonant-z-uppercase.tsv": 398,
+    "consonant-z.tsv": 51,
+    "consonants-c-ch-j-jh.tsv": 148,
+    "consonants-d-dh.tsv": 164,
+    "consonants-l-h.tsv": 110,
+    "consonants-ng-nj.tsv": 88,
+    "consonants-p-ph-f.tsv": 115,
+    "consonants-r-retroflex.tsv": 94,
+    "consonants-r.tsv": 115,
+    "consonants-s-sh.tsv": 174,
+    "consuming-k-controls.tsv": 960,
+    "d-following-r.tsv": 576,
+    "d-retroflex-following-r.tsv": 576,
+    "dh-following-r.tsv": 576,
+    "dh-retroflex-following-r.tsv": 575,
+    "explicit-gj-controls.tsv": 435,
+    "explicit-gj-g-basic.tsv": 452,
+    "explicit-gj-g-lower-upper.tsv": 452,
+    "explicit-gj-g-n-retroflex.tsv": 452,
+    "explicit-gj-g-upper-lower.tsv": 452,
+    "explicit-gj-g-upper-pair.tsv": 452,
+    "explicit-gj-gdh.tsv": 514,
+    "explicit-gj-gh.tsv": 514,
+    "explicit-gj-ghn.tsv": 514,
+    "explicit-gj-gl.tsv": 514,
+    "explicit-gj-gm.tsv": 514,
+    "explicit-gj-gn.tsv": 452,
+    "explicit-gj-j-basic.tsv": 452,
+    "f-following-r.tsv": 3863,
+    "final-escape-consumption.tsv": 1596,
+    "final-escape-controls.tsv": 476,
+    "final-escape-t.tsv": 1995,
+    "following-r-four-controls.tsv": 185,
+    "following-r-q.tsv": 1066,
+    "following-r-r-retroflex.tsv": 533,
+    "following-r-rh-retroflex.tsv": 1066,
+    "following-r-z.tsv": 533,
+    "g-following-r.tsv": 475,
+    "gh-following-r.tsv": 473,
+    "h-following-r.tsv": 396,
+    "k-family-controls.tsv": 2083,
+    "k-following-r.tsv": 475,
+    "kh-following-r.tsv": 476,
+    "l-ending-controls.tsv": 2240,
+    "l-following-r.tsv": 522,
+    "l-prefix-controls.tsv": 1600,
+    "m-following-r.tsv": 527,
+    "m-labial-controls.tsv": 1600,
+    "n-following-r.tsv": 391,
+    "n-retroflex-following-r.tsv": 396,
+    "nasal-rri.tsv": 274,
+    "ns-ps-controls.tsv": 1896,
+    "p-following-r.tsv": 3863,
+    "ph-following-r.tsv": 3863,
+    "reference.tsv": 27,
+    "repeat-n-controls.tsv": 2608,
+    "reph-basic.tsv": 2322,
+    "reph-conjuncts.tsv": 8964,
+    "reph-contextual.tsv": 179,
+    "reph-controls.tsv": 1938,
+    "s-following-r.tsv": 1177,
+    "s-labial-controls.tsv": 2445,
+    "s-stop-controls.tsv": 3484,
+    "s-uppercase-following-r.tsv": 1191,
+    "sh-following-r.tsv": 476,
+    "sh-lowercase-following-r.tsv": 1191,
+    "sign-ng.tsv": 110,
+    "symbols-backtick.tsv": 805,
+    "symbols-caret.tsv": 980,
+    "symbols-colon.tsv": 980,
+    "symbols-controls.tsv": 219,
+    "symbols-dollar.tsv": 980,
+    "symbols-double-comma.tsv": 980,
+    "symbols-double-period.tsv": 980,
+    "symbols-ellipsis.tsv": 980,
+    "symbols-escaped-caret.tsv": 980,
+    "symbols-escaped-colon.tsv": 980,
+    "symbols-escaped-period.tsv": 980,
+    "symbols-period.tsv": 980,
+    "t-following-r.tsv": 751,
+    "t-retroflex-following-r.tsv": 751,
+    "th-following-r.tsv": 751,
+    "th-retroflex-following-r.tsv": 751,
+    "uppercase-y-following-r.tsv": 286,
+    "v-following-r.tsv": 576,
+    "vowel-escape-a-upper.tsv": 1120,
+    "vowel-escape-a.tsv": 1120,
+    "vowel-escape-controls.tsv": 2007,
+    "vowel-escape-e-upper.tsv": 1120,
+    "vowel-escape-e.tsv": 1120,
+    "vowel-escape-ee-lower-upper.tsv": 1120,
+    "vowel-escape-ee-upper-lower.tsv": 1120,
+    "vowel-escape-ee-upper-pair.tsv": 1120,
+    "vowel-escape-ee.tsv": 1120,
+    "vowel-escape-i-long.tsv": 1120,
+    "vowel-escape-i.tsv": 1120,
+    "vowel-escape-o-upper.tsv": 1120,
+    "vowel-escape-o.tsv": 1120,
+    "vowel-escape-oi.tsv": 1120,
+    "vowel-escape-oo.tsv": 1120,
+    "vowel-escape-ou.tsv": 1120,
+    "vowel-escape-rri.tsv": 1120,
+    "vowel-escape-u-long.tsv": 1120,
+    "vowel-escape-u.tsv": 1120,
+    "vowels-e.tsv": 92,
+    "vowels-i-long.tsv": 52,
+    "vowels-o.tsv": 156,
+    "vowels-oi-ou.tsv": 150,
+    "vowels-rri.tsv": 84,
+    "vowels-u.tsv": 80,
+    "vowels.tsv": 66,
+    "w-following-r.tsv": 385,
+    "x-following-r.tsv": 755,
+    "ya-following-r.tsv": 418
+  },
+  "inventory": [
+    {
+      "index": 0,
+      "spelling": "bhl",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 1,
+      "spelling": "psh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 2,
+      "spelling": "bdh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 3,
+      "spelling": "bj",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 4,
+      "spelling": "bd",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 5,
+      "spelling": "bb",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 6,
+      "spelling": "bl",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 7,
+      "spelling": "bh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 8,
+      "spelling": "vl",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 9,
+      "spelling": "b",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 10,
+      "spelling": "v",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 11,
+      "spelling": "cNG",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 12,
+      "spelling": "cch",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 13,
+      "spelling": "cc",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 14,
+      "spelling": "ch",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 15,
+      "spelling": "c",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 16,
+      "spelling": "dhn",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 17,
+      "spelling": "dhm",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 18,
+      "spelling": "dgh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 19,
+      "spelling": "ddh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 20,
+      "spelling": "dbh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 21,
+      "spelling": "dv",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 22,
+      "spelling": "dm",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 23,
+      "spelling": "DD",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 24,
+      "spelling": "Dh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 25,
+      "spelling": "dh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 26,
+      "spelling": "dg",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 27,
+      "spelling": "dd",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 28,
+      "spelling": "D",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 29,
+      "spelling": "d",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 30,
+      "spelling": "...",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 31,
+      "spelling": ".`",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 32,
+      "spelling": "..",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 33,
+      "spelling": ".",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 34,
+      "spelling": "ghn",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 35,
+      "spelling": "Ghn",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 36,
+      "spelling": "gdh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 37,
+      "spelling": "Gdh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 38,
+      "spelling": "gN",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 39,
+      "spelling": "GN",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 40,
+      "spelling": "gn",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 41,
+      "spelling": "Gn",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 42,
+      "spelling": "gm",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 43,
+      "spelling": "Gm",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 44,
+      "spelling": "gl",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 45,
+      "spelling": "Gl",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 46,
+      "spelling": "gg",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 47,
+      "spelling": "GG",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 48,
+      "spelling": "Gg",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 49,
+      "spelling": "gG",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 50,
+      "spelling": "gh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 51,
+      "spelling": "Gh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 52,
+      "spelling": "g",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 53,
+      "spelling": "G",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 54,
+      "spelling": "hN",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 55,
+      "spelling": "hn",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 56,
+      "spelling": "hm",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 57,
+      "spelling": "hl",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 58,
+      "spelling": "h",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 59,
+      "spelling": "jjh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 60,
+      "spelling": "jNG",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 61,
+      "spelling": "jh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 62,
+      "spelling": "jj",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 63,
+      "spelling": "j",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 64,
+      "spelling": "J",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 65,
+      "spelling": "kkhN",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 66,
+      "spelling": "kShN",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 67,
+      "spelling": "kkhm",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 68,
+      "spelling": "kShm",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 69,
+      "spelling": "kxN",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 70,
+      "spelling": "kxm",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 71,
+      "spelling": "kkh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 72,
+      "spelling": "kSh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 73,
+      "spelling": "ksh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 74,
+      "spelling": "kx",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 75,
+      "spelling": "kk",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 76,
+      "spelling": "kT",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 77,
+      "spelling": "kt",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 78,
+      "spelling": "kl",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 79,
+      "spelling": "ks",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 80,
+      "spelling": "kh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 81,
+      "spelling": "k",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 82,
+      "spelling": "lbh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 83,
+      "spelling": "ldh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 84,
+      "spelling": "lkh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 85,
+      "spelling": "lgh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 86,
+      "spelling": "lph",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 87,
+      "spelling": "lk",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 88,
+      "spelling": "lg",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 89,
+      "spelling": "lT",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 90,
+      "spelling": "lD",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 91,
+      "spelling": "lp",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 92,
+      "spelling": "lv",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 93,
+      "spelling": "lm",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 94,
+      "spelling": "ll",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 95,
+      "spelling": "lb",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 96,
+      "spelling": "l",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 97,
+      "spelling": "mth",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 98,
+      "spelling": "mph",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 99,
+      "spelling": "mbh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 100,
+      "spelling": "mpl",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 101,
+      "spelling": "mn",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 102,
+      "spelling": "mp",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 103,
+      "spelling": "mv",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 104,
+      "spelling": "mm",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 105,
+      "spelling": "ml",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 106,
+      "spelling": "mb",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 107,
+      "spelling": "mf",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 108,
+      "spelling": "m",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 109,
+      "spelling": "0",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 110,
+      "spelling": "1",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 111,
+      "spelling": "2",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 112,
+      "spelling": "3",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 113,
+      "spelling": "4",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 114,
+      "spelling": "5",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 115,
+      "spelling": "6",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 116,
+      "spelling": "7",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 117,
+      "spelling": "8",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 118,
+      "spelling": "9",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 119,
+      "spelling": "NgkSh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 120,
+      "spelling": "Ngkkh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 121,
+      "spelling": "NGch",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 122,
+      "spelling": "Nggh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 123,
+      "spelling": "Ngkh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 124,
+      "spelling": "NGjh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 125,
+      "spelling": "ngOU",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 126,
+      "spelling": "ngOI",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 127,
+      "spelling": "Ngkx",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 128,
+      "spelling": "NGc",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 129,
+      "spelling": "nch",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 130,
+      "spelling": "njh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 131,
+      "spelling": "ngh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 132,
+      "spelling": "Ngk",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 133,
+      "spelling": "Ngx",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 134,
+      "spelling": "Ngg",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 135,
+      "spelling": "Ngm",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 136,
+      "spelling": "NGj",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 137,
+      "spelling": "ndh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 138,
+      "spelling": "nTh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 139,
+      "spelling": "NTh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 140,
+      "spelling": "nth",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 141,
+      "spelling": "nkh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 142,
+      "spelling": "ngo",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 143,
+      "spelling": "nga",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 144,
+      "spelling": "ngi",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 145,
+      "spelling": "ngI",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 146,
+      "spelling": "ngu",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 147,
+      "spelling": "ngU",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 148,
+      "spelling": "nge",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 149,
+      "spelling": "ngO",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 150,
+      "spelling": "NDh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 151,
+      "spelling": "nsh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 152,
+      "spelling": "Ngr",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 153,
+      "spelling": "NGr",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 154,
+      "spelling": "ngr",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 155,
+      "spelling": "nj",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 156,
+      "spelling": "Ng",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 157,
+      "spelling": "NG",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 158,
+      "spelling": "nk",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 159,
+      "spelling": "ng",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 160,
+      "spelling": "nn",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 161,
+      "spelling": "NN",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 162,
+      "spelling": "Nn",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 163,
+      "spelling": "nm",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 164,
+      "spelling": "Nm",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 165,
+      "spelling": "nd",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 166,
+      "spelling": "nT",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 167,
+      "spelling": "NT",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 168,
+      "spelling": "nD",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 169,
+      "spelling": "ND",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 170,
+      "spelling": "nt",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 171,
+      "spelling": "ns",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 172,
+      "spelling": "nc",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 173,
+      "spelling": "n",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 174,
+      "spelling": "N",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 175,
+      "spelling": "OI`",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 176,
+      "spelling": "OU`",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 177,
+      "spelling": "O`",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 178,
+      "spelling": "OI",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 2,
+      "selectedRules": [
+        0
+      ]
+    },
+    {
+      "index": 179,
+      "spelling": "OU",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 2,
+      "selectedRules": [
+        0
+      ]
+    },
+    {
+      "index": 180,
+      "spelling": "O",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 2,
+      "selectedRules": [
+        0
+      ]
+    },
+    {
+      "index": 181,
+      "spelling": "phl",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 182,
+      "spelling": "pT",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 183,
+      "spelling": "pt",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 184,
+      "spelling": "pn",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 185,
+      "spelling": "pp",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 186,
+      "spelling": "pl",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 187,
+      "spelling": "ps",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 188,
+      "spelling": "ph",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 189,
+      "spelling": "fl",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 190,
+      "spelling": "f",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 191,
+      "spelling": "p",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 192,
+      "spelling": "rri`",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 193,
+      "spelling": "rri",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 2,
+      "selectedRules": [
+        0
+      ]
+    },
+    {
+      "index": 194,
+      "spelling": "rrZ",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 195,
+      "spelling": "rry",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 196,
+      "spelling": "rZ",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 1,
+      "selectedRules": [
+        0
+      ]
+    },
+    {
+      "index": 197,
+      "spelling": "ry",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 1,
+      "selectedRules": [
+        0
+      ]
+    },
+    {
+      "index": 198,
+      "spelling": "rr",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 2,
+      "selectedRules": [
+        0,
+        1
+      ]
+    },
+    {
+      "index": 199,
+      "spelling": "Rg",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 200,
+      "spelling": "Rh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 201,
+      "spelling": "R",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 202,
+      "spelling": "r",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 1,
+      "selectedRules": [
+        0
+      ]
+    },
+    {
+      "index": 203,
+      "spelling": "shch",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 204,
+      "spelling": "ShTh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 205,
+      "spelling": "Shph",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 206,
+      "spelling": "Sch",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 207,
+      "spelling": "skl",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 208,
+      "spelling": "skh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 209,
+      "spelling": "sth",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 210,
+      "spelling": "sph",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 211,
+      "spelling": "shc",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 212,
+      "spelling": "sht",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 213,
+      "spelling": "shn",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 214,
+      "spelling": "shm",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 215,
+      "spelling": "shl",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 216,
+      "spelling": "Shk",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 217,
+      "spelling": "ShT",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 218,
+      "spelling": "ShN",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 219,
+      "spelling": "Shp",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 220,
+      "spelling": "Shf",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 221,
+      "spelling": "Shm",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 222,
+      "spelling": "spl",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 223,
+      "spelling": "sk",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 224,
+      "spelling": "Sc",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 225,
+      "spelling": "sT",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 226,
+      "spelling": "st",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 227,
+      "spelling": "sn",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 228,
+      "spelling": "sp",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 229,
+      "spelling": "sf",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 230,
+      "spelling": "sm",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 231,
+      "spelling": "sl",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 232,
+      "spelling": "sh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 233,
+      "spelling": "Sc",
+      "standaloneFixture": true,
+      "selected": false,
+      "defaultSelected": false,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 234,
+      "spelling": "St",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 235,
+      "spelling": "Sn",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 236,
+      "spelling": "Sm",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 237,
+      "spelling": "Sl",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 238,
+      "spelling": "Sh",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 239,
+      "spelling": "s",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 240,
+      "spelling": "S",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 241,
+      "spelling": "oo`",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 242,
+      "spelling": "oo",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 2,
+      "selectedRules": [
+        0
+      ]
+    },
+    {
+      "index": 243,
+      "spelling": "o`",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 244,
+      "spelling": "oZ",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 245,
+      "spelling": "o",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 3,
+      "selectedRules": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "index": 246,
+      "spelling": "tth",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 247,
+      "spelling": "t``",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 248,
+      "spelling": "TT",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 249,
+      "spelling": "Tm",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 250,
+      "spelling": "Th",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 251,
+      "spelling": "tn",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 252,
+      "spelling": "tm",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 253,
+      "spelling": "th",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 254,
+      "spelling": "tt",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 255,
+      "spelling": "T",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 256,
+      "spelling": "t",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 257,
+      "spelling": "aZ",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 258,
+      "spelling": "AZ",
+      "standaloneFixture": true,
+      "selected": false,
+      "defaultSelected": false,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 259,
+      "spelling": "a`",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 260,
+      "spelling": "A`",
+      "standaloneFixture": true,
+      "selected": false,
+      "defaultSelected": false,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 261,
+      "spelling": "a",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 3,
+      "selectedRules": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "index": 262,
+      "spelling": "i`",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 263,
+      "spelling": "i",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 2,
+      "selectedRules": [
+        0
+      ]
+    },
+    {
+      "index": 264,
+      "spelling": "I`",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 265,
+      "spelling": "I",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 2,
+      "selectedRules": [
+        0
+      ]
+    },
+    {
+      "index": 266,
+      "spelling": "u`",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 267,
+      "spelling": "u",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 2,
+      "selectedRules": [
+        0
+      ]
+    },
+    {
+      "index": 268,
+      "spelling": "U`",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 269,
+      "spelling": "U",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 2,
+      "selectedRules": [
+        0
+      ]
+    },
+    {
+      "index": 270,
+      "spelling": "ee`",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 271,
+      "spelling": "ee",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 2,
+      "selectedRules": [
+        0
+      ]
+    },
+    {
+      "index": 272,
+      "spelling": "e`",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 273,
+      "spelling": "e",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 2,
+      "selectedRules": [
+        0
+      ]
+    },
+    {
+      "index": 274,
+      "spelling": "z",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 275,
+      "spelling": "Z",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 276,
+      "spelling": "y",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 2,
+      "selectedRules": [
+        0,
+        1
+      ]
+    },
+    {
+      "index": 277,
+      "spelling": "Y",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 278,
+      "spelling": "q",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 279,
+      "spelling": "w",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 2,
+      "selectedRules": [
+        0,
+        1
+      ]
+    },
+    {
+      "index": 280,
+      "spelling": "x",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 1,
+      "selectedRules": [
+        0
+      ]
+    },
+    {
+      "index": 281,
+      "spelling": ":`",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 282,
+      "spelling": ":",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 283,
+      "spelling": "^`",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 284,
+      "spelling": "^",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 285,
+      "spelling": ",,",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 286,
+      "spelling": ",",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 287,
+      "spelling": "$",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    },
+    {
+      "index": 288,
+      "spelling": "`",
+      "standaloneFixture": true,
+      "selected": true,
+      "defaultSelected": true,
+      "contextualRules": 0,
+      "selectedRules": []
+    }
+  ]
+}

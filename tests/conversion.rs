@@ -3554,3 +3554,8 @@ fn grouped_rule_examples_match_exact_output() {
         "ম্ব ম্ভ ম্ভ ম্প ম্ফ ম্ফ মপ্ল ল্ম স্ম শ্ম শ্ম ম্বল মপ্লক স্মপ"
     );
 }
+
+#[test]
+fn audit_interactions_match_exact_unicode() {
+    check_fixture(include_str!("fixtures/audit-interactions.tsv"));
+}

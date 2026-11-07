@@ -2,11 +2,11 @@
 // The reference is not bundled with or used by the Rust library.
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync, writeFileSync } from "node:fs";
 import vm from "node:vm";
 
-if (process.argv.length !== 3) {
-  console.error("Usage: node tools/check-reference.mjs /path/to/avro-lib.js");
+if (![3, 4].includes(process.argv.length)) {
+  console.error("Usage: node tools/check-reference.mjs /path/to/avro-lib.js [coverage-report.json]");
   process.exit(2);
 }
 
@@ -24,323 +24,38 @@ const codePoints = (text) =>
     .map((ch) => `U+${ch.codePointAt(0).toString(16).toUpperCase().padStart(4, "0")}`)
     .join(" ");
 
+// Trace only the external reference in an isolated VM. Output assertions below
+// still use the untouched parser; this instrumentation measures selected matches,
+// not mere substring presence or exhaustive reachability of contextual rules.
+const traceContext = vm.createContext({ hits: [] });
+const instrumented = source.toString("utf8")
+  .replace("output += rule.replace;", "hits.push([i, j]); output += rule.replace;")
+  .replace("output += pattern.replace;", "hits.push([i, -1]); output += pattern.replace;");
+for (const statement of ["output += rule.replace;", "output += pattern.replace;"]) {
+  assert.equal(source.toString("utf8").split(statement).length, 2,
+    `Expected one instrumentation site: ${statement}`);
+}
+vm.runInContext(instrumented, traceContext, { timeout: 5000 });
+const patterns = context.OmicronLab.Avro.Phonetic.data.patterns;
+const selected = patterns.map(() => new Set());
+const standalone = new Set();
+const inputs = new Map();
+const fixtureCounts = {};
+const fixtureHash = createHash("sha256");
+const testSource = readFileSync(new URL("../tests/conversion.rs", import.meta.url), "utf8");
+const rustFixtures = new Set([...testSource.matchAll(/include_str!\(\s*"fixtures\/([^"\n]+)"\s*,?\s*\)/g)]
+  .map((match) => match[1]));
+const names = readdirSync(new URL("../tests/fixtures/", import.meta.url))
+  .filter((name) => name.endsWith(".tsv") && name !== "unicode-case-policy.tsv").sort();
 let count = 0;
-for (const name of [
-  "reph-basic.tsv",
-  "reph-conjuncts.tsv",
-  "reph-contextual.tsv",
-  "reph-controls.tsv",
-
-  "following-r-q.tsv",
-  "following-r-z.tsv",
-  "following-r-r-retroflex.tsv",
-  "following-r-rh-retroflex.tsv",
-  "following-r-four-controls.tsv",
-
-  "final-escape-t.tsv",
-  "final-escape-consumption.tsv",
-  "final-escape-controls.tsv",
-
-  "vowel-escape-a.tsv",
-  "vowel-escape-i.tsv",
-  "vowel-escape-i-long.tsv",
-  "vowel-escape-u.tsv",
-  "vowel-escape-u-long.tsv",
-  "vowel-escape-e.tsv",
-  "vowel-escape-ee.tsv",
-  "vowel-escape-o.tsv",
-  "vowel-escape-o-upper.tsv",
-  "vowel-escape-oo.tsv",
-  "vowel-escape-oi.tsv",
-  "vowel-escape-ou.tsv",
-  "vowel-escape-rri.tsv",
-  "vowel-escape-a-upper.tsv",
-  "vowel-escape-e-upper.tsv",
-  "vowel-escape-ee-lower-upper.tsv",
-  "vowel-escape-ee-upper-lower.tsv",
-  "vowel-escape-ee-upper-pair.tsv",
-  "vowel-escape-controls.tsv",
-
-  "symbols-period.tsv",
-  "symbols-double-period.tsv",
-  "symbols-ellipsis.tsv",
-  "symbols-escaped-period.tsv",
-  "symbols-colon.tsv",
-  "symbols-escaped-colon.tsv",
-  "symbols-caret.tsv",
-  "symbols-escaped-caret.tsv",
-  "symbols-double-comma.tsv",
-  "symbols-dollar.tsv",
-  "symbols-backtick.tsv",
-  "symbols-controls.tsv",
-
-  "explicit-gj-controls.tsv",
-  "explicit-gj-g-basic.tsv",
-  "explicit-gj-g-lower-upper.tsv",
-  "explicit-gj-g-n-retroflex.tsv",
-  "explicit-gj-g-upper-lower.tsv",
-  "explicit-gj-g-upper-pair.tsv",
-  "explicit-gj-gdh.tsv",
-  "explicit-gj-gh.tsv",
-  "explicit-gj-ghn.tsv",
-  "explicit-gj-gl.tsv",
-  "explicit-gj-gm.tsv",
-  "explicit-gj-gn.tsv",
-  "explicit-gj-j-basic.tsv",
-
-  "case-alias-a.tsv",
-  "case-alias-b.tsv",
-  "case-alias-c.tsv",
-  "case-alias-e.tsv",
-  "case-alias-f.tsv",
-  "case-alias-h.tsv",
-  "case-alias-k.tsv",
-  "case-alias-l.tsv",
-  "case-alias-m.tsv",
-  "case-alias-mixed.tsv",
-  "case-alias-p.tsv",
-  "case-alias-q.tsv",
-  "case-alias-resolved.tsv",
-  "case-alias-v.tsv",
-  "case-alias-w.tsv",
-  "case-alias-x.tsv",
-
-  "conjunct-completion-bd.tsv",
-  "conjunct-completion-bdh.tsv",
-  "conjunct-completion-bj.tsv",
-  "conjunct-completion-c-following-r.tsv",
-  "conjunct-completion-c-nya.tsv",
-  "conjunct-completion-cc.tsv",
-  "conjunct-completion-cch.tsv",
-  "conjunct-completion-ch-following-r.tsv",
-  "conjunct-completion-controls.tsv",
-  "conjunct-completion-gdh.tsv",
-  "conjunct-completion-j-following-r.tsv",
-  "conjunct-completion-j-nya.tsv",
-  "conjunct-completion-jh-following-r.tsv",
-  "conjunct-completion-jj.tsv",
-  "conjunct-completion-jjh.tsv",
-  "conjunct-completion-mth.tsv",
-  "conjunct-completion-nc.tsv",
-  "conjunct-completion-nch.tsv",
-  "conjunct-completion-nj.tsv",
-  "conjunct-completion-njh.tsv",
-  "conjunct-completion-nya-c.tsv",
-  "conjunct-completion-nya-ch.tsv",
-  "conjunct-completion-nya-j.tsv",
-  "conjunct-completion-nya-jh.tsv",
-  "conjunct-completion-p-retroflex-t.tsv",
-  "conjunct-completion-pt.tsv",
-  "conjunct-completion-s-uppercase-c.tsv",
-  "conjunct-completion-s-uppercase-ch.tsv",
-  "conjunct-completion-sh-c.tsv",
-  "conjunct-completion-sh-ch.tsv",
-  "conjunct-sth.tsv",
-  "conjunct-st.tsv",
-  "conjunct-s-t-retroflex.tsv",
-  "conjunct-sh-th-retroflex.tsv",
-  "conjunct-sh-t-retroflex.tsv",
-  "conjunct-sh-lowercase-t.tsv",
-  "conjunct-s-uppercase-t.tsv",
-  "s-stop-controls.tsv",
-  "conjunct-ns.tsv",
-  "conjunct-nsh.tsv",
-  "conjunct-ps.tsv",
-  "conjunct-psh.tsv",
-  "ns-ps-controls.tsv",
-  "conjunct-bb.tsv",
-  "conjunct-pp.tsv",
-  "conjunct-pn.tsv",
-  "conjunct-sn.tsv",
-  "conjunct-sh-lowercase-n.tsv",
-  "conjunct-s-uppercase-n.tsv",
-  "repeat-n-controls.tsv",
-  "conjunct-gl.tsv",
-  "conjunct-ll.tsv",
-  "conjunct-bl.tsv",
-  "conjunct-pl.tsv",
-  "conjunct-sl.tsv",
-  "conjunct-sh-lowercase-l.tsv",
-  "conjunct-bhl.tsv",
-  "conjunct-phl.tsv",
-  "conjunct-vl.tsv",
-  "conjunct-fl.tsv",
-  "conjunct-s-uppercase-l.tsv",
-  "p-following-r.tsv",
-  "ph-following-r.tsv",
-  "f-following-r.tsv",
-  "l-ending-controls.tsv",
-  "conjunct-mbh.tsv",
-  "conjunct-mb.tsv",
-  "conjunct-mv.tsv",
-  "conjunct-mph.tsv",
-  "conjunct-mpl.tsv",
-  "conjunct-mp.tsv",
-  "conjunct-mf.tsv",
-  "conjunct-lm.tsv",
-  "conjunct-sm.tsv",
-  "conjunct-sh-lowercase-m.tsv",
-  "conjunct-s-uppercase-m.tsv",
-  "m-labial-controls.tsv",
-  "conjunct-lgh.tsv",
-  "conjunct-lg.tsv",
-  "conjunct-lbh.tsv",
-  "conjunct-lb.tsv",
-  "conjunct-lv.tsv",
-  "conjunct-lph.tsv",
-  "conjunct-lp.tsv",
-  "conjunct-l-t-retroflex.tsv",
-  "conjunct-l-d-retroflex.tsv",
-  "conjunct-ldh.tsv",
-  "l-prefix-controls.tsv",
-  "conjunct-sph.tsv",
-  "conjunct-spl.tsv",
-  "conjunct-sp.tsv",
-  "conjunct-sf.tsv",
-  "conjunct-sh-ph.tsv",
-  "conjunct-sh-p.tsv",
-  "conjunct-sh-f.tsv",
-  "s-labial-controls.tsv",
-  "reference.tsv",
-  "vowels.tsv",
-  "vowels-u.tsv",
-  "vowels-i-long.tsv",
-  "vowels-e.tsv",
-  "vowels-o.tsv",
-  "vowels-oi-ou.tsv",
-  "vowels-rri.tsv",
-  "consonants-r.tsv",
-  "consonants-p-ph-f.tsv",
-  "consonants-c-ch-j-jh.tsv",
-  "consonants-d-dh.tsv",
-  "consonants-l-h.tsv",
-  "consonants-s-sh.tsv",
-  "consonants-r-retroflex.tsv",
-  "consonant-z.tsv",
-  "consonants-ng-nj.tsv",
-  "sign-ng.tsv",
-  "nasal-rri.tsv",
-  "consonant-y-uppercase.tsv",
-  "consonant-y-lowercase.tsv",
-  "consonant-z-uppercase.tsv",
-  "ya-following-r.tsv",
-  "uppercase-y-following-r.tsv",
-  "consonant-q.tsv",
-  "consonant-v.tsv",
-  "consonant-w.tsv",
-  "w-following-r.tsv",
-  "consonant-x.tsv",
-  "x-following-r.tsv",
-  "conjunct-ngx.tsv",
-  "conjunct-ngk.tsv",
-  "conjunct-ngkh.tsv",
-  "conjunct-ngkx.tsv",
-  "conjunct-ngkkh.tsv",
-  "conjunct-ngksh.tsv",
-  "conjunct-kkh.tsv",
-  "conjunct-ksh.tsv",
-  "conjunct-kkhn.tsv",
-  "conjunct-kshn.tsv",
-  "conjunct-kxn.tsv",
-  "conjunct-kkhm.tsv",
-  "conjunct-kshm.tsv",
-  "conjunct-kxm.tsv",
-  "conjunct-kk.tsv",
-  "conjunct-shn.tsv",
-  "conjunct-shm.tsv",
-  "k-following-r.tsv",
-  "kh-following-r.tsv",
-  "sh-following-r.tsv",
-  "g-following-r.tsv",
-  "gh-following-r.tsv",
-  "conjunct-ngg.tsv",
-  "conjunct-nggh.tsv",
-  "conjunct-gg.tsv",
-  "conjunct-g-n.tsv",
-  "conjunct-nn.tsv",
-  "conjunct-h-n.tsv",
-  "conjunct-gn.tsv",
-  "conjunct-ghn.tsv",
-  "conjunct-hn.tsv",
-  "conjunct-dg.tsv",
-  "conjunct-dgh.tsv",
-  "conjunct-r-g.tsv",
-  "h-following-r.tsv",
-  "n-following-r.tsv",
-  "n-retroflex-following-r.tsv",
-  "conjunct-ngh.tsv",
-  "conjunct-n-lower-pair.tsv",
-  "conjunct-n-mixed-pair.tsv",
-  "conjunct-mn.tsv",
-  "conjunct-hm.tsv",
-  "conjunct-hl.tsv",
-  "conjunct-nm.tsv",
-  "conjunct-n-retroflex-m.tsv",
-  "conjunct-mm.tsv",
-  "conjunct-ml.tsv",
-  "conjunct-ng-m.tsv",
-  "conjunct-gm.tsv",
-  "m-following-r.tsv",
-  "l-following-r.tsv",
-  "conjunct-ddh.tsv",
-  "conjunct-dd.tsv",
-  "conjunct-dhn.tsv",
-  "conjunct-dhm.tsv",
-  "conjunct-dm.tsv",
-  "conjunct-dbh.tsv",
-  "conjunct-dv.tsv",
-  "conjunct-d-retroflex-pair.tsv",
-  "d-following-r.tsv",
-  "dh-following-r.tsv",
-  "d-retroflex-following-r.tsv",
-  "dh-retroflex-following-r.tsv",
-  "b-following-r.tsv",
-  "bh-following-r.tsv",
-  "v-following-r.tsv",
-  "conjunct-ndh.tsv",
-  "conjunct-nd.tsv",
-  "conjunct-n-d-retroflex.tsv",
-  "conjunct-n-retroflex-dh-retroflex.tsv",
-  "conjunct-n-retroflex-d-retroflex.tsv",
-  "conjunct-nth.tsv",
-  "conjunct-nt.tsv",
-  "conjunct-n-th-retroflex.tsv",
-  "conjunct-n-t-retroflex.tsv",
-  "conjunct-n-retroflex-th-retroflex.tsv",
-  "conjunct-n-retroflex-t-retroflex.tsv",
-  "t-following-r.tsv",
-  "th-following-r.tsv",
-  "t-retroflex-following-r.tsv",
-  "th-retroflex-following-r.tsv",
-  "conjunct-tth.tsv",
-  "conjunct-tt.tsv",
-  "conjunct-tn.tsv",
-  "conjunct-tm.tsv",
-  "conjunct-t-retroflex-pair.tsv",
-  "conjunct-t-retroflex-m.tsv",
-  "conjunct-kt.tsv",
-  "conjunct-k-t-retroflex.tsv",
-  "conjunct-kl.tsv",
-  "k-family-controls.tsv",
-  "conjunct-nkh.tsv",
-  "conjunct-nk.tsv",
-  "conjunct-lkh.tsv",
-  "conjunct-lk.tsv",
-  "conjunct-skl.tsv",
-  "conjunct-skh.tsv",
-  "conjunct-sk.tsv",
-  "conjunct-sh-k.tsv",
-  "conjunct-ksh-priority.tsv",
-  "conjunct-ks.tsv",
-  "s-following-r.tsv",
-  "sh-lowercase-following-r.tsv",
-  "s-uppercase-following-r.tsv",
-  "consuming-k-controls.tsv",
-]) {
+for (const name of names) {
+  assert.ok(rustFixtures.has(name),
+    `${name} must remain in the Rust regression suite`);
   const fixture = readFileSync(
     new URL(`../tests/fixtures/${name}`, import.meta.url),
     "utf8",
   );
+  fixtureHash.update(JSON.stringify([name, fixture]));
   let fileCount = 0;
   for (const line of fixture.trimEnd().split("\n")) {
     if (line.startsWith("#")) continue;
@@ -350,11 +65,20 @@ for (const name of [
     const actual = parse(input);
     assert.equal(actual, expected, `Reference output for ${JSON.stringify(input)}`);
     assert.equal(codePoints(actual), points, `Code points for ${JSON.stringify(input)}`);
-    console.log(`${JSON.stringify(input)} -> ${actual} (${points})`);
+    if (inputs.has(input)) {
+      assert.equal(inputs.get(input), expected, `Conflicting fixture: ${JSON.stringify(input)}`);
+    }
+    inputs.set(input, expected);
+    standalone.add(input);
+    traceContext.hits.length = 0;
+    assert.equal(traceContext.OmicronLab.Avro.Phonetic.parse(input), actual,
+      "Tracing must preserve reference output");
+    for (const [pattern, rule] of traceContext.hits) selected[pattern].add(rule);
     fileCount += 1;
   }
   assert.ok(fileCount > 0, `${name} must contain cases`);
   count += fileCount;
+  fixtureCounts[name] = fileCount;
 }
 console.log(`PASS: ${count} authored cases; runtime ${process.version}`);
 
@@ -363,6 +87,7 @@ console.log(`PASS: ${count} authored cases; runtime ${process.version}`);
 const policyFixture = readFileSync(
   new URL("../tests/fixtures/unicode-case-policy.tsv", import.meta.url), "utf8",
 );
+fixtureHash.update(JSON.stringify(["unicode-case-policy.tsv", policyFixture]));
 const policyInputs = new Set();
 let policyDifferences = 0;
 for (const line of policyFixture.trimEnd().split("\n")) {
@@ -380,3 +105,55 @@ for (const line of policyFixture.trimEnd().split("\n")) {
 }
 assert.ok(policyInputs.size > 0, "Unicode policy fixture must contain cases");
 console.log(`PASS: ${policyInputs.size} Unicode policy cases (${policyDifferences} deliberate differences, ${policyInputs.size - policyDifferences} agreements); separate from parity fixtures`);
+
+// A standalone spelling, a selected pattern, and a contextual branch are distinct
+// coverage measures. None proves every ordering or interaction is compatible.
+const inventory = patterns.map((pattern, index) => ({
+  index, spelling: pattern.find,
+  standaloneFixture: standalone.has(pattern.find),
+  selected: selected[index].size > 0,
+  defaultSelected: selected[index].has(-1),
+  contextualRules: (pattern.rules ?? []).length,
+  selectedRules: [...selected[index]].filter((rule) => rule >= 0).sort((a, b) => a - b),
+}));
+const family = (spelling) => {
+  if (spelling.includes("`")) return "escapes";
+  if (/^[0-9]$/.test(spelling)) return "digits";
+  if (/^[^a-zA-Z0-9]+$/.test(spelling)) return "symbols";
+  if (/^(a|aZ|AZ|i|I|u|U|e|ee|o|oo|oZ|O|OI|OU|rri)$/.test(spelling)) return "vowels";
+  if (/^(ng|Ng|NG)/.test(spelling)) return "nasal-prefixed";
+  if (/^[rR]/.test(spelling)) return "r-and-reph";
+  return spelling.length === 1 ? "single-consonants" : "digraphs-and-conjuncts";
+};
+const families = {};
+for (const item of inventory) {
+  const name = family(item.spelling);
+  families[name] ??= { patterns: 0, selected: 0, contextualRules: 0, selectedRules: 0 };
+  families[name].patterns += 1;
+  families[name].selected += Number(item.selected);
+  families[name].contextualRules += item.contextualRules;
+  families[name].selectedRules += item.selectedRules.length;
+}
+const missingSpellings = inventory.filter((item) => !item.standaloneFixture).map((item) => item.spelling);
+const unselectedPatterns = inventory.filter((item) => !item.selected).map((item) => ({ index: item.index, spelling: item.spelling }));
+const unselectedRules = inventory.flatMap((item) =>
+  Array.from({ length: item.contextualRules }, (_, index) => index)
+    .filter((index) => !item.selectedRules.includes(index))
+    .map((rule) => ({ index: item.index, spelling: item.spelling, rule })));
+const report = {
+  schema: 1,
+  referenceSha256: createHash("sha256").update(source).digest("hex"),
+  checkerSha256: createHash("sha256").update(readFileSync(new URL(import.meta.url))).digest("hex"),
+  node: process.version,
+  fixturesSha256: fixtureHash.digest("hex"),
+  fixtureFiles: names.length, fixtureRows: count, uniqueInputs: inputs.size,
+  duplicateRows: count - inputs.size,
+  policyCases: policyInputs.size, policyDifferences,
+  families,
+  patternCount: patterns.length,
+  contextualRules: inventory.reduce((sum, item) => sum + item.contextualRules, 0),
+  missingSpellings, unselectedPatterns, unselectedRules, fixtureCounts, inventory,
+};
+console.log(`Coverage: ${patterns.length} patterns; ${missingSpellings.length} missing standalone spellings; ${unselectedPatterns.length} unselected patterns; ${unselectedRules.length} unselected contextual rules`);
+console.log(JSON.stringify({ missingSpellings, unselectedPatterns, unselectedRules }));
+if (process.argv[3]) writeFileSync(process.argv[3], JSON.stringify(report, null, 2) + "\n");

@@ -2,9 +2,12 @@
 
 Jong Bangla converts phonetic input into Bangla with Avro-compatible behavior
 as its target. Conversion works in the maintainer's typing tests, including
-Bangla letters. Exhaustive rule and context parity with jsAvroPhonetic has not
-been verified. Existing reference fixtures provide regression coverage, not a
-guarantee that every possible spelling matches.
+Bangla letters. The pinned jsAvroPhonetic v1.1.4 audit covers every reference
+spelling and reachable contextual rule in a finite fixture corpus. An expanded
+bounded context audit found no unexpected differences; unsupported Unicode
+case preservation remains a deliberate difference. See the
+[coverage and limits](TESTING.md#reference-coverage-audit). This evidence does
+not establish parity for every possible input.
 
 ## Typing behavior
 

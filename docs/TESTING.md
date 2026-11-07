@@ -88,9 +88,71 @@ Keep deliberate differences in `unicode-case-policy.tsv`, with separate engine
 and reference expectations. Do not count them as parity cases or silently
 replace expected output to make tests pass. Add regressions for corrected
 behavior and property tests only for useful invariants, such as determinism and
-reset behavior. Coverage audit and additions are planned in
-[#26](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/26).
-A finite passing corpus does not establish parity for every possible input.
+reset behavior. All fixture files are discovered by the reference checker; it
+also requires each parity fixture to be included by the Rust regression suite
+and rejects conflicting expectations for repeated input.
+
+### Reference coverage audit
+
+The [#26](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/26) audit
+checked 522,973 parity rows (493,369 distinct inputs) across 304 TSV files,
+including 40 new independently authored interaction cases. Repeated rows agree.
+The separate policy fixture has 60 cases: 51 deliberate differences and nine
+agreements. The engine preserves unsupported Unicode case; the reference
+lowercases most UTF-16 code units. Neither normalization nor visual equivalence
+substitutes for exact output comparisons.
+
+[Reference coverage evidence](evidence/reference-coverage.json) inventories every
+pinned pattern by zero-based index and records the actual selected default and
+contextual rules. Its family grouping is descriptive, not an upstream taxonomy:
+
+| Family | Selected / total patterns | Selected / total contextual rules |
+| --- | --- | --- |
+| Digraphs and conjuncts | 168 / 169 | 0 / 0 |
+| Single consonants | 28 / 28 | 5 / 5 |
+| Nasal-prefixed spellings | 30 / 30 | 0 / 0 |
+| R and reph | 9 / 9 | 5 / 5 |
+| Vowels | 15 / 16 | 17 / 28 |
+| Escapes | 18 / 19 | 0 / 0 |
+| Symbols | 8 / 8 | 0 / 0 |
+| Digits | 10 / 10 | 0 / 0 |
+
+Every reference spelling has a standalone fixture. Of 289 pattern entries,
+286 are selected. The later duplicate `Sc` is shadowed by the earlier `Sc`;
+`AZ` and `` A` `` normalize to lowercase forms before matching. Of 38 contextual
+rules, 27 are selected. The other 11 are the second rules for `OI`, `OU`, `O`,
+`rri`, `oo`, `i`, `I`, `u`, `U`, `ee`, and `e`: their punctuation prefix is
+subsumed by the preceding non-consonant prefix with the same suffix conditions.
+These are unreachable reference entries, not missing Jong behavior. The trace
+runs in a separate VM and its output is checked against the untouched parser.
+
+Reproduce with the external pinned source from
+[THIRD_PARTY_NOTICES](../THIRD_PARTY_NOTICES), Node.js, and the workspace Rust
+toolchain; these commands make no desktop changes:
+
+```sh
+node tools/check-reference.mjs /path/to/avro-lib.js /tmp/reference-coverage.json
+node tools/audit-context.mjs /path/to/avro-lib.js /tmp/mixed-context-audit.json
+cargo test --offline --locked --test properties
+```
+
+The [bounded differential audit](evidence/mixed-context-audit.json) compares
+127,240 distinct inputs, including contexts and ASCII case variants for every
+pinned spelling, overlaps, following-r forms, symbols, escapes, and Unicode
+boundaries. It found zero unexpected differences and the three expected policy
+probe differences. Generated probes use the external parser as an oracle;
+they are distinct from independently authored expected-output fixtures. Reports
+record source/tool hashes, runtime versions, and deterministic result hashes.
+
+The property suite checks call-order independence, insertion/deletion against
+whole-input conversion at every scalar prefix, finalization/reset history
+removal, and independent composition sessions over 2,117 bounded fragment
+combinations. Rust CI runs these properties and all older regression tests.
+The external reference and differential checks remain manual, not CI gates.
+
+This finite corpus establishes only these cases. Longer combinations, arbitrary
+Unicode/case contexts, every possible rule interaction, and desktop behavior
+remain unverified. Selected-rule coverage does not prove exhaustive parity.
 
 ## Memory checks
 
