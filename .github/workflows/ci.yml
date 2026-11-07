@@ -125,3 +125,48 @@ jobs:
             exit 1
           fi
           bash tools/check-build.sh
+
+  memory:
+    name: Native sanitizers and release Memcheck
+    runs-on: ubuntu-24.04
+    container: archlinux:base-devel
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Prepare memory-check environment
+        run: pacman -Syu --noconfirm --needed git rust cmake ninja fcitx5 python clang compiler-rt llvm valgrind debuginfod
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Record memory-check toolchains
+        run: |
+          pacman -Q rust clang compiler-rt llvm fcitx5 valgrind | tee -a "$GITHUB_STEP_SUMMARY"
+          rustc -vV
+          clang++ --version
+          valgrind --version
+      - name: Check native ASan, UBSan and Rust allocation leaks
+        run: |
+          cmake -S adapters/fcitx5 -B target/memory-sanitizers -G Ninja \
+            -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+            -DJONG_ENABLE_SANITIZERS=ON
+          cmake --build target/memory-sanitizers
+          python3 tools/check-memory.py target/memory-sanitizers
+      - name: Check unsanitized release under Memcheck
+        env:
+          DEBUGINFOD_URLS: https://debuginfod.archlinux.org
+        run: |
+          cmake -S adapters/fcitx5 -B target/memory-release -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release -DJONG_ENABLE_SANITIZERS=OFF \
+            -DCMAKE_CXX_FLAGS_RELEASE='-O2 -g -DNDEBUG'
+          cmake --build target/memory-release
+          python3 tools/check-memory.py --mode valgrind target/memory-release
+      - name: Retain synthetic memory diagnostics
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: memory-check-logs
+          path: target/memory-*/memory-logs-*/
+          if-no-files-found: warn
+          retention-days: 14

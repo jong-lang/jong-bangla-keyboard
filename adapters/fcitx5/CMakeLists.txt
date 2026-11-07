@@ -8,6 +8,21 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# Native instrumentation only. Cargo below deliberately uses stable release
+# settings; LSan can still observe Rust's system-allocator allocations.
+option(JONG_ENABLE_SANITIZERS "Instrument native tests/addon with Clang ASan and UBSan" OFF)
+if(JONG_ENABLE_SANITIZERS)
+    if(NOT CMAKE_SYSTEM_NAME STREQUAL "Linux" OR
+       NOT CMAKE_SYSTEM_PROCESSOR STREQUAL "x86_64" OR
+       NOT CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+        message(FATAL_ERROR "Memory sanitizer recipe requires x86-64 Linux and Clang")
+    endif()
+    add_compile_options(-fsanitize=address,undefined -fno-omit-frame-pointer -g)
+    add_link_options(-fsanitize=address,undefined)
+endif()
+file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/memory-build.txt"
+    "sanitizers=${JONG_ENABLE_SANITIZERS}\nbuild_type=${CMAKE_BUILD_TYPE}\nrust_instrumented=OFF\n")
+
 get_filename_component(JONG_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../.." ABSOLUTE)
 file(GLOB_RECURSE RUST_SOURCES CONFIGURE_DEPENDS
     "${JONG_ROOT}/src/*.rs" "${CMAKE_CURRENT_SOURCE_DIR}/ffi/src/*.rs")
@@ -28,7 +43,11 @@ add_dependencies(jong_ffi jong_rust)
 add_library(jong-bangla MODULE addon.cpp)
 target_compile_options(jong-bangla PRIVATE -Wall -Wextra -Wpedantic -Werror)
 target_link_libraries(jong-bangla PRIVATE jong_ffi Fcitx5::Core Threads::Threads ${CMAKE_DL_LIBS} m)
-target_link_options(jong-bangla PRIVATE -Wl,--no-undefined -Wl,--exclude-libs,ALL)
+target_link_options(jong-bangla PRIVATE -Wl,--exclude-libs,ALL)
+if(NOT JONG_ENABLE_SANITIZERS)
+    # Sanitized modules resolve ASan symbols from the instrumented executable.
+    target_link_options(jong-bangla PRIVATE -Wl,--no-undefined)
+endif()
 set_target_properties(jong-bangla PROPERTIES CXX_VISIBILITY_PRESET hidden
     VISIBILITY_INLINES_HIDDEN YES)
 
@@ -70,6 +89,12 @@ target_compile_options(jong-ffi-memory PRIVATE -Wall -Wextra -Wpedantic -Werror)
 target_link_libraries(jong-ffi-memory PRIVATE jong_ffi Threads::Threads ${CMAKE_DL_LIBS} m)
 add_test(NAME ffi-memory-lifecycle COMMAND jong-ffi-memory)
 set_tests_properties(ffi-memory-lifecycle PROPERTIES TIMEOUT 120)
+
+# Never register intentional faults as ordinary passing CTest workloads.
+if(JONG_ENABLE_SANITIZERS)
+    add_executable(jong-memory-controls tests/memory_controls.cpp)
+    target_compile_options(jong-memory-controls PRIVATE -Wall -Wextra -Wpedantic -Werror)
+endif()
 
 # Optional Linux/glibc resource probe. Run manually in Release, without sanitizers;
 # timing/memory observations are not correctness tests or release thresholds.

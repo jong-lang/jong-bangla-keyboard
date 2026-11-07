@@ -42,8 +42,11 @@ Use the exact commands in AGENTS.md and the task-specific testing guide. Report
 actual commands and outcomes in a short table. Identify skipped or unavailable
 checks and their reasons. Do not report old results as newly run checks.
 Benchmark comparisons run locally on the reference machine. CI smoke benchmarks
-cannot establish performance parity. Baseline and memory tooling still require
-implementation; do not claim that a check exists until verified.
+cannot establish performance parity. The performance baseline still requires
+implementation in [#28](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/28).
+Use the implemented [memory recipes](docs/TESTING.md#memory-checks) for native
+sanitizers and separate release Memcheck; do not describe them as full Rust
+sanitizer instrumentation.
 
 When manual testing is needed, give the maintainer the exact desktop, VM, or
 container setup, steps, and expected result. The maintainer runs these tests.
@@ -117,7 +120,7 @@ Review enforces rules that do not have an automated check.
 | Known source networking, logging, persistence, and core boundary violations | Implemented by `tools/check-privacy.py`; [coverage and limits](SECURITY.md#enforcement) require complementary review |
 | No explicit panics or fallible unwraps in the FFI input path | Implemented by validated action decoding and exhaustive dispatch, with action/scalar regressions; [#25](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/25). Panic containment remains defensive; review enforces this policy |
 | Compatibility coverage audit and useful property tests | Implemented: [finite corpus, selected-rule inventory, and limits](docs/TESTING.md#reference-coverage-audit); external reference checks run manually |
-| Reproducible Rust/native memory-check recipes | Planned: [#27](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/27) |
+| Reproducible Rust/native memory-check recipes | Implemented: [native ASan/UBSan, allocator LSan, release Memcheck and exceptional-retention controls](docs/TESTING.md#memory-checks) in CI; Rust instructions are not sanitizer-instrumented |
 | Committed performance baseline and CI smoke benchmark | Planned: [#28](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/28) |
 
 ## Release policy and checklist
