@@ -115,7 +115,7 @@ Review enforces rules that do not have an automated check.
 | Dependency licenses, networking/telemetry crate bans, and dependency sources | Implemented by `deny.toml` and cargo-deny in the CI policy job |
 | Known dependency vulnerabilities | Implemented by cargo-audit with warnings denied in the CI policy job |
 | Known source networking, logging, persistence, and core boundary violations | Implemented by `tools/check-privacy.py`; [coverage and limits](SECURITY.md#enforcement) require complementary review |
-| Remove invariant-based panics from the FFI input path | Planned cleanup: [#25](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/25) |
+| No explicit panics or fallible unwraps in the FFI input path | Implemented by validated action decoding and exhaustive dispatch, with action/scalar regressions; [#25](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/25). Panic containment remains defensive; review enforces this policy |
 | Compatibility coverage audit and useful property tests | Planned: [#26](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/26) |
 | Reproducible Rust/native memory-check recipes | Planned: [#27](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/27) |
 | Committed performance baseline and CI smoke benchmark | Planned: [#28](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/28) |
