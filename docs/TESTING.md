@@ -13,6 +13,7 @@ the check list. Use synthetic input, never real typing or credentials.
 | Documentation examples | `cargo test --offline --locked --workspace --doc` | Included in the full workspace test run |
 | Synthetic Fcitx5 and FFI lifecycle | `ctest --test-dir target/ci-fcitx5 --output-on-failure` | Yes, after the full script builds this directory |
 | Staged installation | `python3 tools/check-install.py target/ci-fcitx5` | Yes; does not configure a desktop |
+| Native package lifecycle | [Container commands and coverage](PACKAGING.md#recipes-and-verification) | Yes; separate Arch, Debian testing and Fedora 44 runtime images |
 | Documentation links | `python3 tools/check-docs.py` | Yes |
 | Tool regression tests | `python3 -m unittest discover -s tools/tests -v` | Yes; real cargo-deny cases run in the policy job |
 | Synthetic benchmark smoke | `python3 tools/measure-baseline.py smoke --output target/perf-smoke` | Yes; protocol/workload checks only, no timing thresholds; [full local baseline](PERFORMANCE.md) |
@@ -351,3 +352,39 @@ Record the commit, distro, desktop, Fcitx5, application/toolkit versions, Waylan
 or XWayland backend, steps, and actual results on the PR or bug issue. Do not
 infer XWayland or other distro coverage. Keep package tests separate from engine
 tests. Report only checks actually run in this task.
+
+### Package desktop acceptance
+
+The maintainer runs this checklist in disposable x86-64 KDE Plasma Wayland VMs
+for Debian testing and Fedora 44, plus the CachyOS reference desktop or an Arch
+VM. Use a fresh snapshot and repositories supplying Fcitx5 5.1.23 or newer.
+Record the ISO URL/checksum or VM image identity, distro update date, kernel,
+Plasma, Fcitx5, package version/hash, application/toolkit versions and backend.
+Container identities and results are recorded separately by the package runner.
+
+1. Install the matching PR artifact with the command in
+   [PACKAGING.md](PACKAGING.md#install-upgrade-activate-and-remove). Install
+   `fcitx5-configtool` on Arch/Fedora or `fcitx5-config-qt` on Debian, plus
+   Kate, KWrite and Firefox from that distro. Check that the package manager
+   resolves dependencies without copying libraries or modifying system paths.
+2. Log out/in. Select Fcitx5 in KDE's Virtual Keyboard settings and add Jong
+   Bangla in Fcitx5 Configuration. Expect one Jong entry, and successful
+   activation without a missing-addon error. Record the exact setup changes;
+   agents never perform these changes on the maintainer's desktop.
+3. Run the typing scenarios above in Kate, KWrite and Firefox on Wayland,
+   including focus changes, password fields, input-method switching and
+   synthetic `kh12T`. Record exact actual output and any duplicated commits.
+   Repeat the existing Python GTK and Qt acceptance environments if available;
+   report unavailable applications explicitly. XWayland needs a separate run.
+4. Install the supplied revision-2 test package over revision 1, restart the
+   Fcitx5 session and repeat activation and `kh12T`. Expect the newer package
+   revision, one registration and unchanged behavior. This tests a package
+   revision upgrade, not migration from an earlier public engine release.
+5. Switch to another input method, remove Jong with the documented command,
+   then log out/in. Expect Jong's library and registrations removed, other
+   input methods working, and existing user configuration retained. Restore
+   the VM snapshot when finished.
+
+Report each environment and step's actual result on the implementation PR.
+Until returned, mark desktop results pending and retain the platform matrix's
+existing support limits. Release publication requires this maintainer evidence.

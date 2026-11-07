@@ -144,13 +144,20 @@ prepares a draft with these assets:
 | `jong-bangla-X.Y.Z.tar.gz` | Tagged source, including licenses and build instructions |
 | `jong-bangla-X.Y.Z-fcitx5-x86_64-linux-gnu.tar.gz` | Staged addon and registration files under `usr/`, licenses and guides |
 | `build-info.json` | Source commit, epoch, build image, snapshot, installed package versions, compiler identities and comparison result |
+| `jong-bangla_VERSION-1_amd64.deb` | Debian testing package with generated shared-library dependencies |
+| `jong-bangla-VERSION-1.x86_64.rpm` | Fedora 44 package with automatic ELF requirements |
+| `jong-bangla-VERSION-1-x86_64.pkg.tar.zst` | Arch package with framework and C/C++ runtime dependencies |
+| `jong-bangla-VERSION-aur.tar.gz` | Release-source-pinned PKGBUILD and generated .SRCINFO |
+| `package-check-{deb,rpm,arch}.json` | Exact images, source/package hashes, environments and lifecycle results |
 | `SHA256SUMS` | SHA-256 for every other attached asset; excludes itself |
 
 The native payload is built against the signed packages from a fixed Arch
 archive snapshot and a digest-pinned official Arch image in
 [CI](.github/workflows/ci.yml). It is an input to native packaging, not a
-cross-distribution compatibility claim or a package-manager installer. Package
-installation, upgrades and removal in clean images remain in #30. Only the
+cross-distribution compatibility claim or a package-manager installer. Separate
+native package jobs build and test against their distribution libraries; see
+[recipes and checks](docs/PACKAGING.md#recipes-and-verification). Prerelease
+package names use each manager's version syntax. Only the
 maintainer publishes drafts; the tag workflow never publishes.
 
 The native CI job also runs on PRs. It exports the checked-out commit, builds
@@ -188,7 +195,7 @@ Planned delivery:
 
 | Work | Issue |
 | --- | --- |
-| Native packaging integration, .deb, .rpm, maintained AUR recipe, and clean-image checks | [#30](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/30) |
+| Native packages and lifecycle checks | Implemented in [#30](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/30); [desktop acceptance](docs/TESTING.md#package-desktop-acceptance) remains a release gate |
 | Flatpak Fcitx5 add-on prototype after the native release | [#31](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/31) |
 
 For each release:

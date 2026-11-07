@@ -1,0 +1,14 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: Jong Bangla
+Source: https://github.com/shaadahmmed/jong-bangla-keyboard
+
+Files: *
+Copyright: 2026 jong-bangla-board contributors
+License: MIT
+ See /usr/share/doc/jong-bangla/LICENSE for the complete license text.
+
+Files: CODE_OF_CONDUCT.md
+Copyright: Organization for Ethical Source and contributors
+License: CC-BY-SA-4.0
+ This file is present only in the source archive, not the binary package.
+ See https://creativecommons.org/licenses/by-sa/4.0/ for the license.

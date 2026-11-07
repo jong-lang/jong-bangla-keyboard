@@ -1,5 +1,17 @@
 # Third-party notices
 
+## Rust standard library in native binaries
+
+The Fcitx5 binary statically links the build toolchain's Rust standard library.
+Native archives and packages include its COPYRIGHT-library.html, license texts
+and compiler identity under rust-stdlib beside the project license. These are
+copied from the actual toolchain at build time; missing notices fail the build.
+The standard library is Apache-2.0 OR MIT with component exceptions described
+in that copyright file, including BSD-2-Clause and Unicode-3.0 material. Original
+Jong code remains MIT. Bundled license texts describe their respective material,
+not a relicensing of Jong. Dynamic Fcitx5 and C/C++ runtime dependencies remain
+distribution packages with their own notices.
+
 ## jsAvroPhonetic compatibility reference
 
 Project: https://github.com/torifat/jsAvroPhonetic

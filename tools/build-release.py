@@ -113,8 +113,19 @@ def build(root, destination):
             ])
             with gzip.GzipFile(fileobj=raw, mode="wb", filename="", mtime=0) as compressed:
                 compressed.write(source_archive)
-        for name in ("LICENSE", "THIRD_PARTY_NOTICES", "README.md", "CONTRIBUTING.md"):
+        for name in ("LICENSE", "THIRD_PARTY_NOTICES", "docs/PACKAGING.md"):
             payloads[0][name] = source / name
+        metadata = work / "payload-info.json"
+        metadata.write_text(json.dumps({
+            "commit": commit, "version": version, "target": "x86_64-linux-gnu",
+            "minimum_fcitx5": "5.1.23", "layout": "Arch Linux",
+            "source_date_epoch": epoch,
+        }, indent=2, sort_keys=True) + "\n")
+        payloads[0]["payload-info.json"] = metadata
+        notices = work / "rust-stdlib"
+        run([sys.executable, source / "tools/copy-rust-notices.py", notices])
+        payloads[0].update({f"rust-stdlib/{path.relative_to(notices).as_posix()}": path
+                            for path in notices.rglob("*") if path.is_file()})
         native_name = f"{prefix}-fcitx5-x86_64-linux-gnu.tar.gz"
         archive(destination / native_name, payloads[0], native_name.removesuffix(".tar.gz"), epoch)
         info = {
