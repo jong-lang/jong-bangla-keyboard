@@ -15,6 +15,7 @@ the check list. Use synthetic input, never real typing or credentials.
 | Staged installation | `python3 tools/check-install.py target/ci-fcitx5` | Yes; does not configure a desktop |
 | Documentation links | `python3 tools/check-docs.py` | Yes |
 | Tool regression tests | `python3 -m unittest discover -s tools/tests -v` | Yes; real cargo-deny cases run in the policy job |
+| Synthetic benchmark smoke | `python3 tools/measure-baseline.py smoke --output target/perf-smoke` | Yes; protocol/workload checks only, no timing thresholds; [full local baseline](PERFORMANCE.md) |
 | Source privacy tripwires | `python3 tools/check-privacy.py` | Yes, also included in the full build and exported-source run |
 | Rust dependency licenses, bans, and sources | `cargo deny --workspace --all-features --locked check bans licenses sources` | Yes, separate policy job |
 | RustSec vulnerabilities and advisory warnings | `cargo audit --file Cargo.lock --deny warnings` | Yes, separate policy job with current advisory data |

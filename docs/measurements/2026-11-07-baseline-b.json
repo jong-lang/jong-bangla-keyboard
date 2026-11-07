@@ -1,0 +1,2622 @@
+{
+  "schema_version": 1,
+  "profile": "collect",
+  "started_utc": "2026-11-07T10:30:06.136422+00:00",
+  "source": {
+    "commit": "b72917e3805325f1789bf91f4b8a4dc6fcb308c1",
+    "status": "",
+    "dirty": false
+  },
+  "environment": {
+    "product": "Modern 15 A5M",
+    "os_release": "NAME=\"CachyOS Linux\"\nPRETTY_NAME=\"CachyOS\"\nID=cachyos\nID_LIKE=arch\nBUILD_ID=rolling\nANSI_COLOR=\"38;2;23;147;209\"\nHOME_URL=\"https://cachyos.org/\"\nDOCUMENTATION_URL=\"https://wiki.cachyos.org/\"\nSUPPORT_URL=\"https://discuss.cachyos.org/\"\nBUG_REPORT_URL=\"https://github.com/cachyos\"\nPRIVACY_POLICY_URL=\"https://terms.archlinux.org/docs/privacy-policy/\"\nLOGO=cachyos",
+    "platform": "Linux-7.3.1-1-cachyos-x86_64-with-glibc2.44",
+    "libc": [
+      "glibc",
+      "2.44"
+    ],
+    "cpu_model": "AMD Ryzen 5 5500U with Radeon Graphics",
+    "logical_cpus": 12,
+    "affinity": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "governor": "powersave",
+    "boost": "1",
+    "ac_online": {
+      "ADP1": "0"
+    },
+    "desktop": {
+      "XDG_CURRENT_DESKTOP": "KDE",
+      "XDG_SESSION_TYPE": "wayland",
+      "KDE_SESSION_VERSION": "6"
+    },
+    "tool_paths": {
+      "rustc": "/usr/bin/rustc",
+      "cargo": "/usr/bin/cargo",
+      "c++": "/usr/bin/c++",
+      "cmake": "/usr/bin/cmake",
+      "ninja": "/usr/bin/ninja",
+      "heaptrack": "/tmp/jong-memory-tools/usr/bin/heaptrack",
+      "heaptrack_print": "/tmp/jong-memory-tools/usr/bin/heaptrack_print"
+    },
+    "loadavg_start": [
+      0.9326171875,
+      0.93798828125,
+      0.8056640625
+    ],
+    "python": "3.14.9 (main, Nov  2 2026, 12:21:11) [GCC 16.2.1 20260810]",
+    "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13) (Arch Linux rust 1:1.99.1-1)\nbinary: rustc\ncommit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67\ncommit-date: 2026-10-13\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.1\nLLVM version: 23.1.3\n",
+    "cargo": "cargo 1.99.1 (5f94df478 2026-08-27) (Arch Linux rust 1:1.99.1-1)\n",
+    "cxx": "c++ (GCC) 16.2.1 20260810\nCopyright (C) 2026 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+    "fcitx5": "5.1.23",
+    "cmake": "cmake version 4.4.5\n\nCMake suite maintained and supported by Kitware (kitware.com/cmake).\n",
+    "ninja": "1.13.2",
+    "build_environment": {
+      "RUST_LOG": "warn"
+    },
+    "heaptrack": "heaptrack 1.5.0",
+    "heaptrack_print": "heaptrack_print 1.5.0",
+    "loadavg_finish": [
+      2.697265625,
+      1.45068359375,
+      1.0
+    ]
+  },
+  "repetitions": 3,
+  "method": {
+    "timing": "31 sorted batch means, adaptive >=5ms calibration capped at 2^20 iterations; nearest-rank p95 (index 29); allocations and output destruction included; fresh process per run/mode; warm calibration; no CPU pinning",
+    "smoke": "3 samples with one iteration; only 32/128 scalar editing; no memory/profiler; no timing gates",
+    "units": {
+      "latency": "ns/action, except context_lifecycle: ns/cycle",
+      "process_memory": "KiB",
+      "allocator_memory": "bytes",
+      "allocations": "calls to allocation functions per complete profiled process"
+    },
+    "workloads": {
+      "core_short": [
+        "ami",
+        "bangla",
+        "krrishTi",
+        "shadhInota",
+        "okkhor123",
+        "k`a",
+        "কি🙂"
+      ],
+      "core_long": "kShmri12`a🙂 cycled to 32/128/1024/8192 Unicode scalars",
+      "adapter_short": "ami, bangla, shadhInota, kShmri12`aকি🙂",
+      "adapter_long": "kShmri12`aকি🙂 cycled to 32/128/1024/8192 Unicode scalars",
+      "typing": "insert each scalar then commit; actions = scalars + 1; core constructs a composition per iteration",
+      "editing": "insert i/backspace pair at a prefilled active buffer end; setup untimed; divide by 2",
+      "conversion": "whole raw string conversion and output destruction; one action",
+      "context_lifecycle": "create/focus context, type 13 scalars, Ctrl+Backspace, type again, destroy pending; one cycle",
+      "memory": "fresh paired baseline/Jong processes; idle, short pending/cleared, 8192 pending/cleared, 1000/2000 reused+fresh context sessions, context destroyed; see measure-adapter.py",
+      "core_allocations": "1000 convert + new composition/type 13 scalars/backspace/insert i/commit/destroy cycles",
+      "adapter_allocations": "1000 context_lifecycle cycles; paired baseline/Jong; event vector setup once"
+    },
+    "limits": [
+      "Batch means are not individual key or key-to-screen tail latency.",
+      "No frontend, event loop, retained application document, or desktop acceptance.",
+      "RSS/PSS and heap snapshots include framework and allocator caching; paired differences estimate incremental cost.",
+      "Retained capacity and heaptrack exit-retention labels do not prove leaks or leak freedom.",
+      "Allocation profiles include process/framework startup and teardown; never use profiler timings/RSS as latency or footprint.",
+      "Uncontrolled scheduling, thermal state and background activity; no agreed thresholds."
+    ]
+  },
+  "core_timing": [
+    {
+      "workload": "convert:ami",
+      "raw_scalars": 3,
+      "actions_per_iteration": 1,
+      "iterations": 8192,
+      "min_ns": 944.0,
+      "median_ns": 1028.3,
+      "p95_ns": 1121.2,
+      "run": 1,
+      "mode": "core"
+    },
+    {
+      "workload": "type_commit:ami",
+      "raw_scalars": 3,
+      "actions_per_iteration": 4,
+      "iterations": 4096,
+      "min_ns": 413.9,
+      "median_ns": 430.1,
+      "p95_ns": 456.3,
+      "run": 1,
+      "mode": "core"
+    },
+    {
+      "workload": "convert:bangla",
+      "raw_scalars": 6,
+      "actions_per_iteration": 1,
+      "iterations": 4096,
+      "min_ns": 1258.0,
+      "median_ns": 1306.6,
+      "p95_ns": 1349.2,
+      "run": 1,
+      "mode": "core"
+    },
+    {
+      "workload": "type_commit:bangla",
+      "raw_scalars": 6,
+      "actions_per_iteration": 7,
+      "iterations": 2048,
+      "min_ns": 613.3,
+      "median_ns": 621.9,
+      "p95_ns": 655.2,
+      "run": 1,
+      "mode": "core"
+    },
+    {
+      "workload": "convert:krrishTi",
+      "raw_scalars": 8,
+      "actions_per_iteration": 1,
+      "iterations": 8192,
+      "min_ns": 1139.2,
+      "median_ns": 1153.5,
+      "p95_ns": 1160.6,
+      "run": 1,
+      "mode": "core"
+    },
+    {
+      "workload": "type_commit:krrishTi",
+      "raw_scalars": 8,
+      "actions_per_iteration": 9,
+      "iterations": 2048,
+      "min_ns": 529.4,
+      "median_ns": 532.0,
+      "p95_ns": 533.7,
+      "run": 1,
+      "mode": "core"
+    },
+    {
+      "workload": "convert:shadhInota",
+      "raw_scalars": 10,
+      "actions_per_iteration": 1,
+      "iterations": 4096,
+      "min_ns": 2176.5,
+      "median_ns": 2183.9,
+      "p95_ns": 2192.4,
+      "run": 1,
+      "mode": "core"
+    },
+    {
+      "workload": "type_commit:shadhInota",
+      "raw_scalars": 10,
+      "actions_per_iteration": 11,
+      "iterations": 512,
+      "min_ns": 988.0,
+      "median_ns": 996.4,
+      "p95_ns": 1037.6,
+      "run": 1,
+      "mode": "core"
+    },
+    {
+      "workload": "convert:okkhor123",
+      "raw_scalars": 9,
+      "actions_per_iteration": 1,
+      "iterations": 4096,
+      "min_ns": 1795.8,
+      "median_ns": 1812.9,
+      "p95_ns": 1822.9,
+      "run": 1,
+      "mode": "core"
+    },
+    {
+      "workload": "type_commit:okkhor123",
+      "raw_scalars": 9,
+      "actions_per_iteration": 10,
+      "iterations": 1024,
+      "min_ns": 810.2,
+      "median_ns": 838.8,
+      "p95_ns": 879.9,
+      "run": 1,
+      "mode": "core"
+    },
+    {
+      "workload": "convert:k`a",
+      "raw_scalars": 3,
+      "actions_per_iteration": 1,
+      "iterations": 8192,
+      "min_ns": 598.5,
+      "median_ns": 641.7,
+      "p95_ns": 657.3,
+      "run": 1,
+      "mode": "core"
+    },
+    {
+      "workload": "type_commit:k`a",
+      "raw_scalars": 3,
+      "actions_per_iteration": 4,
+      "iterations": 4096,
+      "min_ns": 315.0,
+      "median_ns": 319.3,
+      "p95_ns": 321.6,
+      "run": 1,
+      "mode": "core"
+    },
+    {
+      "workload": "convert:কি🙂",
+      "raw_scalars": 3,
+      "actions_per_iteration": 1,
+      "iterations": 8192,
+      "min_ns": 850.6,
+      "median_ns": 856.2,
+      "p95_ns": 858.3,
+      "run": 1,
+      "mode": "core"
+    },
+    {
+      "workload": "type_commit:কি🙂",
+      "raw_scalars": 3,
+      "actions_per_iteration": 4,
+      "iterations": 4096,
+      "min_ns": 450.2,
+      "median_ns": 452.2,
+      "p95_ns": 454.3,
+      "run": 1,
+      "mode": "core"
+    },
+    {
+      "workload": "convert_mixed",
+      "raw_scalars": 32,
+      "actions_per_iteration": 1,
+      "iterations": 1024,
+      "min_ns": 4887.7,
+      "median_ns": 4944.7,
+      "p95_ns": 5278.6,
+      "run": 1,
+      "mode": "core"
+    },
+    {
+      "workload": "insert_backspace_pair",
+      "raw_scalars": 32,
+      "actions_per_iteration": 2,
+      "iterations": 512,
+      "min_ns": 5397.0,
+      "median_ns": 5416.7,
+      "p95_ns": 5460.3,
+      "run": 1,
+      "mode": "core"
+    },
+    {
+      "workload": "convert_mixed",
+      "raw_scalars": 128,
+      "actions_per_iteration": 1,
+      "iterations": 256,
+      "min_ns": 21294.7,
+      "median_ns": 21596.6,
+      "p95_ns": 21680.5,
+      "run": 1,
+      "mode": "core"
+    },
+    {
+      "workload": "insert_backspace_pair",
+      "raw_scalars": 128,
+      "actions_per_iteration": 2,
+      "iterations": 128,
+      "min_ns": 21235.9,
+      "median_ns": 21278.5,
+      "p95_ns": 21341.8,
+      "run": 1,
+      "mode": "core"
+    },
+    {
+      "workload": "convert_mixed",
+      "raw_scalars": 1024,
+      "actions_per_iteration": 1,
+      "iterations": 32,
+      "min_ns": 164533.8,
+      "median_ns": 174767.1,
+      "p95_ns": 176290.6,
+      "run": 1,
+      "mode": "core"
+    },
+    {
+      "workload": "insert_backspace_pair",
+      "raw_scalars": 1024,
+      "actions_per_iteration": 2,
+      "iterations": 16,
+      "min_ns": 174103.6,
+      "median_ns": 174961.8,
+      "p95_ns": 175698.6,
+      "run": 1,
+      "mode": "core"
+    },
+    {
+      "workload": "convert_mixed",
+      "raw_scalars": 8192,
+      "actions_per_iteration": 1,
+      "iterations": 4,
+      "min_ns": 1383721.8,
+      "median_ns": 1395351.5,
+      "p95_ns": 1416066.0,
+      "run": 1,
+      "mode": "core"
+    },
+    {
+      "workload": "insert_backspace_pair",
+      "raw_scalars": 8192,
+      "actions_per_iteration": 2,
+      "iterations": 2,
+      "min_ns": 1377740.2,
+      "median_ns": 1391804.5,
+      "p95_ns": 1394983.2,
+      "run": 1,
+      "mode": "core"
+    },
+    {
+      "workload": "convert:ami",
+      "raw_scalars": 3,
+      "actions_per_iteration": 1,
+      "iterations": 8192,
+      "min_ns": 771.7,
+      "median_ns": 774.7,
+      "p95_ns": 779.2,
+      "run": 2,
+      "mode": "core"
+    },
+    {
+      "workload": "type_commit:ami",
+      "raw_scalars": 3,
+      "actions_per_iteration": 4,
+      "iterations": 4096,
+      "min_ns": 354.4,
+      "median_ns": 357.2,
+      "p95_ns": 386.2,
+      "run": 2,
+      "mode": "core"
+    },
+    {
+      "workload": "convert:bangla",
+      "raw_scalars": 6,
+      "actions_per_iteration": 1,
+      "iterations": 8192,
+      "min_ns": 1166.5,
+      "median_ns": 1174.0,
+      "p95_ns": 1329.7,
+      "run": 2,
+      "mode": "core"
+    },
+    {
+      "workload": "type_commit:bangla",
+      "raw_scalars": 6,
+      "actions_per_iteration": 7,
+      "iterations": 2048,
+      "min_ns": 638.3,
+      "median_ns": 640.1,
+      "p95_ns": 642.9,
+      "run": 2,
+      "mode": "core"
+    },
+    {
+      "workload": "convert:krrishTi",
+      "raw_scalars": 8,
+      "actions_per_iteration": 1,
+      "iterations": 4096,
+      "min_ns": 1264.5,
+      "median_ns": 1268.9,
+      "p95_ns": 1275.9,
+      "run": 2,
+      "mode": "core"
+    },
+    {
+      "workload": "type_commit:krrishTi",
+      "raw_scalars": 8,
+      "actions_per_iteration": 9,
+      "iterations": 1024,
+      "min_ns": 578.1,
+      "median_ns": 580.3,
+      "p95_ns": 583.2,
+      "run": 2,
+      "mode": "core"
+    },
+    {
+      "workload": "convert:shadhInota",
+      "raw_scalars": 10,
+      "actions_per_iteration": 1,
+      "iterations": 4096,
+      "min_ns": 2161.5,
+      "median_ns": 2175.3,
+      "p95_ns": 2347.6,
+      "run": 2,
+      "mode": "core"
+    },
+    {
+      "workload": "type_commit:shadhInota",
+      "raw_scalars": 10,
+      "actions_per_iteration": 11,
+      "iterations": 512,
+      "min_ns": 995.4,
+      "median_ns": 998.7,
+      "p95_ns": 1004.5,
+      "run": 2,
+      "mode": "core"
+    },
+    {
+      "workload": "convert:okkhor123",
+      "raw_scalars": 9,
+      "actions_per_iteration": 1,
+      "iterations": 4096,
+      "min_ns": 1791.0,
+      "median_ns": 1807.7,
+      "p95_ns": 1817.4,
+      "run": 2,
+      "mode": "core"
+    },
+    {
+      "workload": "type_commit:okkhor123",
+      "raw_scalars": 9,
+      "actions_per_iteration": 10,
+      "iterations": 1024,
+      "min_ns": 799.9,
+      "median_ns": 804.0,
+      "p95_ns": 811.8,
+      "run": 2,
+      "mode": "core"
+    },
+    {
+      "workload": "convert:k`a",
+      "raw_scalars": 3,
+      "actions_per_iteration": 1,
+      "iterations": 8192,
+      "min_ns": 643.6,
+      "median_ns": 648.2,
+      "p95_ns": 651.8,
+      "run": 2,
+      "mode": "core"
+    },
+    {
+      "workload": "type_commit:k`a",
+      "raw_scalars": 3,
+      "actions_per_iteration": 4,
+      "iterations": 4096,
+      "min_ns": 319.3,
+      "median_ns": 332.6,
+      "p95_ns": 333.9,
+      "run": 2,
+      "mode": "core"
+    },
+    {
+      "workload": "convert:কি🙂",
+      "raw_scalars": 3,
+      "actions_per_iteration": 1,
+      "iterations": 8192,
+      "min_ns": 847.8,
+      "median_ns": 856.9,
+      "p95_ns": 900.8,
+      "run": 2,
+      "mode": "core"
+    },
+    {
+      "workload": "type_commit:কি🙂",
+      "raw_scalars": 3,
+      "actions_per_iteration": 4,
+      "iterations": 4096,
+      "min_ns": 448.4,
+      "median_ns": 452.2,
+      "p95_ns": 454.3,
+      "run": 2,
+      "mode": "core"
+    },
+    {
+      "workload": "convert_mixed",
+      "raw_scalars": 32,
+      "actions_per_iteration": 1,
+      "iterations": 1024,
+      "min_ns": 5149.3,
+      "median_ns": 5161.5,
+      "p95_ns": 5171.4,
+      "run": 2,
+      "mode": "core"
+    },
+    {
+      "workload": "insert_backspace_pair",
+      "raw_scalars": 32,
+      "actions_per_iteration": 2,
+      "iterations": 512,
+      "min_ns": 5403.5,
+      "median_ns": 5418.2,
+      "p95_ns": 5435.3,
+      "run": 2,
+      "mode": "core"
+    },
+    {
+      "workload": "convert_mixed",
+      "raw_scalars": 128,
+      "actions_per_iteration": 1,
+      "iterations": 256,
+      "min_ns": 21681.1,
+      "median_ns": 21747.9,
+      "p95_ns": 21987.1,
+      "run": 2,
+      "mode": "core"
+    },
+    {
+      "workload": "insert_backspace_pair",
+      "raw_scalars": 128,
+      "actions_per_iteration": 2,
+      "iterations": 128,
+      "min_ns": 21449.3,
+      "median_ns": 21507.3,
+      "p95_ns": 21560.3,
+      "run": 2,
+      "mode": "core"
+    },
+    {
+      "workload": "convert_mixed",
+      "raw_scalars": 1024,
+      "actions_per_iteration": 1,
+      "iterations": 32,
+      "min_ns": 175878.0,
+      "median_ns": 176208.3,
+      "p95_ns": 176495.7,
+      "run": 2,
+      "mode": "core"
+    },
+    {
+      "workload": "insert_backspace_pair",
+      "raw_scalars": 1024,
+      "actions_per_iteration": 2,
+      "iterations": 16,
+      "min_ns": 173993.1,
+      "median_ns": 174316.2,
+      "p95_ns": 174698.2,
+      "run": 2,
+      "mode": "core"
+    },
+    {
+      "workload": "convert_mixed",
+      "raw_scalars": 8192,
+      "actions_per_iteration": 1,
+      "iterations": 4,
+      "min_ns": 1379268.2,
+      "median_ns": 1381429.8,
+      "p95_ns": 1385663.0,
+      "run": 2,
+      "mode": "core"
+    },
+    {
+      "workload": "insert_backspace_pair",
+      "raw_scalars": 8192,
+      "actions_per_iteration": 2,
+      "iterations": 2,
+      "min_ns": 1381632.8,
+      "median_ns": 1386098.8,
+      "p95_ns": 1389109.5,
+      "run": 2,
+      "mode": "core"
+    },
+    {
+      "workload": "convert:ami",
+      "raw_scalars": 3,
+      "actions_per_iteration": 1,
+      "iterations": 8192,
+      "min_ns": 779.9,
+      "median_ns": 794.1,
+      "p95_ns": 803.7,
+      "run": 3,
+      "mode": "core"
+    },
+    {
+      "workload": "type_commit:ami",
+      "raw_scalars": 3,
+      "actions_per_iteration": 4,
+      "iterations": 4096,
+      "min_ns": 357.7,
+      "median_ns": 386.7,
+      "p95_ns": 398.0,
+      "run": 3,
+      "mode": "core"
+    },
+    {
+      "workload": "convert:bangla",
+      "raw_scalars": 6,
+      "actions_per_iteration": 1,
+      "iterations": 8192,
+      "min_ns": 1168.9,
+      "median_ns": 1193.8,
+      "p95_ns": 1207.5,
+      "run": 3,
+      "mode": "core"
+    },
+    {
+      "workload": "type_commit:bangla",
+      "raw_scalars": 6,
+      "actions_per_iteration": 7,
+      "iterations": 2048,
+      "min_ns": 620.8,
+      "median_ns": 653.8,
+      "p95_ns": 735.3,
+      "run": 3,
+      "mode": "core"
+    },
+    {
+      "workload": "convert:krrishTi",
+      "raw_scalars": 8,
+      "actions_per_iteration": 1,
+      "iterations": 8192,
+      "min_ns": 1146.9,
+      "median_ns": 1169.8,
+      "p95_ns": 1216.2,
+      "run": 3,
+      "mode": "core"
+    },
+    {
+      "workload": "type_commit:krrishTi",
+      "raw_scalars": 8,
+      "actions_per_iteration": 9,
+      "iterations": 1024,
+      "min_ns": 527.6,
+      "median_ns": 560.9,
+      "p95_ns": 587.1,
+      "run": 3,
+      "mode": "core"
+    },
+    {
+      "workload": "convert:shadhInota",
+      "raw_scalars": 10,
+      "actions_per_iteration": 1,
+      "iterations": 4096,
+      "min_ns": 2208.6,
+      "median_ns": 2309.9,
+      "p95_ns": 2356.2,
+      "run": 3,
+      "mode": "core"
+    },
+    {
+      "workload": "type_commit:shadhInota",
+      "raw_scalars": 10,
+      "actions_per_iteration": 11,
+      "iterations": 512,
+      "min_ns": 1044.9,
+      "median_ns": 1055.1,
+      "p95_ns": 1077.5,
+      "run": 3,
+      "mode": "core"
+    },
+    {
+      "workload": "convert:okkhor123",
+      "raw_scalars": 9,
+      "actions_per_iteration": 1,
+      "iterations": 4096,
+      "min_ns": 1867.7,
+      "median_ns": 1914.9,
+      "p95_ns": 1944.9,
+      "run": 3,
+      "mode": "core"
+    },
+    {
+      "workload": "type_commit:okkhor123",
+      "raw_scalars": 9,
+      "actions_per_iteration": 10,
+      "iterations": 1024,
+      "min_ns": 800.3,
+      "median_ns": 844.5,
+      "p95_ns": 1054.2,
+      "run": 3,
+      "mode": "core"
+    },
+    {
+      "workload": "convert:k`a",
+      "raw_scalars": 3,
+      "actions_per_iteration": 1,
+      "iterations": 8192,
+      "min_ns": 649.4,
+      "median_ns": 660.6,
+      "p95_ns": 678.4,
+      "run": 3,
+      "mode": "core"
+    },
+    {
+      "workload": "type_commit:k`a",
+      "raw_scalars": 3,
+      "actions_per_iteration": 4,
+      "iterations": 4096,
+      "min_ns": 321.5,
+      "median_ns": 328.3,
+      "p95_ns": 334.0,
+      "run": 3,
+      "mode": "core"
+    },
+    {
+      "workload": "convert:কি🙂",
+      "raw_scalars": 3,
+      "actions_per_iteration": 1,
+      "iterations": 8192,
+      "min_ns": 901.6,
+      "median_ns": 917.8,
+      "p95_ns": 932.2,
+      "run": 3,
+      "mode": "core"
+    },
+    {
+      "workload": "type_commit:কি🙂",
+      "raw_scalars": 3,
+      "actions_per_iteration": 4,
+      "iterations": 4096,
+      "min_ns": 478.2,
+      "median_ns": 485.6,
+      "p95_ns": 494.5,
+      "run": 3,
+      "mode": "core"
+    },
+    {
+      "workload": "convert_mixed",
+      "raw_scalars": 32,
+      "actions_per_iteration": 1,
+      "iterations": 1024,
+      "min_ns": 5137.7,
+      "median_ns": 5217.0,
+      "p95_ns": 5655.0,
+      "run": 3,
+      "mode": "core"
+    },
+    {
+      "workload": "insert_backspace_pair",
+      "raw_scalars": 32,
+      "actions_per_iteration": 2,
+      "iterations": 512,
+      "min_ns": 5361.7,
+      "median_ns": 5480.6,
+      "p95_ns": 5726.3,
+      "run": 3,
+      "mode": "core"
+    },
+    {
+      "workload": "convert_mixed",
+      "raw_scalars": 128,
+      "actions_per_iteration": 1,
+      "iterations": 256,
+      "min_ns": 21417.6,
+      "median_ns": 21897.4,
+      "p95_ns": 22446.8,
+      "run": 3,
+      "mode": "core"
+    },
+    {
+      "workload": "insert_backspace_pair",
+      "raw_scalars": 128,
+      "actions_per_iteration": 2,
+      "iterations": 128,
+      "min_ns": 20607.5,
+      "median_ns": 21211.8,
+      "p95_ns": 23659.9,
+      "run": 3,
+      "mode": "core"
+    },
+    {
+      "workload": "convert_mixed",
+      "raw_scalars": 1024,
+      "actions_per_iteration": 1,
+      "iterations": 32,
+      "min_ns": 174224.2,
+      "median_ns": 176950.9,
+      "p95_ns": 183148.1,
+      "run": 3,
+      "mode": "core"
+    },
+    {
+      "workload": "insert_backspace_pair",
+      "raw_scalars": 1024,
+      "actions_per_iteration": 2,
+      "iterations": 16,
+      "min_ns": 176269.3,
+      "median_ns": 177874.2,
+      "p95_ns": 183246.1,
+      "run": 3,
+      "mode": "core"
+    },
+    {
+      "workload": "convert_mixed",
+      "raw_scalars": 8192,
+      "actions_per_iteration": 1,
+      "iterations": 4,
+      "min_ns": 1371030.0,
+      "median_ns": 1408717.0,
+      "p95_ns": 1445842.8,
+      "run": 3,
+      "mode": "core"
+    },
+    {
+      "workload": "insert_backspace_pair",
+      "raw_scalars": 8192,
+      "actions_per_iteration": 2,
+      "iterations": 2,
+      "min_ns": 1381309.8,
+      "median_ns": 1387719.2,
+      "p95_ns": 1393317.5,
+      "run": 3,
+      "mode": "core"
+    }
+  ],
+  "allocation_profiles": [
+    {
+      "run": 1,
+      "mode": "core",
+      "allocation_calls": 47014,
+      "report": "reading file \"/tmp/jong-28-baseline-b/allocations-1-core.zst\" - please wait, this might take some time...\nDebuggee command was: /tmp/jong-28-baseline-b/core/release/examples/measure --allocations\nfinished reading file, now analyzing data:\n\ntotal runtime: 0.051000s.\ncalls to allocation functions: 47014 (921843/s)\ntemporary memory allocations: 32002 (627490/s)\npeak heap memory consumption: 75.46K\npeak RSS (including heaptrack overhead): 5.53M\ntotal memory leaked: 548B\n",
+      "trace": "allocations-1-core.zst",
+      "trace_sha256": "d288f1cdc3ccfefc2729efbab85b9a465243bf2911d812064f05d79f7670c260"
+    },
+    {
+      "run": 1,
+      "mode": "baseline",
+      "allocation_calls": 358629,
+      "report": "reading file \"/tmp/jong-28-baseline-b/allocations-1-baseline.zst\" - please wait, this might take some time...\nDebuggee command was: /tmp/jong-28-baseline-b/build/jong-fcitx5-resources baseline allocations\nfinished reading file, now analyzing data:\n\ntotal runtime: 0.125000s.\ncalls to allocation functions: 358629 (2869032/s)\ntemporary memory allocations: 118080 (944640/s)\npeak heap memory consumption: 327.17K\npeak RSS (including heaptrack overhead): 9.60M\ntotal memory leaked: 4.37K\n",
+      "trace": "allocations-1-baseline.zst",
+      "trace_sha256": "f22fbf2c059df30cbaedc835b70fb3623f86d7257ea4bc64058ba1278c32e581"
+    },
+    {
+      "run": 1,
+      "mode": "jong",
+      "allocation_calls": 663689,
+      "report": "reading file \"/tmp/jong-28-baseline-b/allocations-1-jong.zst\" - please wait, this might take some time...\nDebuggee command was: /tmp/jong-28-baseline-b/build/jong-fcitx5-resources jong allocations\nfinished reading file, now analyzing data:\n\ntotal runtime: 0.250000s.\ncalls to allocation functions: 663689 (2654756/s)\ntemporary memory allocations: 141080 (564320/s)\npeak heap memory consumption: 327.25K\npeak RSS (including heaptrack overhead): 10.17M\ntotal memory leaked: 9.48K\n",
+      "trace": "allocations-1-jong.zst",
+      "trace_sha256": "93411ac645927675c5442122a12e1aabf3d6d1880a77c6cc3a49e0ac0328cbd8"
+    },
+    {
+      "run": 2,
+      "mode": "jong",
+      "allocation_calls": 663689,
+      "report": "reading file \"/tmp/jong-28-baseline-b/allocations-2-jong.zst\" - please wait, this might take some time...\nDebuggee command was: /tmp/jong-28-baseline-b/build/jong-fcitx5-resources jong allocations\nfinished reading file, now analyzing data:\n\ntotal runtime: 0.248000s.\ncalls to allocation functions: 663689 (2676165/s)\ntemporary memory allocations: 141080 (568870/s)\npeak heap memory consumption: 327.25K\npeak RSS (including heaptrack overhead): 10.22M\ntotal memory leaked: 9.48K\n",
+      "trace": "allocations-2-jong.zst",
+      "trace_sha256": "1651c5f021b13ac4f750e527971c01f06961786a7305d0576a5e1744594345a7"
+    },
+    {
+      "run": 2,
+      "mode": "baseline",
+      "allocation_calls": 358629,
+      "report": "reading file \"/tmp/jong-28-baseline-b/allocations-2-baseline.zst\" - please wait, this might take some time...\nDebuggee command was: /tmp/jong-28-baseline-b/build/jong-fcitx5-resources baseline allocations\nfinished reading file, now analyzing data:\n\ntotal runtime: 0.127000s.\ncalls to allocation functions: 358629 (2823850/s)\ntemporary memory allocations: 118080 (929763/s)\npeak heap memory consumption: 327.17K\npeak RSS (including heaptrack overhead): 9.75M\ntotal memory leaked: 4.37K\n",
+      "trace": "allocations-2-baseline.zst",
+      "trace_sha256": "7460f6e3e056f99b65768f1280568a1e25597edfa624f3b2e268776ba57a1720"
+    },
+    {
+      "run": 2,
+      "mode": "core",
+      "allocation_calls": 47014,
+      "report": "reading file \"/tmp/jong-28-baseline-b/allocations-2-core.zst\" - please wait, this might take some time...\nDebuggee command was: /tmp/jong-28-baseline-b/core/release/examples/measure --allocations\nfinished reading file, now analyzing data:\n\ntotal runtime: 0.054000s.\ncalls to allocation functions: 47014 (870629/s)\ntemporary memory allocations: 32002 (592629/s)\npeak heap memory consumption: 75.46K\npeak RSS (including heaptrack overhead): 5.59M\ntotal memory leaked: 548B\n",
+      "trace": "allocations-2-core.zst",
+      "trace_sha256": "f87f71ee44b190e98d209be09dbf5d28438a8229ad7cad5a259de07be95dd9db"
+    },
+    {
+      "run": 3,
+      "mode": "core",
+      "allocation_calls": 47014,
+      "report": "reading file \"/tmp/jong-28-baseline-b/allocations-3-core.zst\" - please wait, this might take some time...\nDebuggee command was: /tmp/jong-28-baseline-b/core/release/examples/measure --allocations\nfinished reading file, now analyzing data:\n\ntotal runtime: 0.053000s.\ncalls to allocation functions: 47014 (887056/s)\ntemporary memory allocations: 32002 (603811/s)\npeak heap memory consumption: 75.46K\npeak RSS (including heaptrack overhead): 5.57M\ntotal memory leaked: 548B\n",
+      "trace": "allocations-3-core.zst",
+      "trace_sha256": "defa460301020e6ac4ef68bd6b6a83413f64ee575c59b74f5ef70c8b352c36e2"
+    },
+    {
+      "run": 3,
+      "mode": "baseline",
+      "allocation_calls": 358629,
+      "report": "reading file \"/tmp/jong-28-baseline-b/allocations-3-baseline.zst\" - please wait, this might take some time...\nDebuggee command was: /tmp/jong-28-baseline-b/build/jong-fcitx5-resources baseline allocations\nfinished reading file, now analyzing data:\n\ntotal runtime: 0.128000s.\ncalls to allocation functions: 358629 (2801789/s)\ntemporary memory allocations: 118080 (922500/s)\npeak heap memory consumption: 327.17K\npeak RSS (including heaptrack overhead): 9.70M\ntotal memory leaked: 4.37K\n",
+      "trace": "allocations-3-baseline.zst",
+      "trace_sha256": "af745587b4beef8dc80ce9d0864ea7cbffd3225db13d2ada48d8d1db7e5d7765"
+    },
+    {
+      "run": 3,
+      "mode": "jong",
+      "allocation_calls": 663689,
+      "report": "reading file \"/tmp/jong-28-baseline-b/allocations-3-jong.zst\" - please wait, this might take some time...\nDebuggee command was: /tmp/jong-28-baseline-b/build/jong-fcitx5-resources jong allocations\nfinished reading file, now analyzing data:\n\ntotal runtime: 0.254000s.\ncalls to allocation functions: 663689 (2612948/s)\ntemporary memory allocations: 141080 (555433/s)\npeak heap memory consumption: 327.25K\npeak RSS (including heaptrack overhead): 10.31M\ntotal memory leaked: 9.48K\n",
+      "trace": "allocations-3-jong.zst",
+      "trace_sha256": "d3342505b224430501602af949f33d2769cf3f48dfb3f2e187780bb634b1406e"
+    }
+  ],
+  "artifact_sha256": {
+    "core": "00e4def9f6fabc68d7558212481dc82e8a9fe1a4e2a5202083ce0686762378e9",
+    "adapter_probe": "591fc277c3f6c394e879c8338a2b1c7eb0d726f7c0b195e7e3c4c86cd4a2b98d",
+    "addon": "817eab7dffc99af91beab8ed6e803389d3dcb5ae532f473920c5fe80e4ec8817",
+    "cmake_cache": "625a5774eff836e1e91bf2bdbd037003a3f49cd0f76ad7c3af00db994fcbfa83"
+  },
+  "source_sha256": {
+    "Cargo.lock": "d2fafb67f0cd4adb75fed9754a44bccff0b9b05b067a7f83490badaba55eadec",
+    "Cargo.toml": "5f94dd12d66ac804b584c744e984ab35bbed638caa602a961e1ea0abf96fe314",
+    "adapters/fcitx5/CMakeLists.txt": "b01abe25181d830e9aff02a12b83d6ed3cd0d141321f6e6c1ac7447e21171795",
+    "adapters/fcitx5/addon.cpp": "650ed83ab94011efb36441371c630ec7a76c320339d3a98bc0869f641c2f144d",
+    "adapters/fcitx5/ffi/Cargo.toml": "75435974e1ce8cbe3299c029e45cc2d104b31fe1bc4fd1e3748d2afc0dd1105a",
+    "adapters/fcitx5/ffi/src/lib.rs": "a9e7272d1ad4aed37da4771ebf22dbed4e5a815363f1b13f5ee91d16c948c268",
+    "adapters/fcitx5/ffi/src/panic_tests.rs": "0fcb8dd88abbdba7de09fc0d88acdb0f3c2480f0d8cec7d5d1556fc2bfd89597",
+    "adapters/fcitx5/jong-bangla-inputmethod.conf": "5c24994d1a17ce836783fe696929515e235c67928f90d94197887365dcad5868",
+    "adapters/fcitx5/jong-bangla.conf.in": "bf745e54f32cf11fadca6a1af4dcc33a496057fa85a5c10b641e2c93f92712d0",
+    "adapters/fcitx5/jong.h": "53797bd1a0c7994e3f4a754575abf431c288d4a007f693c7af7c7bffb3919e47",
+    "adapters/fcitx5/tests/harness.cpp": "411d2f613396b5c42e204bca6b27601de73b2221f6f12a3e03b73b00a20546d6",
+    "adapters/fcitx5/tests/memory.cpp": "470ca64985e27d6adee2b9af95c6a7e911cc1993eb58c48be7113a616d209d8f",
+    "adapters/fcitx5/tests/memory_controls.cpp": "046f7263647bdeef4b86e44c4226789eb32d038a63148982b7c9b0c224c199f6",
+    "adapters/fcitx5/tests/null-addon.conf": "b968ae6ff5888eec29b26c21b9efd6a5127a18afe7b4e52dbdbdb5552f47abb8",
+    "adapters/fcitx5/tests/null-inputmethod.conf": "00c354a6bfcbae121721ec8c36bf1fe31f0abc5948fc1c4f9f9663d06413ec3a",
+    "adapters/fcitx5/tests/resources.cpp": "babd82910f7be392af43eba6e3359ca940924951939361a5d84058191bdcf49f",
+    "examples/audit_batch.rs": "9798ca36901631ce00012a3e38c8a9afff08578d04d938434563abf688cde4e9",
+    "examples/convert.rs": "4958a89b566fab907c545dc31d0706ad389a223eaf09ba4aeaf23d828a8dce17",
+    "examples/measure.rs": "ada2acdddaeb8ef5439f6669f54436fd0e8118ab24f67f623deb0f0c023398ae",
+    "src/composition.rs": "0de7f50cfbaee23b3296b06568513bb0037c9c6d8f9974b20e956a6be3dfe151",
+    "src/lib.rs": "9182339fab89d17bcbb2e81fd940afa31504c54903e4f7823c01b2a0fc2e7ee3",
+    "src/transliteration/case.rs": "3a50a3c6dc41209c5232a934a5bc48e2c53b1f3922e67be9da5cffaabea2eadc",
+    "src/transliteration/following_r.rs": "3ac756542faa62ee653bdc68ecac57a7fe0aeefea9371a3b0ba22d4183f7ce07",
+    "src/transliteration/mod.rs": "02b156fa5a9a8458816cdb745d84f26b91b4b8d49675593fef2126bcf28b1cae",
+    "src/transliteration/reph.rs": "a9459bbae4ff33eea2681b0e5117dead032387172ab98cf3c403955f63f7d416",
+    "src/transliteration/rules.rs": "2f1460bbdab50487febcc1ab5decaaccfb7da6f7a1a4a3e5d630fb5db6544761",
+    "src/transliteration/symbols.rs": "c1ad3597ae554445c90316fe340e5725cb3b2be0eefcb475936d37dbae27eca7",
+    "src/transliteration/vowels.rs": "f942d703ff0a60eeec6b37b49f6b61fbbc0da974e3da33cdedbcdc982f7f6267",
+    "tools/audit-context.mjs": "08baa8f5e14a3fa0222ce22a79ec60e4545daa6dacfaaf98514043aaddc58876",
+    "tools/check-build.sh": "80e66e3584859fdc9c3dfc720b481c7f37db45202451bf8ab42e23d4a6255121",
+    "tools/check-docs.py": "7fe7e74c069fce9a667c982ef298c045e201d6b3964e4a91921d27fb46cf8615",
+    "tools/check-install.py": "96d604d363a96f2bd4120a0044b0ccc7efc400528b7adb1191e3967ea48061d7",
+    "tools/check-memory.py": "4a88cdbf30ed266d92b0534cf9ddd2122ea721545b978efe3b86c3a0ffdb48a2",
+    "tools/check-privacy.py": "411b62dfd1b81b1e12a4b376957261e0ff9e492186e770c12e31614dfdfe694a",
+    "tools/check-reference.mjs": "eedd11b536137ad5bf9a80aa32e0c26cede7f4b235b2622c2e94433807685296",
+    "tools/check-release.py": "a81da59dacffaf6d8f842a6e41efe87cd954b7c31bdaf211b6c74f0096b0854f",
+    "tools/measure-adapter.py": "6cd25d6cd84deac1ada8f1a467a91ed7b4fd7b690990a9044eaa2e1278c9e028",
+    "tools/measure-baseline.py": "f79fe454f46cec0e4c4fe12c28f25c0e823c7d6872e6bfb90351e93760a4e815",
+    "tools/tests/test_dependency_policy.py": "04b1209e06081931a1234bdcefc1c1948dcd4856b474f3b19db5d56d7594e9ae",
+    "tools/tests/test_memory.py": "8304090d0ec70582b656cacdb244f43fe836290e1ab099abdc38eaea842138fb",
+    "tools/tests/test_performance.py": "9297b320be3eb33b3a61a52cc7bb1b14a62cb7678678fb2e9e9e120506441fcd",
+    "tools/tests/test_privacy.py": "8b3aa0b8172a96d8c77c14f27207968ad5590338615de45611296dbc3b9c1068",
+    "tools/tests/test_release_tools.py": "0a272bc6db16a4e3defb149ee67682f9ea891937080a695e8eeb962b4833da92",
+    "tools/valgrind-rust-tests.supp": "37a497b7fa184a4994354e056d49b10fc722ae6752fbf6cfd7421bfb96fd0523"
+  },
+  "adapter_metadata": {
+    "started_utc": "2026-11-07T10:30:46.919307+00:00",
+    "runs": 3,
+    "build": "/tmp/jong-28-baseline-b/build",
+    "platform": "Linux-7.3.1-1-cachyos-x86_64-with-glibc2.44",
+    "cpuinfo": "processor\t: 0\nvendor_id\t: AuthenticAMD\ncpu family\t: 23\nmodel\t\t: 104\nmodel name\t: AMD Ryzen 5 5500U with Radeon Graphics\nstepping\t: 1\nmicrocode\t: 0x8608108\ncpu MHz\t\t: 3333.094\ncache size\t: 512 KB\nphysical id\t: 0\nsiblings\t: 12\ncore id\t\t: 0\ncpu cores\t: 6\napicid\t\t: 0\ninitial apicid\t: 0\nfpu\t\t: yes\nfpu_exception\t: yes\ncpuid level\t: 16\nwp\t\t: yes\nflags\t\t: fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf rapl pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpb cat_l3 cdp_l3 hw_pstate ssbd mba ibrs ibpb stibp vmmcall fsgsbase bmi1 avx2 smep bmi2 cqm rdt_a rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local clzero irperf xsaveerptr rdpru wbnoinvd cppc arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic v_vmsave_vmload vgif v_spec_ctrl umip rdpid overflow_recov succor smca\nbugs\t\t: sysret_ss_attrs spectre_v1 spectre_v2 spec_store_bypass retbleed smt_rsb srso ibpb_no_ret spectre_v2_user vmscape\nbogomips\t: 4192.21\nTLB size\t: 3072 4K pages\nclflush size\t: 64\ncache_alignment\t: 64\naddress sizes\t: 48 bits physical, 48 bits virtual\npower management: ts ttp tm hwpstate cpb eff_freq_ro [13] [14]",
+    "libc": [
+      "glibc",
+      "2.44"
+    ],
+    "python": "3.14.9 (main, Nov  2 2026, 12:21:11) [GCC 16.2.1 20260810]",
+    "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13) (Arch Linux rust 1:1.99.1-1)",
+    "cxx": "c++ (GCC) 16.2.1 20260810",
+    "fcitx5": "5.1.23",
+    "cmake": "cmake version 4.4.5",
+    "git_head": "b72917e3805325f1789bf91f4b8a4dc6fcb308c1",
+    "git_status": "",
+    "sha256": {
+      "adapters/fcitx5/tests/resources.cpp": "babd82910f7be392af43eba6e3359ca940924951939361a5d84058191bdcf49f",
+      "adapters/fcitx5/CMakeLists.txt": "b01abe25181d830e9aff02a12b83d6ed3cd0d141321f6e6c1ac7447e21171795",
+      "tools/measure-adapter.py": "6cd25d6cd84deac1ada8f1a467a91ed7b4fd7b690990a9044eaa2e1278c9e028",
+      "adapters/fcitx5/addon.cpp": "650ed83ab94011efb36441371c630ec7a76c320339d3a98bc0869f641c2f144d",
+      "adapters/fcitx5/ffi/src/lib.rs": "a9e7272d1ad4aed37da4771ebf22dbed4e5a815363f1b13f5ee91d16c948c268",
+      "src/composition.rs": "0de7f50cfbaee23b3296b06568513bb0037c9c6d8f9974b20e956a6be3dfe151"
+    },
+    "binary_sha256": "591fc277c3f6c394e879c8338a2b1c7eb0d726f7c0b195e7e3c4c86cd4a2b98d",
+    "addon_sha256": "817eab7dffc99af91beab8ed6e803389d3dcb5ae532f473920c5fe80e4ec8817",
+    "cmake_cache_sha256": "625a5774eff836e1e91bf2bdbd037003a3f49cd0f76ad7c3af00db994fcbfa83",
+    "cmake_flags": [
+      "CMAKE_BUILD_TYPE:STRING=Release",
+      "CMAKE_CXX_COMPILER:FILEPATH=/usr/bin/c++",
+      "CMAKE_CXX_FLAGS:STRING=",
+      "CMAKE_CXX_FLAGS_DEBUG:STRING=-g",
+      "CMAKE_CXX_FLAGS_MINSIZEREL:STRING=-Os -DNDEBUG",
+      "CMAKE_CXX_FLAGS_RELEASE:STRING=-O3 -DNDEBUG",
+      "CMAKE_CXX_FLAGS_RELWITHDEBINFO:STRING=-O2 -g -DNDEBUG",
+      "CMAKE_EXE_LINKER_FLAGS:STRING=",
+      "CMAKE_SHARED_LINKER_FLAGS:STRING=",
+      "CMAKE_CXX_FLAGS-ADVANCED:INTERNAL=1",
+      "CMAKE_CXX_FLAGS_DEBUG-ADVANCED:INTERNAL=1",
+      "CMAKE_CXX_FLAGS_MINSIZEREL-ADVANCED:INTERNAL=1",
+      "CMAKE_CXX_FLAGS_RELEASE-ADVANCED:INTERNAL=1",
+      "CMAKE_CXX_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1"
+    ],
+    "allocator_environment": {},
+    "rust_environment": {},
+    "method": "fresh processes; alternating baseline/Jong order; memory before timing; 31 batch means/workload; >=5ms adaptive calibration; key presses only; no frontend, event loop, CPU pinning, malloc_trim or document retention",
+    "finished_utc": "2026-11-07T10:31:36.462836+00:00"
+  },
+  "adapter_timing": [
+    {
+      "run": 1,
+      "mode": "baseline",
+      "workload": "type_commit:ami",
+      "raw_scalars": 3,
+      "actions_per_iteration": 4,
+      "iterations": 2048,
+      "min_ns": 780.6,
+      "median_ns": 795.1,
+      "p95_ns": 801.8
+    },
+    {
+      "run": 1,
+      "mode": "baseline",
+      "workload": "type_commit:bangla",
+      "raw_scalars": 6,
+      "actions_per_iteration": 7,
+      "iterations": 1024,
+      "min_ns": 774.5,
+      "median_ns": 785.2,
+      "p95_ns": 794.0
+    },
+    {
+      "run": 1,
+      "mode": "baseline",
+      "workload": "type_commit:shadhInota",
+      "raw_scalars": 10,
+      "actions_per_iteration": 11,
+      "iterations": 1024,
+      "min_ns": 762.4,
+      "median_ns": 773.1,
+      "p95_ns": 780.3
+    },
+    {
+      "run": 1,
+      "mode": "baseline",
+      "workload": "type_commit:mixed",
+      "raw_scalars": 13,
+      "actions_per_iteration": 14,
+      "iterations": 512,
+      "min_ns": 764.5,
+      "median_ns": 775.4,
+      "p95_ns": 785.6
+    },
+    {
+      "run": 1,
+      "mode": "baseline",
+      "workload": "insert_backspace_pair",
+      "raw_scalars": 32,
+      "actions_per_iteration": 2,
+      "iterations": 4096,
+      "min_ns": 761.3,
+      "median_ns": 769.5,
+      "p95_ns": 781.4
+    },
+    {
+      "run": 1,
+      "mode": "baseline",
+      "workload": "insert_backspace_pair",
+      "raw_scalars": 128,
+      "actions_per_iteration": 2,
+      "iterations": 4096,
+      "min_ns": 759.0,
+      "median_ns": 768.0,
+      "p95_ns": 776.9
+    },
+    {
+      "run": 1,
+      "mode": "baseline",
+      "workload": "insert_backspace_pair",
+      "raw_scalars": 1024,
+      "actions_per_iteration": 2,
+      "iterations": 4096,
+      "min_ns": 759.0,
+      "median_ns": 769.8,
+      "p95_ns": 778.1
+    },
+    {
+      "run": 1,
+      "mode": "baseline",
+      "workload": "insert_backspace_pair",
+      "raw_scalars": 8192,
+      "actions_per_iteration": 2,
+      "iterations": 4096,
+      "min_ns": 762.0,
+      "median_ns": 772.1,
+      "p95_ns": 778.5
+    },
+    {
+      "run": 1,
+      "mode": "baseline",
+      "workload": "context_lifecycle",
+      "raw_scalars": 13,
+      "actions_per_iteration": 1,
+      "iterations": 256,
+      "min_ns": 25133.3,
+      "median_ns": 25351.8,
+      "p95_ns": 25503.6
+    },
+    {
+      "run": 1,
+      "mode": "jong",
+      "workload": "type_commit:ami",
+      "raw_scalars": 3,
+      "actions_per_iteration": 4,
+      "iterations": 1024,
+      "min_ns": 1643.4,
+      "median_ns": 1666.0,
+      "p95_ns": 1688.7
+    },
+    {
+      "run": 1,
+      "mode": "jong",
+      "workload": "type_commit:bangla",
+      "raw_scalars": 6,
+      "actions_per_iteration": 7,
+      "iterations": 512,
+      "min_ns": 1896.0,
+      "median_ns": 1909.8,
+      "p95_ns": 1930.1
+    },
+    {
+      "run": 1,
+      "mode": "jong",
+      "workload": "type_commit:shadhInota",
+      "raw_scalars": 10,
+      "actions_per_iteration": 11,
+      "iterations": 256,
+      "min_ns": 2241.7,
+      "median_ns": 2253.2,
+      "p95_ns": 2275.5
+    },
+    {
+      "run": 1,
+      "mode": "jong",
+      "workload": "type_commit:mixed",
+      "raw_scalars": 13,
+      "actions_per_iteration": 14,
+      "iterations": 256,
+      "min_ns": 2252.6,
+      "median_ns": 2268.3,
+      "p95_ns": 2281.4
+    },
+    {
+      "run": 1,
+      "mode": "jong",
+      "workload": "insert_backspace_pair",
+      "raw_scalars": 32,
+      "actions_per_iteration": 2,
+      "iterations": 512,
+      "min_ns": 6582.5,
+      "median_ns": 6615.5,
+      "p95_ns": 6769.8
+    },
+    {
+      "run": 1,
+      "mode": "jong",
+      "workload": "insert_backspace_pair",
+      "raw_scalars": 128,
+      "actions_per_iteration": 2,
+      "iterations": 128,
+      "min_ns": 24316.8,
+      "median_ns": 24371.8,
+      "p95_ns": 24456.0
+    },
+    {
+      "run": 1,
+      "mode": "jong",
+      "workload": "insert_backspace_pair",
+      "raw_scalars": 1024,
+      "actions_per_iteration": 2,
+      "iterations": 16,
+      "min_ns": 185012.6,
+      "median_ns": 185524.5,
+      "p95_ns": 186124.1
+    },
+    {
+      "run": 1,
+      "mode": "jong",
+      "workload": "insert_backspace_pair",
+      "raw_scalars": 8192,
+      "actions_per_iteration": 2,
+      "iterations": 2,
+      "min_ns": 1479274.2,
+      "median_ns": 1482047.0,
+      "p95_ns": 1492925.2
+    },
+    {
+      "run": 1,
+      "mode": "jong",
+      "workload": "context_lifecycle",
+      "raw_scalars": 13,
+      "actions_per_iteration": 1,
+      "iterations": 128,
+      "min_ns": 69634.7,
+      "median_ns": 69881.3,
+      "p95_ns": 70415.6
+    },
+    {
+      "run": 2,
+      "mode": "baseline",
+      "workload": "type_commit:ami",
+      "raw_scalars": 3,
+      "actions_per_iteration": 4,
+      "iterations": 2048,
+      "min_ns": 799.9,
+      "median_ns": 806.7,
+      "p95_ns": 811.4
+    },
+    {
+      "run": 2,
+      "mode": "baseline",
+      "workload": "type_commit:bangla",
+      "raw_scalars": 6,
+      "actions_per_iteration": 7,
+      "iterations": 1024,
+      "min_ns": 801.1,
+      "median_ns": 806.1,
+      "p95_ns": 813.9
+    },
+    {
+      "run": 2,
+      "mode": "baseline",
+      "workload": "type_commit:shadhInota",
+      "raw_scalars": 10,
+      "actions_per_iteration": 11,
+      "iterations": 1024,
+      "min_ns": 803.7,
+      "median_ns": 809.2,
+      "p95_ns": 819.0
+    },
+    {
+      "run": 2,
+      "mode": "baseline",
+      "workload": "type_commit:mixed",
+      "raw_scalars": 13,
+      "actions_per_iteration": 14,
+      "iterations": 512,
+      "min_ns": 745.5,
+      "median_ns": 809.8,
+      "p95_ns": 815.5
+    },
+    {
+      "run": 2,
+      "mode": "baseline",
+      "workload": "insert_backspace_pair",
+      "raw_scalars": 32,
+      "actions_per_iteration": 2,
+      "iterations": 4096,
+      "min_ns": 761.4,
+      "median_ns": 773.9,
+      "p95_ns": 784.3
+    },
+    {
+      "run": 2,
+      "mode": "baseline",
+      "workload": "insert_backspace_pair",
+      "raw_scalars": 128,
+      "actions_per_iteration": 2,
+      "iterations": 4096,
+      "min_ns": 775.6,
+      "median_ns": 783.3,
+      "p95_ns": 790.1
+    },
+    {
+      "run": 2,
+      "mode": "baseline",
+      "workload": "insert_backspace_pair",
+      "raw_scalars": 1024,
+      "actions_per_iteration": 2,
+      "iterations": 4096,
+      "min_ns": 773.5,
+      "median_ns": 785.4,
+      "p95_ns": 791.6
+    },
+    {
+      "run": 2,
+      "mode": "baseline",
+      "workload": "insert_backspace_pair",
+      "raw_scalars": 8192,
+      "actions_per_iteration": 2,
+      "iterations": 4096,
+      "min_ns": 776.1,
+      "median_ns": 786.5,
+      "p95_ns": 795.9
+    },
+    {
+      "run": 2,
+      "mode": "baseline",
+      "workload": "context_lifecycle",
+      "raw_scalars": 13,
+      "actions_per_iteration": 1,
+      "iterations": 256,
+      "min_ns": 25906.5,
+      "median_ns": 26013.9,
+      "p95_ns": 26078.6
+    },
+    {
+      "run": 2,
+      "mode": "jong",
+      "workload": "type_commit:ami",
+      "raw_scalars": 3,
+      "actions_per_iteration": 4,
+      "iterations": 1024,
+      "min_ns": 1650.7,
+      "median_ns": 1667.4,
+      "p95_ns": 1706.5
+    },
+    {
+      "run": 2,
+      "mode": "jong",
+      "workload": "type_commit:bangla",
+      "raw_scalars": 6,
+      "actions_per_iteration": 7,
+      "iterations": 512,
+      "min_ns": 1873.1,
+      "median_ns": 1895.4,
+      "p95_ns": 1930.0
+    },
+    {
+      "run": 2,
+      "mode": "jong",
+      "workload": "type_commit:shadhInota",
+      "raw_scalars": 10,
+      "actions_per_iteration": 11,
+      "iterations": 256,
+      "min_ns": 2223.9,
+      "median_ns": 2245.8,
+      "p95_ns": 2281.7
+    },
+    {
+      "run": 2,
+      "mode": "jong",
+      "workload": "type_commit:mixed",
+      "raw_scalars": 13,
+      "actions_per_iteration": 14,
+      "iterations": 256,
+      "min_ns": 2239.3,
+      "median_ns": 2245.6,
+      "p95_ns": 2255.3
+    },
+    {
+      "run": 2,
+      "mode": "jong",
+      "workload": "insert_backspace_pair",
+      "raw_scalars": 32,
+      "actions_per_iteration": 2,
+      "iterations": 512,
+      "min_ns": 6602.3,
+      "median_ns": 6664.4,
+      "p95_ns": 6680.4
+    },
+    {
+      "run": 2,
+      "mode": "jong",
+      "workload": "insert_backspace_pair",
+      "raw_scalars": 128,
+      "actions_per_iteration": 2,
+      "iterations": 128,
+      "min_ns": 24310.6,
+      "median_ns": 24426.6,
+      "p95_ns": 24611.4
+    },
+    {
+      "run": 2,
+      "mode": "jong",
+      "workload": "insert_backspace_pair",
+      "raw_scalars": 1024,
+      "actions_per_iteration": 2,
+      "iterations": 16,
+      "min_ns": 184135.6,
+      "median_ns": 185516.1,
+      "p95_ns": 186550.8
+    },
+    {
+      "run": 2,
+      "mode": "jong",
+      "workload": "insert_backspace_pair",
+      "raw_scalars": 8192,
+      "actions_per_iteration": 2,
+      "iterations": 2,
+      "min_ns": 1472634.0,
+      "median_ns": 1476208.2,
+      "p95_ns": 1487033.8
+    },
+    {
+      "run": 2,
+      "mode": "jong",
+      "workload": "context_lifecycle",
+      "raw_scalars": 13,
+      "actions_per_iteration": 1,
+      "iterations": 128,
+      "min_ns": 69248.9,
+      "median_ns": 69761.5,
+      "p95_ns": 70271.2
+    },
+    {
+      "run": 3,
+      "mode": "baseline",
+      "workload": "type_commit:ami",
+      "raw_scalars": 3,
+      "actions_per_iteration": 4,
+      "iterations": 2048,
+      "min_ns": 782.1,
+      "median_ns": 795.2,
+      "p95_ns": 804.2
+    },
+    {
+      "run": 3,
+      "mode": "baseline",
+      "workload": "type_commit:bangla",
+      "raw_scalars": 6,
+      "actions_per_iteration": 7,
+      "iterations": 1024,
+      "min_ns": 792.7,
+      "median_ns": 800.1,
+      "p95_ns": 806.5
+    },
+    {
+      "run": 3,
+      "mode": "baseline",
+      "workload": "type_commit:shadhInota",
+      "raw_scalars": 10,
+      "actions_per_iteration": 11,
+      "iterations": 1024,
+      "min_ns": 793.3,
+      "median_ns": 799.4,
+      "p95_ns": 804.7
+    },
+    {
+      "run": 3,
+      "mode": "baseline",
+      "workload": "type_commit:mixed",
+      "raw_scalars": 13,
+      "actions_per_iteration": 14,
+      "iterations": 512,
+      "min_ns": 793.4,
+      "median_ns": 800.7,
+      "p95_ns": 808.2
+    },
+    {
+      "run": 3,
+      "mode": "baseline",
+      "workload": "insert_backspace_pair",
+      "raw_scalars": 32,
+      "actions_per_iteration": 2,
+      "iterations": 4096,
+      "min_ns": 762.9,
+      "median_ns": 780.8,
+      "p95_ns": 797.0
+    },
+    {
+      "run": 3,
+      "mode": "baseline",
+      "workload": "insert_backspace_pair",
+      "raw_scalars": 128,
+      "actions_per_iteration": 2,
+      "iterations": 4096,
+      "min_ns": 753.5,
+      "median_ns": 774.0,
+      "p95_ns": 781.6
+    },
+    {
+      "run": 3,
+      "mode": "baseline",
+      "workload": "insert_backspace_pair",
+      "raw_scalars": 1024,
+      "actions_per_iteration": 2,
+      "iterations": 4096,
+      "min_ns": 752.2,
+      "median_ns": 780.2,
+      "p95_ns": 796.0
+    },
+    {
+      "run": 3,
+      "mode": "baseline",
+      "workload": "insert_backspace_pair",
+      "raw_scalars": 8192,
+      "actions_per_iteration": 2,
+      "iterations": 4096,
+      "min_ns": 757.2,
+      "median_ns": 782.8,
+      "p95_ns": 790.5
+    },
+    {
+      "run": 3,
+      "mode": "baseline",
+      "workload": "context_lifecycle",
+      "raw_scalars": 13,
+      "actions_per_iteration": 1,
+      "iterations": 256,
+      "min_ns": 25909.1,
+      "median_ns": 26110.5,
+      "p95_ns": 26623.3
+    },
+    {
+      "run": 3,
+      "mode": "jong",
+      "workload": "type_commit:ami",
+      "raw_scalars": 3,
+      "actions_per_iteration": 4,
+      "iterations": 1024,
+      "min_ns": 1630.6,
+      "median_ns": 1644.2,
+      "p95_ns": 1659.3
+    },
+    {
+      "run": 3,
+      "mode": "jong",
+      "workload": "type_commit:bangla",
+      "raw_scalars": 6,
+      "actions_per_iteration": 7,
+      "iterations": 512,
+      "min_ns": 1892.1,
+      "median_ns": 1896.1,
+      "p95_ns": 1902.3
+    },
+    {
+      "run": 3,
+      "mode": "jong",
+      "workload": "type_commit:shadhInota",
+      "raw_scalars": 10,
+      "actions_per_iteration": 11,
+      "iterations": 256,
+      "min_ns": 2240.5,
+      "median_ns": 2246.6,
+      "p95_ns": 2254.7
+    },
+    {
+      "run": 3,
+      "mode": "jong",
+      "workload": "type_commit:mixed",
+      "raw_scalars": 13,
+      "actions_per_iteration": 14,
+      "iterations": 256,
+      "min_ns": 2244.0,
+      "median_ns": 2250.6,
+      "p95_ns": 2256.3
+    },
+    {
+      "run": 3,
+      "mode": "jong",
+      "workload": "insert_backspace_pair",
+      "raw_scalars": 32,
+      "actions_per_iteration": 2,
+      "iterations": 512,
+      "min_ns": 6661.5,
+      "median_ns": 6672.5,
+      "p95_ns": 6686.7
+    },
+    {
+      "run": 3,
+      "mode": "jong",
+      "workload": "insert_backspace_pair",
+      "raw_scalars": 128,
+      "actions_per_iteration": 2,
+      "iterations": 128,
+      "min_ns": 24227.0,
+      "median_ns": 24293.7,
+      "p95_ns": 24392.7
+    },
+    {
+      "run": 3,
+      "mode": "jong",
+      "workload": "insert_backspace_pair",
+      "raw_scalars": 1024,
+      "actions_per_iteration": 2,
+      "iterations": 16,
+      "min_ns": 184350.1,
+      "median_ns": 184847.9,
+      "p95_ns": 187995.2
+    },
+    {
+      "run": 3,
+      "mode": "jong",
+      "workload": "insert_backspace_pair",
+      "raw_scalars": 8192,
+      "actions_per_iteration": 2,
+      "iterations": 2,
+      "min_ns": 1471486.8,
+      "median_ns": 1475980.5,
+      "p95_ns": 1483432.0
+    },
+    {
+      "run": 3,
+      "mode": "jong",
+      "workload": "context_lifecycle",
+      "raw_scalars": 13,
+      "actions_per_iteration": 1,
+      "iterations": 128,
+      "min_ns": 69586.8,
+      "median_ns": 69949.7,
+      "p95_ns": 70270.5
+    }
+  ],
+  "adapter_memory": [
+    {
+      "run": 1,
+      "mode": "baseline",
+      "phase": "idle",
+      "rss_kib": 7720,
+      "pss_kib": 2259,
+      "private_kib": 1568,
+      "os_hwm_kib": 7784,
+      "heap_used_bytes": 424544,
+      "heap_reserved_bytes": 557072
+    },
+    {
+      "run": 1,
+      "mode": "baseline",
+      "phase": "short_pending",
+      "rss_kib": 7720,
+      "pss_kib": 2259,
+      "private_kib": 1568,
+      "os_hwm_kib": 7784,
+      "heap_used_bytes": 424576,
+      "heap_reserved_bytes": 557072
+    },
+    {
+      "run": 1,
+      "mode": "baseline",
+      "phase": "short_cleared",
+      "rss_kib": 7720,
+      "pss_kib": 2259,
+      "private_kib": 1568,
+      "os_hwm_kib": 7784,
+      "heap_used_bytes": 424576,
+      "heap_reserved_bytes": 557072
+    },
+    {
+      "run": 1,
+      "mode": "baseline",
+      "phase": "long_pending",
+      "rss_kib": 7720,
+      "pss_kib": 2259,
+      "private_kib": 1568,
+      "os_hwm_kib": 7784,
+      "heap_used_bytes": 424576,
+      "heap_reserved_bytes": 557072
+    },
+    {
+      "run": 1,
+      "mode": "baseline",
+      "phase": "long_cleared",
+      "rss_kib": 7720,
+      "pss_kib": 2259,
+      "private_kib": 1568,
+      "os_hwm_kib": 7784,
+      "heap_used_bytes": 424576,
+      "heap_reserved_bytes": 557072
+    },
+    {
+      "run": 1,
+      "mode": "baseline",
+      "phase": "sessions_1000",
+      "rss_kib": 7788,
+      "pss_kib": 2295,
+      "private_kib": 1572,
+      "os_hwm_kib": 7788,
+      "heap_used_bytes": 429504,
+      "heap_reserved_bytes": 557072
+    },
+    {
+      "run": 1,
+      "mode": "baseline",
+      "phase": "sessions_2000",
+      "rss_kib": 7788,
+      "pss_kib": 2295,
+      "private_kib": 1572,
+      "os_hwm_kib": 7788,
+      "heap_used_bytes": 429504,
+      "heap_reserved_bytes": 557072
+    },
+    {
+      "run": 1,
+      "mode": "baseline",
+      "phase": "context_destroyed",
+      "rss_kib": 7788,
+      "pss_kib": 2295,
+      "private_kib": 1572,
+      "os_hwm_kib": 7788,
+      "heap_used_bytes": 427568,
+      "heap_reserved_bytes": 557072
+    },
+    {
+      "run": 1,
+      "mode": "jong",
+      "phase": "idle",
+      "rss_kib": 8152,
+      "pss_kib": 2698,
+      "private_kib": 1968,
+      "os_hwm_kib": 8152,
+      "heap_used_bytes": 432304,
+      "heap_reserved_bytes": 557072
+    },
+    {
+      "run": 1,
+      "mode": "jong",
+      "phase": "short_pending",
+      "rss_kib": 8276,
+      "pss_kib": 2822,
+      "private_kib": 2092,
+      "os_hwm_kib": 8276,
+      "heap_used_bytes": 433120,
+      "heap_reserved_bytes": 557072
+    },
+    {
+      "run": 1,
+      "mode": "jong",
+      "phase": "short_cleared",
+      "rss_kib": 8276,
+      "pss_kib": 2822,
+      "private_kib": 2092,
+      "os_hwm_kib": 8276,
+      "heap_used_bytes": 433120,
+      "heap_reserved_bytes": 557072
+    },
+    {
+      "run": 1,
+      "mode": "jong",
+      "phase": "long_pending",
+      "rss_kib": 8532,
+      "pss_kib": 3078,
+      "private_kib": 2348,
+      "os_hwm_kib": 8532,
+      "heap_used_bytes": 523024,
+      "heap_reserved_bytes": 696336
+    },
+    {
+      "run": 1,
+      "mode": "jong",
+      "phase": "long_cleared",
+      "rss_kib": 8532,
+      "pss_kib": 3078,
+      "private_kib": 2348,
+      "os_hwm_kib": 8532,
+      "heap_used_bytes": 495904,
+      "heap_reserved_bytes": 696336
+    },
+    {
+      "run": 1,
+      "mode": "jong",
+      "phase": "sessions_1000",
+      "rss_kib": 8484,
+      "pss_kib": 3030,
+      "private_kib": 2300,
+      "os_hwm_kib": 8484,
+      "heap_used_bytes": 454304,
+      "heap_reserved_bytes": 647184
+    },
+    {
+      "run": 1,
+      "mode": "jong",
+      "phase": "sessions_2000",
+      "rss_kib": 8484,
+      "pss_kib": 3030,
+      "private_kib": 2300,
+      "os_hwm_kib": 8484,
+      "heap_used_bytes": 454288,
+      "heap_reserved_bytes": 647184
+    },
+    {
+      "run": 1,
+      "mode": "jong",
+      "phase": "context_destroyed",
+      "rss_kib": 8428,
+      "pss_kib": 2974,
+      "private_kib": 2244,
+      "os_hwm_kib": 8428,
+      "heap_used_bytes": 434288,
+      "heap_reserved_bytes": 589840
+    },
+    {
+      "run": 2,
+      "mode": "jong",
+      "phase": "idle",
+      "rss_kib": 8052,
+      "pss_kib": 2655,
+      "private_kib": 1964,
+      "os_hwm_kib": 8052,
+      "heap_used_bytes": 432304,
+      "heap_reserved_bytes": 557072
+    },
+    {
+      "run": 2,
+      "mode": "jong",
+      "phase": "short_pending",
+      "rss_kib": 8176,
+      "pss_kib": 2779,
+      "private_kib": 2088,
+      "os_hwm_kib": 8176,
+      "heap_used_bytes": 433120,
+      "heap_reserved_bytes": 557072
+    },
+    {
+      "run": 2,
+      "mode": "jong",
+      "phase": "short_cleared",
+      "rss_kib": 8176,
+      "pss_kib": 2779,
+      "private_kib": 2088,
+      "os_hwm_kib": 8176,
+      "heap_used_bytes": 433120,
+      "heap_reserved_bytes": 557072
+    },
+    {
+      "run": 2,
+      "mode": "jong",
+      "phase": "long_pending",
+      "rss_kib": 8432,
+      "pss_kib": 3035,
+      "private_kib": 2344,
+      "os_hwm_kib": 8432,
+      "heap_used_bytes": 523024,
+      "heap_reserved_bytes": 696336
+    },
+    {
+      "run": 2,
+      "mode": "jong",
+      "phase": "long_cleared",
+      "rss_kib": 8432,
+      "pss_kib": 3035,
+      "private_kib": 2344,
+      "os_hwm_kib": 8432,
+      "heap_used_bytes": 495904,
+      "heap_reserved_bytes": 696336
+    },
+    {
+      "run": 2,
+      "mode": "jong",
+      "phase": "sessions_1000",
+      "rss_kib": 8448,
+      "pss_kib": 3019,
+      "private_kib": 2296,
+      "os_hwm_kib": 8448,
+      "heap_used_bytes": 454304,
+      "heap_reserved_bytes": 647184
+    },
+    {
+      "run": 2,
+      "mode": "jong",
+      "phase": "sessions_2000",
+      "rss_kib": 8448,
+      "pss_kib": 3019,
+      "private_kib": 2296,
+      "os_hwm_kib": 8448,
+      "heap_used_bytes": 454288,
+      "heap_reserved_bytes": 647184
+    },
+    {
+      "run": 2,
+      "mode": "jong",
+      "phase": "context_destroyed",
+      "rss_kib": 8392,
+      "pss_kib": 2963,
+      "private_kib": 2240,
+      "os_hwm_kib": 8392,
+      "heap_used_bytes": 434288,
+      "heap_reserved_bytes": 589840
+    },
+    {
+      "run": 2,
+      "mode": "baseline",
+      "phase": "idle",
+      "rss_kib": 7656,
+      "pss_kib": 2263,
+      "private_kib": 1580,
+      "os_hwm_kib": 7656,
+      "heap_used_bytes": 424544,
+      "heap_reserved_bytes": 557072
+    },
+    {
+      "run": 2,
+      "mode": "baseline",
+      "phase": "short_pending",
+      "rss_kib": 7656,
+      "pss_kib": 2263,
+      "private_kib": 1580,
+      "os_hwm_kib": 7656,
+      "heap_used_bytes": 424576,
+      "heap_reserved_bytes": 557072
+    },
+    {
+      "run": 2,
+      "mode": "baseline",
+      "phase": "short_cleared",
+      "rss_kib": 7656,
+      "pss_kib": 2263,
+      "private_kib": 1580,
+      "os_hwm_kib": 7656,
+      "heap_used_bytes": 424576,
+      "heap_reserved_bytes": 557072
+    },
+    {
+      "run": 2,
+      "mode": "baseline",
+      "phase": "long_pending",
+      "rss_kib": 7656,
+      "pss_kib": 2263,
+      "private_kib": 1580,
+      "os_hwm_kib": 7656,
+      "heap_used_bytes": 424576,
+      "heap_reserved_bytes": 557072
+    },
+    {
+      "run": 2,
+      "mode": "baseline",
+      "phase": "long_cleared",
+      "rss_kib": 7656,
+      "pss_kib": 2263,
+      "private_kib": 1580,
+      "os_hwm_kib": 7656,
+      "heap_used_bytes": 424576,
+      "heap_reserved_bytes": 557072
+    },
+    {
+      "run": 2,
+      "mode": "baseline",
+      "phase": "sessions_1000",
+      "rss_kib": 7724,
+      "pss_kib": 2299,
+      "private_kib": 1584,
+      "os_hwm_kib": 7724,
+      "heap_used_bytes": 429504,
+      "heap_reserved_bytes": 557072
+    },
+    {
+      "run": 2,
+      "mode": "baseline",
+      "phase": "sessions_2000",
+      "rss_kib": 7724,
+      "pss_kib": 2299,
+      "private_kib": 1584,
+      "os_hwm_kib": 7724,
+      "heap_used_bytes": 429504,
+      "heap_reserved_bytes": 557072
+    },
+    {
+      "run": 2,
+      "mode": "baseline",
+      "phase": "context_destroyed",
+      "rss_kib": 7724,
+      "pss_kib": 2299,
+      "private_kib": 1584,
+      "os_hwm_kib": 7724,
+      "heap_used_bytes": 427568,
+      "heap_reserved_bytes": 557072
+    },
+    {
+      "run": 3,
+      "mode": "baseline",
+      "phase": "idle",
+      "rss_kib": 7844,
+      "pss_kib": 2368,
+      "private_kib": 1648,
+      "os_hwm_kib": 7860,
+      "heap_used_bytes": 424544,
+      "heap_reserved_bytes": 557072
+    },
+    {
+      "run": 3,
+      "mode": "baseline",
+      "phase": "short_pending",
+      "rss_kib": 7844,
+      "pss_kib": 2368,
+      "private_kib": 1648,
+      "os_hwm_kib": 7860,
+      "heap_used_bytes": 424576,
+      "heap_reserved_bytes": 557072
+    },
+    {
+      "run": 3,
+      "mode": "baseline",
+      "phase": "short_cleared",
+      "rss_kib": 7844,
+      "pss_kib": 2368,
+      "private_kib": 1648,
+      "os_hwm_kib": 7860,
+      "heap_used_bytes": 424576,
+      "heap_reserved_bytes": 557072
+    },
+    {
+      "run": 3,
+      "mode": "baseline",
+      "phase": "long_pending",
+      "rss_kib": 7844,
+      "pss_kib": 2368,
+      "private_kib": 1648,
+      "os_hwm_kib": 7860,
+      "heap_used_bytes": 424576,
+      "heap_reserved_bytes": 557072
+    },
+    {
+      "run": 3,
+      "mode": "baseline",
+      "phase": "long_cleared",
+      "rss_kib": 7844,
+      "pss_kib": 2368,
+      "private_kib": 1648,
+      "os_hwm_kib": 7860,
+      "heap_used_bytes": 424576,
+      "heap_reserved_bytes": 557072
+    },
+    {
+      "run": 3,
+      "mode": "baseline",
+      "phase": "sessions_1000",
+      "rss_kib": 7848,
+      "pss_kib": 2372,
+      "private_kib": 1652,
+      "os_hwm_kib": 7860,
+      "heap_used_bytes": 429504,
+      "heap_reserved_bytes": 557072
+    },
+    {
+      "run": 3,
+      "mode": "baseline",
+      "phase": "sessions_2000",
+      "rss_kib": 7848,
+      "pss_kib": 2372,
+      "private_kib": 1652,
+      "os_hwm_kib": 7860,
+      "heap_used_bytes": 429504,
+      "heap_reserved_bytes": 557072
+    },
+    {
+      "run": 3,
+      "mode": "baseline",
+      "phase": "context_destroyed",
+      "rss_kib": 7848,
+      "pss_kib": 2372,
+      "private_kib": 1652,
+      "os_hwm_kib": 7860,
+      "heap_used_bytes": 427568,
+      "heap_reserved_bytes": 557072
+    },
+    {
+      "run": 3,
+      "mode": "jong",
+      "phase": "idle",
+      "rss_kib": 8144,
+      "pss_kib": 2649,
+      "private_kib": 1932,
+      "os_hwm_kib": 8144,
+      "heap_used_bytes": 432304,
+      "heap_reserved_bytes": 557072
+    },
+    {
+      "run": 3,
+      "mode": "jong",
+      "phase": "short_pending",
+      "rss_kib": 8268,
+      "pss_kib": 2773,
+      "private_kib": 2056,
+      "os_hwm_kib": 8268,
+      "heap_used_bytes": 433120,
+      "heap_reserved_bytes": 557072
+    },
+    {
+      "run": 3,
+      "mode": "jong",
+      "phase": "short_cleared",
+      "rss_kib": 8268,
+      "pss_kib": 2773,
+      "private_kib": 2056,
+      "os_hwm_kib": 8268,
+      "heap_used_bytes": 433120,
+      "heap_reserved_bytes": 557072
+    },
+    {
+      "run": 3,
+      "mode": "jong",
+      "phase": "long_pending",
+      "rss_kib": 8524,
+      "pss_kib": 3029,
+      "private_kib": 2312,
+      "os_hwm_kib": 8524,
+      "heap_used_bytes": 523024,
+      "heap_reserved_bytes": 696336
+    },
+    {
+      "run": 3,
+      "mode": "jong",
+      "phase": "long_cleared",
+      "rss_kib": 8524,
+      "pss_kib": 3029,
+      "private_kib": 2312,
+      "os_hwm_kib": 8524,
+      "heap_used_bytes": 495904,
+      "heap_reserved_bytes": 696336
+    },
+    {
+      "run": 3,
+      "mode": "jong",
+      "phase": "sessions_1000",
+      "rss_kib": 8476,
+      "pss_kib": 2981,
+      "private_kib": 2264,
+      "os_hwm_kib": 8476,
+      "heap_used_bytes": 454304,
+      "heap_reserved_bytes": 647184
+    },
+    {
+      "run": 3,
+      "mode": "jong",
+      "phase": "sessions_2000",
+      "rss_kib": 8476,
+      "pss_kib": 2981,
+      "private_kib": 2264,
+      "os_hwm_kib": 8476,
+      "heap_used_bytes": 454288,
+      "heap_reserved_bytes": 647184
+    },
+    {
+      "run": 3,
+      "mode": "jong",
+      "phase": "context_destroyed",
+      "rss_kib": 8420,
+      "pss_kib": 2925,
+      "private_kib": 2208,
+      "os_hwm_kib": 8420,
+      "heap_used_bytes": 434288,
+      "heap_reserved_bytes": 589840
+    }
+  ],
+  "finished_utc": "2026-11-07T10:31:38.724710+00:00",
+  "commands": [
+    {
+      "argv": [
+        "rustc",
+        "-vV"
+      ],
+      "cwd": "/mnt/Academic/Projects/jong-board",
+      "exit_code": 0,
+      "log": "command-00.log",
+      "log_sha256": "b871dfd8a766db4c3ff51787ce61d6ef3ebbfc440708039b30f01febb16c6245"
+    },
+    {
+      "argv": [
+        "cargo",
+        "--version"
+      ],
+      "cwd": "/mnt/Academic/Projects/jong-board",
+      "exit_code": 0,
+      "log": "command-01.log",
+      "log_sha256": "94acdde2a349a934ddec6058e5ba0ebe0e2b96ca668a11a6db4186824ecf3456"
+    },
+    {
+      "argv": [
+        "c++",
+        "--version"
+      ],
+      "cwd": "/mnt/Academic/Projects/jong-board",
+      "exit_code": 0,
+      "log": "command-02.log",
+      "log_sha256": "208ed9b5878eaf8ab0dd40bd0323f9a7ab09834b347ace3aa3a391793814e79c"
+    },
+    {
+      "argv": [
+        "pkg-config",
+        "--modversion",
+        "Fcitx5Core"
+      ],
+      "cwd": "/mnt/Academic/Projects/jong-board",
+      "exit_code": 0,
+      "log": "command-03.log",
+      "log_sha256": "6dc90de05c8e5e43c909b4b294a29ef0b9e4702e4fef4a6373a5995d2231904b"
+    },
+    {
+      "argv": [
+        "cmake",
+        "--version"
+      ],
+      "cwd": "/mnt/Academic/Projects/jong-board",
+      "exit_code": 0,
+      "log": "command-04.log",
+      "log_sha256": "a64acce9a7aa815db1aa0e9ddb0a23197663d28c98d9d002cae736b14610cff0"
+    },
+    {
+      "argv": [
+        "ninja",
+        "--version"
+      ],
+      "cwd": "/mnt/Academic/Projects/jong-board",
+      "exit_code": 0,
+      "log": "command-05.log",
+      "log_sha256": "bf0b45bfc340b339f28d2b0c0b07a1833466fd24b6561355349aab5db8aee0d1"
+    },
+    {
+      "argv": [
+        "cargo",
+        "build",
+        "--offline",
+        "--locked",
+        "--release",
+        "--example",
+        "measure",
+        "--target-dir",
+        "/tmp/jong-28-baseline-b/core"
+      ],
+      "cwd": "/mnt/Academic/Projects/jong-board",
+      "exit_code": 0,
+      "log": "command-06.log",
+      "log_sha256": "2997689c71b372af71adf125a5dcbe7fb3c288ad22968c1aa409c3ba86732c47"
+    },
+    {
+      "argv": [
+        "cmake",
+        "-S",
+        "adapters/fcitx5",
+        "-B",
+        "/tmp/jong-28-baseline-b/build",
+        "-G",
+        "Ninja",
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DCMAKE_INSTALL_PREFIX=/usr",
+        "-DFCITX_INSTALL_USE_FCITX_SYS_PATHS=ON",
+        "-DJONG_BUILD_RESOURCE_PROBE=ON",
+        "-DJONG_ENABLE_SANITIZERS=OFF"
+      ],
+      "cwd": "/mnt/Academic/Projects/jong-board",
+      "exit_code": 0,
+      "log": "command-07.log",
+      "log_sha256": "d0c45b9bf4ec56dbd7dc0bef416d54fd9115fe8e14a5d7ebfaef6e0456059922"
+    },
+    {
+      "argv": [
+        "cmake",
+        "--build",
+        "/tmp/jong-28-baseline-b/build"
+      ],
+      "cwd": "/mnt/Academic/Projects/jong-board",
+      "exit_code": 0,
+      "log": "command-08.log",
+      "log_sha256": "fa9568ae56a1af03a3d9071d6c6c76876aa2a45a48b0c0d4887fac20a207013b"
+    },
+    {
+      "argv": [
+        "/tmp/jong-28-baseline-b/core/release/examples/measure"
+      ],
+      "cwd": "/mnt/Academic/Projects/jong-board",
+      "exit_code": 0,
+      "log": "command-09.log",
+      "log_sha256": "d43ba4efea7e7112ab19f799a9a4fa67af3e3a432e19cc06df97e1c2946ca1db"
+    },
+    {
+      "argv": [
+        "/tmp/jong-28-baseline-b/core/release/examples/measure"
+      ],
+      "cwd": "/mnt/Academic/Projects/jong-board",
+      "exit_code": 0,
+      "log": "command-10.log",
+      "log_sha256": "3ddecce4cac3b729e756a4c90b3ce20074c59d7b0afcd50b2ce8dfe6832198b2"
+    },
+    {
+      "argv": [
+        "/tmp/jong-28-baseline-b/core/release/examples/measure"
+      ],
+      "cwd": "/mnt/Academic/Projects/jong-board",
+      "exit_code": 0,
+      "log": "command-11.log",
+      "log_sha256": "13244e7a02e3b2a9c1f52224c0f57a35858c532f5bbcf315fd0b81075a73360f"
+    },
+    {
+      "argv": [
+        "python3",
+        "tools/measure-adapter.py",
+        "/tmp/jong-28-baseline-b/build",
+        "--output",
+        "/tmp/jong-28-baseline-b/adapter",
+        "--runs",
+        "3"
+      ],
+      "cwd": "/mnt/Academic/Projects/jong-board",
+      "exit_code": 0,
+      "log": "command-12.log",
+      "log_sha256": "655366f594079f9dffab33d485c8c662faf014ac7c541f36cbf26986335b4baf"
+    },
+    {
+      "argv": [
+        "heaptrack",
+        "--version"
+      ],
+      "cwd": "/mnt/Academic/Projects/jong-board",
+      "exit_code": 0,
+      "log": "command-13.log",
+      "log_sha256": "66ae473da5dff8c8f1365d22f47d385de9af99feaffdc7e56a4a3929cc8e54ea"
+    },
+    {
+      "argv": [
+        "heaptrack_print",
+        "--version"
+      ],
+      "cwd": "/mnt/Academic/Projects/jong-board",
+      "exit_code": 0,
+      "log": "command-14.log",
+      "log_sha256": "8e89413e4a4aceda83b7ab5e5be72c59a5617c066ac775ee85223c3ec90087a8"
+    },
+    {
+      "argv": [
+        "heaptrack",
+        "--record-only",
+        "-o",
+        "/tmp/jong-28-baseline-b/allocations-1-core",
+        "/tmp/jong-28-baseline-b/core/release/examples/measure",
+        "--allocations"
+      ],
+      "cwd": "/mnt/Academic/Projects/jong-board",
+      "exit_code": 0,
+      "log": "command-15.log",
+      "log_sha256": "bc659f3efb8518ebe1145ef3e9714031a667e8013e14e7d5eb267b2c6ee7e350"
+    },
+    {
+      "argv": [
+        "heaptrack_print",
+        "-f",
+        "/tmp/jong-28-baseline-b/allocations-1-core.zst",
+        "-p",
+        "0",
+        "-a",
+        "0",
+        "-T",
+        "0",
+        "--disable-builtin-suppressions",
+        "--disable-embedded-suppressions"
+      ],
+      "cwd": "/mnt/Academic/Projects/jong-board",
+      "exit_code": 0,
+      "log": "command-16.log",
+      "log_sha256": "8706daaa39d1efc0a2dfe04673ac75ee876d8cb5d19a9a5f742e1622c9d29f60"
+    },
+    {
+      "argv": [
+        "heaptrack",
+        "--record-only",
+        "-o",
+        "/tmp/jong-28-baseline-b/allocations-1-baseline",
+        "/tmp/jong-28-baseline-b/build/jong-fcitx5-resources",
+        "baseline",
+        "allocations"
+      ],
+      "cwd": "/mnt/Academic/Projects/jong-board",
+      "exit_code": 0,
+      "log": "command-17.log",
+      "log_sha256": "ce871ad62e2e9e700789e6d65ea1d9ed467fb788b27f6f22de6eea66d08504a8"
+    },
+    {
+      "argv": [
+        "heaptrack_print",
+        "-f",
+        "/tmp/jong-28-baseline-b/allocations-1-baseline.zst",
+        "-p",
+        "0",
+        "-a",
+        "0",
+        "-T",
+        "0",
+        "--disable-builtin-suppressions",
+        "--disable-embedded-suppressions"
+      ],
+      "cwd": "/mnt/Academic/Projects/jong-board",
+      "exit_code": 0,
+      "log": "command-18.log",
+      "log_sha256": "a1959435245034b247961ac10e90eccbc2411e34a7035116dea8192905e2386e"
+    },
+    {
+      "argv": [
+        "heaptrack",
+        "--record-only",
+        "-o",
+        "/tmp/jong-28-baseline-b/allocations-1-jong",
+        "/tmp/jong-28-baseline-b/build/jong-fcitx5-resources",
+        "jong",
+        "allocations"
+      ],
+      "cwd": "/mnt/Academic/Projects/jong-board",
+      "exit_code": 0,
+      "log": "command-19.log",
+      "log_sha256": "965e1d392876fd03e058d00884632eab474e92df6b3d08d24f4f28676bb81d2f"
+    },
+    {
+      "argv": [
+        "heaptrack_print",
+        "-f",
+        "/tmp/jong-28-baseline-b/allocations-1-jong.zst",
+        "-p",
+        "0",
+        "-a",
+        "0",
+        "-T",
+        "0",
+        "--disable-builtin-suppressions",
+        "--disable-embedded-suppressions"
+      ],
+      "cwd": "/mnt/Academic/Projects/jong-board",
+      "exit_code": 0,
+      "log": "command-20.log",
+      "log_sha256": "f64dbd922aff80f2689701e41d374aeec15d792bd672cc145692defe151c0fe2"
+    },
+    {
+      "argv": [
+        "heaptrack",
+        "--record-only",
+        "-o",
+        "/tmp/jong-28-baseline-b/allocations-2-jong",
+        "/tmp/jong-28-baseline-b/build/jong-fcitx5-resources",
+        "jong",
+        "allocations"
+      ],
+      "cwd": "/mnt/Academic/Projects/jong-board",
+      "exit_code": 0,
+      "log": "command-21.log",
+      "log_sha256": "6bd8585347c50708d61beb5b2b03cd05ad2c53fb263b9a8d3ad15a0bbedf737f"
+    },
+    {
+      "argv": [
+        "heaptrack_print",
+        "-f",
+        "/tmp/jong-28-baseline-b/allocations-2-jong.zst",
+        "-p",
+        "0",
+        "-a",
+        "0",
+        "-T",
+        "0",
+        "--disable-builtin-suppressions",
+        "--disable-embedded-suppressions"
+      ],
+      "cwd": "/mnt/Academic/Projects/jong-board",
+      "exit_code": 0,
+      "log": "command-22.log",
+      "log_sha256": "c1a831423dd8fc0e19d5ff94cc58409d63cd8467dc40032c423b9112607cad7f"
+    },
+    {
+      "argv": [
+        "heaptrack",
+        "--record-only",
+        "-o",
+        "/tmp/jong-28-baseline-b/allocations-2-baseline",
+        "/tmp/jong-28-baseline-b/build/jong-fcitx5-resources",
+        "baseline",
+        "allocations"
+      ],
+      "cwd": "/mnt/Academic/Projects/jong-board",
+      "exit_code": 0,
+      "log": "command-23.log",
+      "log_sha256": "6b9625d47bfe2a18112186876f66bf5e029e47c2fe853b41869895f267290a32"
+    },
+    {
+      "argv": [
+        "heaptrack_print",
+        "-f",
+        "/tmp/jong-28-baseline-b/allocations-2-baseline.zst",
+        "-p",
+        "0",
+        "-a",
+        "0",
+        "-T",
+        "0",
+        "--disable-builtin-suppressions",
+        "--disable-embedded-suppressions"
+      ],
+      "cwd": "/mnt/Academic/Projects/jong-board",
+      "exit_code": 0,
+      "log": "command-24.log",
+      "log_sha256": "2a204509e3de422898b1a14b6771afbd5a11c5081fc2f2cc3cc9478ddd7653c6"
+    },
+    {
+      "argv": [
+        "heaptrack",
+        "--record-only",
+        "-o",
+        "/tmp/jong-28-baseline-b/allocations-2-core",
+        "/tmp/jong-28-baseline-b/core/release/examples/measure",
+        "--allocations"
+      ],
+      "cwd": "/mnt/Academic/Projects/jong-board",
+      "exit_code": 0,
+      "log": "command-25.log",
+      "log_sha256": "8b0e3351a5b100396080bea55ac7672fbf170bc736951f41d6be5d8436fd3bf6"
+    },
+    {
+      "argv": [
+        "heaptrack_print",
+        "-f",
+        "/tmp/jong-28-baseline-b/allocations-2-core.zst",
+        "-p",
+        "0",
+        "-a",
+        "0",
+        "-T",
+        "0",
+        "--disable-builtin-suppressions",
+        "--disable-embedded-suppressions"
+      ],
+      "cwd": "/mnt/Academic/Projects/jong-board",
+      "exit_code": 0,
+      "log": "command-26.log",
+      "log_sha256": "eae77d76c66041e183285eb4e208020c90fbde7a096394e6f1bc8a8988c41e2a"
+    },
+    {
+      "argv": [
+        "heaptrack",
+        "--record-only",
+        "-o",
+        "/tmp/jong-28-baseline-b/allocations-3-core",
+        "/tmp/jong-28-baseline-b/core/release/examples/measure",
+        "--allocations"
+      ],
+      "cwd": "/mnt/Academic/Projects/jong-board",
+      "exit_code": 0,
+      "log": "command-27.log",
+      "log_sha256": "543b9559fddfcaae0ce86887a35017eb3f0de24035c589064b8df1cdf8cc655c"
+    },
+    {
+      "argv": [
+        "heaptrack_print",
+        "-f",
+        "/tmp/jong-28-baseline-b/allocations-3-core.zst",
+        "-p",
+        "0",
+        "-a",
+        "0",
+        "-T",
+        "0",
+        "--disable-builtin-suppressions",
+        "--disable-embedded-suppressions"
+      ],
+      "cwd": "/mnt/Academic/Projects/jong-board",
+      "exit_code": 0,
+      "log": "command-28.log",
+      "log_sha256": "a5f7494c6c16101510878f3d2cda81b015a2af6aec1278253b76793c40d472e4"
+    },
+    {
+      "argv": [
+        "heaptrack",
+        "--record-only",
+        "-o",
+        "/tmp/jong-28-baseline-b/allocations-3-baseline",
+        "/tmp/jong-28-baseline-b/build/jong-fcitx5-resources",
+        "baseline",
+        "allocations"
+      ],
+      "cwd": "/mnt/Academic/Projects/jong-board",
+      "exit_code": 0,
+      "log": "command-29.log",
+      "log_sha256": "7c65cf2d65ba93f975e83706d04569c4870152c8b71e2ea5aba648bf5742f71c"
+    },
+    {
+      "argv": [
+        "heaptrack_print",
+        "-f",
+        "/tmp/jong-28-baseline-b/allocations-3-baseline.zst",
+        "-p",
+        "0",
+        "-a",
+        "0",
+        "-T",
+        "0",
+        "--disable-builtin-suppressions",
+        "--disable-embedded-suppressions"
+      ],
+      "cwd": "/mnt/Academic/Projects/jong-board",
+      "exit_code": 0,
+      "log": "command-30.log",
+      "log_sha256": "d8886f83386e23a50184d6af45d8c93862b9297562f819c385119ba4085d7547"
+    },
+    {
+      "argv": [
+        "heaptrack",
+        "--record-only",
+        "-o",
+        "/tmp/jong-28-baseline-b/allocations-3-jong",
+        "/tmp/jong-28-baseline-b/build/jong-fcitx5-resources",
+        "jong",
+        "allocations"
+      ],
+      "cwd": "/mnt/Academic/Projects/jong-board",
+      "exit_code": 0,
+      "log": "command-31.log",
+      "log_sha256": "953ce65fc6b6489cbe7c2fd3fc3f6cea4d5671a0784d0e22bc2fd6cd031b7442"
+    },
+    {
+      "argv": [
+        "heaptrack_print",
+        "-f",
+        "/tmp/jong-28-baseline-b/allocations-3-jong.zst",
+        "-p",
+        "0",
+        "-a",
+        "0",
+        "-T",
+        "0",
+        "--disable-builtin-suppressions",
+        "--disable-embedded-suppressions"
+      ],
+      "cwd": "/mnt/Academic/Projects/jong-board",
+      "exit_code": 0,
+      "log": "command-32.log",
+      "log_sha256": "740f8aca918418d8b2231068a363188987cbcf141257c01a9836d08c5491a687"
+    }
+  ]
+}

@@ -25,7 +25,8 @@ TIMING_FIELDS = ["run", "mode", "workload", "raw_scalars", "actions_per_iteratio
                  "iterations", "min_ns", "median_ns", "p95_ns"]
 WORKLOADS = [("type_commit:ami", 3, 4), ("type_commit:bangla", 6, 7),
              ("type_commit:shadhInota", 10, 11), ("type_commit:mixed", 13, 14),
-             *[("insert_backspace_pair", n, 2) for n in (32, 128, 1024, 8192)]]
+             *[("insert_backspace_pair", n, 2) for n in (32, 128, 1024, 8192)],
+             ("context_lifecycle", 13, 1)]
 
 
 def command(args, cwd=None):
@@ -145,8 +146,10 @@ def main():
         "cmake_flags": [line for line in cache.splitlines() if line.startswith(
             ("CMAKE_BUILD_TYPE:", "CMAKE_CXX_COMPILER:", "CMAKE_CXX_FLAGS",
              "CMAKE_EXE_LINKER_FLAGS:", "CMAKE_SHARED_LINKER_FLAGS:"))],
-        "allocator_environment": {key: value for key, value in os.environ.items()
-                                  if key.startswith("MALLOC_") or key == "GLIBC_TUNABLES"},
+        "allocator_environment": {key: os.environ[key] for key in (
+            "GLIBC_TUNABLES", "MALLOC_ARENA_MAX", "MALLOC_ARENA_TEST", "MALLOC_CHECK_",
+            "MALLOC_MMAP_MAX_", "MALLOC_MMAP_THRESHOLD_", "MALLOC_PERTURB_",
+            "MALLOC_TOP_PAD_", "MALLOC_TRIM_THRESHOLD_") if key in os.environ},
         "rust_environment": {key: os.environ[key] for key in
                              ("RUSTFLAGS", "CARGO_ENCODED_RUSTFLAGS", "CARGO_PROFILE_RELEASE_OPT_LEVEL")
                              if key in os.environ},
