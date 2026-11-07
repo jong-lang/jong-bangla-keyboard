@@ -15,4 +15,4 @@ Give a concrete input/output or workflow example and affected platforms.
 ## Alternatives and scope
 
 Describe existing workarounds, tradeoffs, and a useful acceptance criterion.
-Check [current features and scope](../../docs/FEATURES.md) before proposing support.
+Check [current features and scope](https://github.com/shaadahmmed/jong-bangla-keyboard/blob/main/docs/FEATURES.md) before proposing support.
