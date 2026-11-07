@@ -22,6 +22,12 @@ Dates use the project's Asia/Dhaka timezone.
   the traced Firefox failures do not. No safe adapter-only correction has been
   established. PR #19 stays open pending a default-route fix, final validation
   and separate-chat review; this implementation session cannot recommend merge.
+- **Manual investigation tools prepared, not run:** ordinary GTK3/GTK4 entries
+  and a local Firefox page provide timed focus changes without key
+  injection; a GTK3 reset-only case narrows the missing-reset investigation.
+  Exact commands, Unicode expectations and controls are in the
+  [manual worksheet](ibus.md#manual-focus-investigation). No production fix is
+  claimed; #22 retains the frontend source evidence and open hypotheses.
 - **Manual workaround confirmed:** the maintainer reports that Firefox launched
   with `GTK_IM_MODULE=ibus` retains the old word in A and commits only the new
   word in B. This is one manual result, not default-route acceptance.
@@ -44,43 +50,44 @@ Dates use the project's Asia/Dhaka timezone.
 
 ## Latest completed step
 
-- **2026-11-07 — Trace frontend lifecycle delivery and record a manual workaround.**
-  Diagnostic evidence and the distinct GTK4/Firefox failure paths live in #22.
-  A temporary CLEAR-mode control lost the unfinished word and was rejected as
-  a production fix. No production adapter, Rust semantics or ABI changed.
-- **Investigation checks before the testing instruction:**
-  `python3 target/ibus-vm/gtk-programmatic-focus.py` reproduced three failures
-  with the original policy and three word-loss failures with the CLEAR control;
-  `python3 target/ibus-vm/firefox-programmatic-focus-repeat.py` reproduced three
-  further default-route failures. Temporary diagnostic builds used
-  `cmake --build` in the guest. Method names, callback timing and output byte
-  lengths were traced without text/key payload logging. These runs do not
-  establish a correction. Diagnostic processes were stopped afterward.
-- **Maintainer manual check:** after closing Firefox and launching it with
-  `env GTK_IM_MODULE=ibus firefox` in the requested GNOME/IBus VM, the maintainer
-  reports PASS for `ki` in A, programmatic focus to B, then `i` and Space:
-  A contains `কি` and B contains `ই `. This was not independently rerun and
-  does not validate the failing default route or a full direct-IBus suite.
-- **Current documentation increment:** no tests/check commands were run after
-  the maintainer's instruction to leave testing to them. Documentation/release
-  checks and hosted CI on `72bcfe4` are prior evidence only, not validation of
-  this new revision. Required checks and separate review remain merge gates.
+- **2026-11-07 — Prepare manual frontend/reset probes for #22.**
+  Added interactive GTK3/GTK4 and Firefox probes plus exact guest launch,
+  timing, Unicode and control steps. They only schedule ordinary frontend
+  calls; the maintainer supplies all keystrokes. Observations remain in the
+  probe window, without file/network logging. No production adapter, Rust
+  semantics, ABI, dependencies or input-method settings changed.
+- **Source inspection:** reviewed GTK 3.24.52's Wayland reset and the saved
+  GTK4/Mutter boundary; #22 records the missing-reset lead and its limits.
+  A source-level explanation is not a validated correction. Firefox main was
+  also inspected as a lead, not as the installed 159.0.1 revision.
+- **Commands/outcomes this increment:** read-only `gh issue view 22`,
+  `gh issue list`, `gh pr list`, `gh pr view 19`, `git fetch origin`, targeted
+  source reads and diff review; `git diff --check` passed. No tests or builds
+  ran, and no manual result for the new probes is available. The worksheet
+  remains NOT RUN; required validation and separate review remain merge gates.
+- **Prior diagnosis, not rerun:** GTK4 reset/focus callbacks clear raw state
+  while late frontend commits reach B; traced Firefox failures lack engine
+  lifecycle notifications. A temporary CLEAR control lost A's word and was
+  rejected. The maintainer's explicit-IBus Firefox A/B pass is workaround
+  evidence only. Diagnostic processes were stopped in the previous step.
 - **Prior evidence:** native source `a1f5ae6` passed the 12-case GTK4, Qt and
   Firefox normal suites; the [IBus record](ibus.md#gnome-vm-smoke-result) owns
   exact environment and scope. No XWayland, complete layout/lifecycle matrix
   or desktop latency acceptance is established. #20 and #21 remain open until
-  their fixing PR merges. Next action: correct the default-route frontend
-  behavior while preserving the original-field commit requirement.
+  their fixing PR merges. Next action: obtain the manual default-route and
+  reset-only results, then target the responsible frontend correction while
+  preserving the original-field commit requirement.
 
 ## Next small implementation step
 
-1. Continue #22 at the frontend boundary: correct GTK4's old-preedit delivery
-   and Firefox's missing field-change notifications. Keep the passing direct
-   IBus route explicitly a workaround. Do not ship CLEAR mode as a fix or infer
-   field identity from caret rectangles/surrounding text. Keep PR #19 open.
-2. Give the maintainer focused manual checks for any correction; do not run
-   tests on their behalf under the current instruction. Required build/check
-   evidence and remaining desktop acceptance are still pending merge gates.
+1. Have the maintainer run the [manual worksheet](ibus.md#manual-focus-investigation),
+   prioritizing default-route GTK3 A/B and reset-only cases, followed by GTK4
+   and Firefox. Do not run tests on their behalf. Record observations in #22;
+   no passing result is implied by the probes or source inspection.
+2. Continue #22 at the frontend boundary using those results: correct GTK4's
+   old-preedit delivery and Firefox's missing reset/field-change notification.
+   Keep explicit IBus a workaround; reject word-loss CLEAR mode and caret/text
+   identity heuristics. Keep PR #19 open. Required validation remains pending.
 3. Obtain separate-chat review of the final PR head using the
    [review protocol](../CONTRIBUTING.md#separate-session-review). Merge only after
    the blocker/findings are resolved, that revision passes required checks and

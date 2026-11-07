@@ -232,6 +232,99 @@ full frontend acceptance, restart/
 update/removal behavior or universal focus correctness. Test artifacts and VM
 start/stop instructions remain local under ignored `target/ibus-vm/`.
 
+## Manual focus investigation
+
+The maintainer owns further testing. The interactive
+[GTK probe](../tools/manual/ibus-focus.py) and
+[Firefox page](../tools/manual/ibus-focus.html) are **unrun** manual tools for
+[#22](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/22), not a
+production correction or acceptance evidence. They inject no keys, call no
+engine methods and do not save or transmit typed text. Use synthetic text only.
+The GTK probe requires Python GObject introspection and the chosen GTK version;
+these were available in the saved VM. No application build is needed.
+
+Copy the probes into the running disposable VM from the **host checkout root**:
+
+```sh
+tar -cf - tools/manual/ibus-focus.py tools/manual/ibus-focus.html |
+  target/ibus-vm/guest-ssh 'mkdir -p ~/acceptance/focus22-manual && tar -xf - -C ~/acceptance/focus22-manual'
+```
+
+Then use a terminal **inside the VM's GNOME Wayland desktop**, with Jong Bangla
+selected. Do not launch clients from an SSH shell with a guessed session bus.
+Record `gnome-shell --version`, `ibus version`,
+`rpm -q gtk3 gtk4 mutter firefox`, `echo "$XDG_SESSION_TYPE"` and the addon
+revision used. These are environment observations, not test passes.
+
+### Default-route field change
+
+Run one GTK client at a time, closing it before the next case:
+
+```sh
+cd ~/acceptance/focus22-manual
+env -u GTK_IM_MODULE GDK_BACKEND=wayland python3 tools/manual/ibus-focus.py --gtk 3
+env -u GTK_IM_MODULE GDK_BACKEND=wayland python3 tools/manual/ibus-focus.py --gtk 4
+```
+
+For Firefox, open the same page in a separate disposable process/profile:
+
+```sh
+focus_profile=$(mktemp -d /tmp/jong-focus22-firefox.XXXXXX)
+env -u GTK_IM_MODULE GDK_BACKEND=wayland MOZ_ENABLE_WAYLAND=1 firefox --no-remote --profile "$focus_profile" "file://$PWD/tools/manual/ibus-focus.html"
+```
+
+Check Firefox's `about:support` reports **Window Protocol: wayland**, then
+return to the probe before starting. In GTK, the header must show
+`GdkWaylandDisplay` and `GTK_IM_MODULE=(unset)`. An unset variable alone does not
+prove the selected IM module; record any independent module identification
+separately. Do not run this baseline with `GTK_IM_MODULE=ibus`.
+
+1. Click **Arm**. It focuses A and schedules a programmatic change in eight
+   seconds. Type `ki` promptly, without Space or Enter; observe editable `কি`.
+2. Stop typing and do not click, press Tab or switch windows. Wait for the
+   status to say `B.grab_focus()` or `B.focus()` was called, then wait two more
+   seconds. Type `i` followed by exactly one Space.
+3. Read the passive values display without moving focus. Required result:
+   A = `কি`, U+0995 U+09BF; B = `ই `, U+0987 U+0020. A must retain the old
+   word once, and B must contain only the new word and one trailing space.
+4. Record both exact values/code points, the frontend/version and any open
+   composition indicator. Close/relaunch GTK or reload the Firefox page before
+   another attempt. Repeat three times for each frontend; record every result.
+
+GTK's display excludes live preedit; DOM values can include live composition.
+Judge final contents after Space, not the interim display. A missing old word
+is a failure even if B starts fresh; duplicated/moved old text is also a failure.
+After a candidate correction, also repeat with 0.4 and 1.0 seconds of settling
+instead of two, and run mouse/Tab handoff controls in fresh cases. In those
+controls click A, type `ki`, move to B by the chosen action, then type `i` and
+Space; the same final A/B contents are required. Neither control replaces the
+programmatic case.
+
+### GTK3 reset-only discriminator
+
+This case isolates the public widget reset API without moving between fields:
+
+```sh
+env -u GTK_IM_MODULE GDK_BACKEND=wayland python3 tools/manual/ibus-focus.py --gtk 3 --action reset
+```
+
+Click **Arm**, type only `k` in A without a boundary, and stop typing. When the
+status says `A.reset_im_context()` was called, wait two seconds, then type `i`
+and one Space. Keep focus in A throughout. Record exact A/B values in three
+fresh runs. B must stay empty. With discard semantics A is `ই `, U+0987 U+0020;
+`কি `, U+0995 U+09BF U+0020, shows the old `k` survived into the next vowel.
+Record `কই `, U+0995 U+0987 U+0020, separately: it indicates the old displayed
+text was committed rather than discarded, without proving raw carryover.
+The status confirms the widget API was invoked; it does not prove GTK forwarded
+a protocol reset. This probe does not determine Firefox's exact callback path.
+
+Only after recording the default-route cases, optionally repeat a fresh case
+with `GTK_IM_MODULE=ibus` to compare the existing workaround. Label that result
+**explicit IBus-module control**, including which client/action was used.
+Do not make it the default launcher, change session settings or count it as a
+default Wayland fix. Report results on #22; its frontend investigation owns
+the source evidence and any proposed upstream correction.
+
 ## Next desktop acceptance
 
 Desktop testing is pre-merge work for PR #19. Investigate and resolve

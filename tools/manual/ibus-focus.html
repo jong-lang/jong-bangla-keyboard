@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'none'; form-action 'none'; base-uri 'none'">
+<title>Jong Bangla manual focus probe</title>
+<style>
+  body { max-width: 44rem; margin: 2rem auto; padding: 0 1rem; font: 18px sans-serif; }
+  label { display: block; margin: 1rem 0; }
+  input { display: block; width: 100%; box-sizing: border-box; font: 28px sans-serif; }
+  pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+</style>
+<h1>Jong Bangla manual focus probe</h1>
+<p>Use synthetic input only. Nothing is saved or sent. The values below include
+  the browser's current DOM values, which may include live composition.</p>
+<p>Select Jong Bangla and click Arm. Type <code>ki</code> in A without Space,
+  then stop typing. After focus moves to B, wait 2 seconds and type
+  <code>i</code> and Space. Do not click or press Tab during the handoff.</p>
+<label>A <input id="a" autocomplete="off" spellcheck="false"></label>
+<label>B <input id="b" autocomplete="off" spellcheck="false"></label>
+<button id="arm">Arm focus change in 8 seconds</button>
+<p id="status" role="status">Not armed. Reload for a fresh case.</p>
+<pre id="values"></pre>
+<script>
+  "use strict";
+  const a = document.getElementById("a");
+  const b = document.getElementById("b");
+  const status = document.getElementById("status");
+  const values = document.getElementById("values");
+  const arm = document.getElementById("arm");
+  const composing = new Set();
+
+  function describe(value) {
+    const points = Array.from(value, char =>
+      "U+" + char.codePointAt(0).toString(16).toUpperCase().padStart(4, "0"));
+    return JSON.stringify(value) + "\n" + (points.join(" ") || "(empty)");
+  }
+
+  function refresh() {
+    values.textContent = "A: " + describe(a.value) + "\nB: " + describe(b.value)
+      + "\nActive field: " + (document.activeElement.id || "(neither)")
+      + "\nComposition events still open: " + (Array.from(composing).join(", ") || "none");
+  }
+
+  for (const field of [a, b]) {
+    field.addEventListener("compositionstart", () => { composing.add(field.id); refresh(); });
+    field.addEventListener("compositionend", () => { composing.delete(field.id); refresh(); });
+    for (const event of ["input", "focus", "blur"]) field.addEventListener(event, refresh);
+  }
+  arm.addEventListener("click", () => {
+    arm.disabled = true;
+    a.focus();
+    const deadline = performance.now() + 8000;
+    const timer = setInterval(() => {
+      const remaining = deadline - performance.now();
+      if (remaining > 0) {
+        status.textContent = "Armed: " + (remaining / 1000).toFixed(1) + " seconds remaining";
+        return;
+      }
+      clearInterval(timer);
+      b.focus();
+      status.textContent = "B.focus() called. Wait 2 seconds; type i and Space in B.";
+      refresh();
+    }, 100);
+  });
+  refresh();
+</script>
+</html>
