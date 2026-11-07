@@ -80,8 +80,8 @@ Measured 2026-11-07, 16:27 to 16:31 Asia/Dhaka, on the Modern 15 A5M,
 CachyOS KDE 6 Wayland, Ryzen 5 5500U, Linux 7.3.1-1-cachyos, glibc 2.44,
 Rust 1.99.1, GCC 16.2.1, Fcitx5 5.1.23, CMake 4.4.5, Ninja 1.13.2,
 Python 3.14.9 and heaptrack 1.5.0. Both collections tested clean commit
-`b72917e3805325f1789bf91f4b8a4dc6fcb308c1`. The later evidence commit changes
-only documentation/artifacts; the tested source identity remains explicit.
+`b72917e3805325f1789bf91f4b8a4dc6fcb308c1`. Later evidence and CI integration
+commits do not change the measured probes; the tested identity remains explicit.
 The machine was on battery, governor `powersave`, boost enabled, with affinity
 to all 12 logical CPUs. Scheduling, thermals and background activity were not
 controlled. These observations are a reference for this recorded environment,

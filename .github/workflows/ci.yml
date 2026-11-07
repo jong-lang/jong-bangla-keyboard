@@ -113,6 +113,12 @@ jobs:
       - name: Check Rust workspace and Fcitx5 adapter
         run: bash tools/check-build.sh
       - name: Smoke benchmark without timing thresholds
+        env:
+          # Checkout ownership differs from the container user. Trust only this
+          # known workspace for Git subprocesses in the collector, not globally.
+          GIT_CONFIG_COUNT: '1'
+          GIT_CONFIG_KEY_0: safe.directory
+          GIT_CONFIG_VALUE_0: ${{ github.workspace }}
         run: python3 tools/measure-baseline.py smoke --output target/perf-smoke
       - name: Retain smoke observations
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
