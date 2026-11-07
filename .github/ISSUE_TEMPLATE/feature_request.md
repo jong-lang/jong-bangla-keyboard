@@ -1,21 +1,18 @@
 ---
 name: Feature request
-about: Suggest a typing behavior or project improvement
-title: ''
-labels: ''
-assignees: ''
+about: Explain a concrete need and proposed behavior.
+title: "feat: "
 ---
 
 ## Problem
 
-What task or typing situation is difficult today?
+Who needs this, and what task is difficult today?
 
 ## Proposed behavior
 
-Describe the desired result with a concrete example. Use synthetic sample text.
-Include alternatives or reference behavior if helpful.
+Give a concrete input/output or workflow example and affected platforms.
 
-## Scope
+## Alternatives and scope
 
-Does this change a confirmed decision in `docs/v1.md`, or belong to future work?
-For platform requests, include the target environment and input-method framework.
+Describe existing workarounds, tradeoffs, and a useful acceptance criterion.
+Check [current features and scope](https://github.com/shaadahmmed/jong-bangla-keyboard/blob/main/docs/FEATURES.md) before proposing support.

@@ -1,179 +1,169 @@
-# Contributing to Jong Bangla
+# Contributing
 
-Jong Bangla is an experimental Bangla phonetic input method. Start with the
-[README](README.md), the [current handoff](docs/progress.md#current-position),
-and the relevant [requirements and behavior decisions](docs/v1.md).
-[AGENTS.md](AGENTS.md) describes the detailed development workflow.
+Start with [AGENTS.md](AGENTS.md). It is the entry point for commands, repository
+layout, conventions, and instructions on which document to read for a task.
 
-## Report a bug or suggest a change
+## Choose the mode
 
-Use [GitHub Issues](https://github.com/shaadahmmed/jong-bangla-keyboard/issues).
-Search existing reports before opening an issue. Bug reproduction, investigation,
-workarounds and resolution/deferral decisions belong in the issue, rather than
-README, requirements or progress-log bug narratives. Docs may link to an issue
-and must still state the implementation and validation scope accurately.
+Check the current branch and working tree before editing. Preserve unrelated work.
+Check GitHub authentication and inspect open issues and pull requests before
+starting a task. Report access failures; do not assume the tracker is empty.
 
-For conversion bugs, provide a minimal synthetic phonetic input, expected and
-actual Bangla output, and Unicode code points when visually similar text differs.
-State the reference and revision used for the expected behavior. For desktop
-bugs, include reproduction steps, OS/distro, desktop, input framework and
-application/toolkit versions, and the actual native or compatibility input route.
-For Linux, distinguish Wayland from XWayland. Distinguish an
-active editable word from text already committed to the application.
+- **Problem report:** On `main`, when the maintainer describes a problem without
+  asking for implementation, create a GitHub issue with `gh issue create` using
+  the bug template. Include reproduction steps, expected behavior, and actual
+  behavior. Mark missing details as unknown. Do not edit code. Stop after filing.
+- **Task:** Find the issue or create one first. Update `main`, then create
+  `type/issue-number-short-description`. Allowed types are `feat`, `fix`,
+  `refactor`, `perf`, `docs`, `ci`, `test`, and `chore`.
+- **Review:** Verify `gh auth status`. Reconstruct state from `gh pr view`,
+  `gh pr diff`, and PR comments. Review the complete current revision without
+  relying on earlier chats. Record the reviewed commit and limits of the review.
+- **Fix:** Verify authentication and reconstruct the same PR state. Work on the
+  PR branch, address each finding, reply to its comment with the correction and
+  validation, and push. Obtain a separate review of the updated revision.
 
-Use disposable sample text. Do not include passwords, private typed text or
-unrelated application data in reports. Feature requests should explain the
-desired typing behavior and whether they change a confirmed v1 decision.
+## Complete a task
 
-## Prepare a change
+Explain the purpose and expected result before editing. Keep each task coherent.
+Use Conventional Commits: `type: description` or `type(scope): description`.
 
-Keep each change focused and independently reviewable. Follow the
-[development guide](docs/development.md) for prerequisites and commands; run them
-from the repository root. No network service is needed for ordinary Rust checks.
+Implement the change and relevant regression tests. Select checks by impact:
 
-Before starting a new task, inspect open GitHub Issues and pull requests. Finish
-existing work and prioritize actionable bugs before unrelated work. Keep blocked
-issues open with an explanation; never close a valid issue just to clear the
-queue. Explain blocked work or unclear priorities before proceeding. If the
-tracker is unavailable, report that limitation instead of assuming it is empty.
+| Change | Required validation |
+| --- | --- |
+| Documentation only | Local links, line budgets, and consistency with agreed behavior and verified code |
+| Rust code | Formatting, Clippy with warnings denied, unit and integration tests |
+| Performance or per-keystroke behavior | Relevant code checks and comparison against the committed performance baseline |
+| Memory ownership or native boundary | Relevant code checks, memory checks, and appropriate boundary sanitizers |
+| Platform behavior or packaging | Relevant automated checks and a maintainer-run desktop or installation test |
 
-Create a fresh branch from updated `main` for each coherent task and submit a
-pull request to `main`; do not push task changes directly to `main` or reuse a
-completed task's branch. Documentation and maintenance use the same process.
-Preserve unrelated work.
+Use the exact commands in AGENTS.md and the task-specific testing guide. Report
+actual commands and outcomes in a short table. Identify skipped or unavailable
+checks and their reasons. Do not report old results as newly run checks.
+Benchmark comparisons run locally on the reference machine. CI smoke benchmarks
+cannot establish performance parity. Baseline and memory tooling still require
+implementation; do not claim that a check exists until verified.
 
-- Keep transliteration and composition independent of Fcitx5 and desktop APIs.
-- Add meaningful regression cases for behavior changes. For phonetic rules,
-  verify exact Unicode, context and overlapping matches against the
-  [pinned reference](docs/reference-checks.md).
-- Keep fixtures independently authored and record their provenance. Do not copy
-  upstream source or rule tables without a separate license review.
-- Keep typed text local and avoid input logging.
+When manual testing is needed, give the maintainer the exact desktop, VM, or
+container setup, steps, and expected result. The maintainer runs these tests.
+Record the returned result and any remaining limits before opening the PR.
+Never change the maintainer's input-method settings as a development side effect.
 
-## Validate and submit
+Complete the relevant documentation and checks, then commit, push, and open a PR
+using the PR template. Link its issue and include the head commit, validation,
+manual results when applicable, and a handoff for a separate review chat.
+Routine commit, push, and PR creation do not require another approval.
 
-For Rust changes, run the complete workspace check block in the development
-guide, including API docs and the conversion smoke example. Run the Fcitx5
-checks and staged installation check when changing the adapter; keep synthetic
-harness results separate from actual desktop observations. Use reference and
-resource checks when relevant to the behavior or claims being changed. Report
-any check you could not run.
+## Review and merge
 
-For documentation-only changes, check relative links, heading anchors, command
-consistency and `git diff --check`; application tests are unnecessary.
+Review happens in a separate chat. Passing CI and implementation-session
+self-review do not replace it. Put findings on the PR with a precise location,
+severity, evidence, impact, and recommended correction. Label optional suggestions.
+Assess correctness, architecture, regressions, and tests, plus ownership, unsafe
+boundaries, performance, security, privacy, and compatibility where relevant.
+Record findings, review limits, and an explicit recommendation for the reviewed
+commit. Track bugs in issues without duplicating their reports across documents.
 
-Update usage instructions with code changes, behavioral decisions in
-[docs/v1.md](docs/v1.md), and the three current handoff sections in
-[docs/progress.md](docs/progress.md). Add notable user-facing changes under
-`Unreleased` in [CHANGELOG.md](CHANGELOG.md); routine internal steps belong in Git
-and the handoff. Keep the changelog distinct from detailed validation records.
+After fixes, rerun affected checks and review the updated diff. Before merging,
+require a separate review recommending the latest revision, passing required
+checks, resolved findings and conversations, and no merge conflicts. Report any
+blocked gate on the PR and leave it open. Never bypass protections.
 
-The maintainer approved autonomous task delivery on 2026-11-05, replacing the
-previous per-commit confirmation requirement. After completing the task, relevant
-documentation and checks, an agent commits, pushes and creates a PR without
-routine confirmation requests. Include only the task's work and use descriptive
-messages. PRs explain the problem, resulting behavior, validation and material
-limitations, and link related issues. Use `Fixes #123` only when the PR fully
-resolves that issue. CI checks documentation/release tooling and the Rust/Fcitx5
-build; hosted status checks do not replace desktop smoke observations.
-The 2026-11-06 separate-session review requirement below limits autonomous
-delivery: the implementation session leaves the PR open and hands it off.
+Wait for the maintainer's explicit merge instruction even when all gates pass.
+Then squash merge, verify the merge and post-merge CI, delete only the completed
+task's remote and local branches, and update local `main`. If verification fails,
+preserve the branches and unrelated work, and track the failure in an issue.
 
-## Review, merge and cleanup
+## Engineering standards
 
-### Separate-session review
+- Keep functions and modules small and cohesive, with explicit control flow and
+  no dead code. Put needed refactors in their own `refactor/` branch and PR.
+- Add dependencies or abstractions only for a concrete need stated in the PR.
+  Dependencies must be MIT-compatible and pass cargo-deny once that check lands.
+- Keep the core free of platform dependencies, I/O, and global state. Treat it
+  as a deterministic state machine: input event in, engine actions out.
+- Keep adapters thin: translate native events and engine actions. Put no
+  phonetic logic in adapters. Fix Bangla output bugs in the core.
+- Handle or return errors. Use `Result` for recoverable failures and actionable
+  messages without typed text. Do not use `unwrap`, `expect`, or panics on the
+  input path, or `unwrap` and `expect` on fallible production paths. Tests may
+  use assertions and `unwrap`. Outside the input path, document the invariant
+  behind any intentional panic.
+- Forbid unsafe code in the core. Confine necessary unsafe code to the FFI
+  layer and explain every unsafe block with a `// SAFETY:` comment. Document
+  ownership, lifetimes, encoding, error behavior, and panic containment. Prevent
+  Rust unwinding across the native boundary.
+- Keep the per-keystroke path allocation-light. Changes to that path require
+  a benchmark against the baseline; report unavailable evidence explicitly.
+- Use idiomatic Rust names and consistent native naming. Document public API
+  behavior, errors, and relevant invariants. Exported C functions must document
+  pointer validity and ownership. Use comments to explain decisions.
+- Use each crate's `Cargo.toml` `rust-version` as its minimum Rust requirement.
+  Keep workspace requirements consistent. Raising the minimum requires an
+  explicit justification and CI verification. Do not duplicate it in prose.
 
-Every PR, including documentation and maintenance, needs a review in a separate
-chat before merging. The implementation session completes checks and self-review,
-then leaves the PR open. Provide its URL, exact head commit, purpose, changed
-areas, validation results and known limits. A sub-agent in the implementation
-chat does not satisfy this requirement. Do not claim to have opened another chat
-unless that actually happened; give the maintainer a handoff to start one.
+Standards apply to new work and review. They do not certify the existing code.
+Review enforces rules that do not have an automated check.
 
-The reviewer session inspects the applicable project instructions, PR discussion,
-complete base-to-head diff and relevant surrounding code/tests. Assess the change
-independently of the author's summary. Record the reviewed head commit and cover
-the following areas, marking any inapplicable area with a reason:
+| Enforcement | State |
+| --- | --- |
+| Formatting and Clippy with warnings denied | Implemented in `tools/check-build.sh`, called by CI |
+| No unsafe code in the core | Implemented by its Cargo lint configuration |
+| cargo-deny, license checks, cargo-audit, and networking bans | Planned: [#24](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/24) |
+| Remove invariant-based panics from the FFI input path | Planned cleanup: [#25](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/25) |
+| Compatibility coverage audit and useful property tests | Planned: [#26](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/26) |
+| Reproducible Rust/native memory-check recipes | Planned: [#27](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/27) |
+| Committed performance baseline and CI smoke benchmark | Planned: [#28](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/28) |
 
-- Correctness, architecture and maintainability: preserve the Rust engine and
-  composition boundaries, keep native event handling in adapters, avoid premature
-  abstractions, and check errors, regressions and meaningful test coverage.
-- Memory and native safety: inspect ownership, lifetimes, allocations, cleanup,
-  context destruction, C ABI encoding/pointers and panic containment. Consider
-  leaks and use-after-free on success, failure and reset paths; run targeted
-  native diagnostics when warranted and available. State what was not measured.
-- Input behavior and compatibility: check exact Unicode and pinned-reference
-  evidence, raw-keystroke editing, commit/cancel/reset, key forwarding, modifiers,
-  focus changes and per-context isolation where affected. Keep synthetic tests
-  distinct from real app/toolkit and Wayland/XWayland evidence.
-- Performance and resources: consider per-keystroke work, buffer growth and
-  responsiveness; require measurements for performance claims.
-- Security, privacy and provenance: keep typing local, avoid typed-text logging,
-  inspect unsafe/native and dependency boundaries, and check licenses and source
-  provenance where affected.
-- Delivery and documentation: verify applicable build/install/export checks,
-  package and release scope, user instructions and an accurate handoff. Do not
-  change desktop settings or activate competing input daemons during review.
+## Release policy and checklist
 
-Use CI results for the exact revision and checks they cover; do not repeat passing
-checks without a reason. Current CI covers documentation/release tooling, workflow
-linting, Rust format/Clippy/tests/docs, Fcitx5 builds/synthetic tests, staged
-installation and source-export builds. It has no dedicated leak-sanitizer or real
-desktop acceptance job. Passing CI does not establish leak freedom, runtime
-resource budgets, full phonetic parity or architectural correctness. Consult
-the [development guide](docs/development.md) for actual commands and run additional
-targeted checks when the changed behavior needs them. Documentation-only review
-needs link and consistency evidence, not runtime measurements.
+Finish and release Fcitx5 before IBus, then Windows TSF. The first Fcitx5 release
+targets x86-64. Native packages come first; Flatpak is a later prototype.
+Keep macOS out of scope unless a viable free path is established.
 
-Post a review report on the PR identifying the separate reviewer chat, exact head
-commit, scope, findings, CI evidence, additional checks, untested risks and an
-explicit recommendation: **ready to merge** or **changes required**. A chat label
-or session identifier is sufficient; do not publish private chat content. Separate
-chat review is not a separate human identity or a formal GitHub approval. When
-both sessions use the PR author's GitHub account, post the report as a comment;
-do not attempt to approve the account's own PR. Author self-review remains useful
-but cannot satisfy this gate. GitHub currently requires zero approving reviewers,
-so this separate-session gate is a documented agent/maintainer responsibility,
-not an automated branch-rule check.
+Use semantic versions, staying in `0.x` until stable. Prepare a release through
+an issue branch and reviewed PR. Keep commits and squash titles consistent with
+[Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/), and keep
+changelog entries focused on user-visible changes rather than a raw commit log,
+following [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-A new reviewer chat can start with this handoff (replace the placeholders):
+Current tag automation validates versions, runs CI, and prepares a source archive
+and `SHA256SUMS` in a draft GitHub Release. It does not deliver binary archives
+or native packages. The maintainer publishes drafts explicitly.
 
-> Review PR `<URL>` at head `<SHA>` in this separate review session. Follow AGENTS.md
-> and CONTRIBUTING.md's separate-session review protocol. Inspect the complete
-> diff and relevant code/tests, verify CI evidence, post findings and a merge
-> recommendation for the reviewed revision on the PR. Do not merge until the
-> review and all other merge gates are satisfied.
+Planned delivery:
 
-### Findings and merge gates
+| Work | Issue |
+| --- | --- |
+| Conventional Commits changelog generation and complete artifact drafts | [#29](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/29) |
+| Binary archive, .deb, .rpm, maintained AUR recipe, and clean-image checks | [#30](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/30) |
+| Flatpak Fcitx5 add-on prototype after the native release | [#31](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/31) |
 
-Post each finding on the PR with its file/line or affected setting, severity,
-evidence or reproduction, impact and recommended correction. Distinguish
-optional suggestions from defects. Fix findings, rerun affected checks and
-review the updated diff. Keep bug reports and investigation in linked GitHub
-Issues; PR comments describe the actionable review finding.
+For each release:
 
-Merge only when the separate reviewer session explicitly recommends merging the
-latest revision, that revision passes required checks, all review findings and
-conversations are resolved, and there are no merge conflicts. A new push requires
-the separate reviewer session to review the changes and update its recommendation
-for that revision, plus checks for that revision. An implementation-session fix
-does not clear its own finding. Never bypass branch
-protections to finish a task. Explain any blocked gate on the PR and leave the
-work open; a clean review does not guarantee the absence of defects.
+1. Update both Cargo manifests, their lockfile entries, addon version metadata,
+   and dated changelog notes together. Retain `## Unreleased`. The current
+   validator requires nonempty `Highlights`, `Fixes`, `Breaking changes`,
+   `Installation and upgrade`, `Tested environments`, and `Known issues` sections.
+   Run `python3 tools/check-release.py --base origin/main` before the PR.
+2. Pass the applicable automated checks and obtain the maintainer's desktop
+   acceptance from [TESTING.md](docs/TESTING.md#maintainer-run-desktop-acceptance).
+   Verify every package by installing and removing it in a clean Arch,
+   Debian or Ubuntu, and Fedora container or VM, as applicable to its format.
+   Record image identities and results on the PR. Container checks do not
+   establish interactive desktop support.
+3. Complete separate review and obtain explicit merge authorization. After
+   merging and verifying CI, obtain the maintainer's release instruction before
+   creating or pushing a `vX.Y.Z` tag. Do not overwrite tags or existing releases.
+4. Inspect the resulting draft, notes, artifacts, and every checksum. Leave an
+   incomplete draft unpublished. The maintainer performs publication.
 
-Verify the merge and post-merge CI before deleting the completed task's remote
-and local branches and synchronizing local `main`. Delete only that task's
-branches, preserve unrelated work, and do not force-delete unmerged work. If
-post-merge verification fails, keep the task branches, record the failure in an
-Issue and fix it through a new branch/PR. Close issues only when resolved or
-with a justified closure reason; a fixing PR can close them on merge.
+When TSF lands, add a Windows installer and Windows acceptance checks. Initially
+the installer is unsigned; document the SmartScreen warning. Revisit IBus
+Flatpak feasibility in its adapter stage. Do not promise untested artifacts.
 
-Apply relevant PR labels: `enhancement`, `bug`, `breaking-change`, `documentation`
-or `dependencies`. Use `skip-release-notes` only for changes with no release-note
-value. Labels categorize generated notes; they do not select the release version.
-Follow the [release guide](docs/releases.md) for manual versioning, release PRs,
-draft review and publication. Project code is [MIT licensed](LICENSE); retain
-applicable notices and document any third-party obligations.
-
-Platform and packaging work follows the [staged roadmap](docs/roadmap.md).
-Keep release scope and acceptance evidence separate from planned availability.
+The Flatpak route needs a separate extension for the Flatpak Fcitx5 daemon;
+upstream still requires native host input modules. Its parent sandbox grants
+network permission. Preserve the no-network-call policy and review inherited
+permissions before shipping. Findings and primary sources are recorded in #31.

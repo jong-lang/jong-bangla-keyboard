@@ -1,0 +1,50 @@
+# Features and platform status
+
+Jong Bangla converts phonetic input into Bangla with Avro-compatible behavior
+as its target. Conversion works in the maintainer's typing tests, including
+Bangla letters. Exhaustive rule and context parity with jsAvroPhonetic has not
+been verified. Existing reference fixtures provide regression coverage, not a
+guarantee that every possible spelling matches.
+
+## Typing behavior
+
+The active word appears as editable Bangla preedit: text displayed before it
+is committed to the application. Conversion is deterministic, with contextual
+vowels, conjuncts, case-sensitive sequences, punctuation, and phonetic escapes.
+
+| Input | Behavior |
+| --- | --- |
+| Phonetic text | Update the active raw input and recompute Bangla preedit |
+| Digits | Convert to Bangla digits by default |
+| Backspace | Remove one raw input character and recompute |
+| Ctrl+Backspace | Clear the active word without committing |
+| Space or Enter | Commit active Bangla, then let the application handle the same key |
+| Escape in Fcitx5 | Commit and consume the key while input is active; otherwise pass it through |
+
+With no active input, Backspace and Ctrl+Backspace pass to the application.
+Punctuation and phonetic escapes remain editable until a boundary. There is no
+Bangla/Latin choice list, raw Latin selection, dictionary, prediction, or
+autocorrection in the first-release scope.
+
+## Platform matrix
+
+| Platform | Status |
+| --- | --- |
+| CachyOS, KDE Plasma, Wayland, Fcitx5 | Working; maintainer considers the KDE Plasma implementation complete. Release preparation remains |
+| Other Linux distributions and desktops with Fcitx5 | Untested; no support claim |
+| Linux with IBus | Planned after the Fcitx5 release |
+| Windows TSF | Planned after IBus |
+| macOS on Apple silicon or Intel | Out of scope; reconsider only if a viable free path exists |
+
+The first Fcitx5 release targets x86-64 native packages. ARM64 is outside that
+initial scope. Flatpak is a later prototype, not a first-release requirement;
+see the [release plan](../CONTRIBUTING.md#release-policy-and-checklist).
+
+The reference desktop is a Modern 15 A5M running CachyOS KDE Plasma.
+The maintainer reports successful typing in Kate, Firefox, and KWrite on
+Wayland, plus Python GTK and Qt test environments. These reports do not
+establish XWayland or other application coverage.
+
+No user-visible bugs are currently known to the maintainer. Track new bugs
+in [GitHub Issues](https://github.com/shaadahmmed/jong-bangla-keyboard/issues).
+Engineering follow-ups are separate from user-visible bug reports.

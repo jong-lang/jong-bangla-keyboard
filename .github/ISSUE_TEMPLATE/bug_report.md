@@ -1,38 +1,27 @@
 ---
 name: Bug report
-about: Report a conversion, composition, build or desktop integration problem
-title: ''
-labels: ''
-assignees: ''
+about: Report a reproducible problem using synthetic input.
+title: "bug: "
 ---
-
-## What happened?
-
-Describe the problem and what you expected. Search existing GitHub Issues first
-and use synthetic sample text without private information. Bug investigation,
-workarounds and release deferral decisions stay in the issue.
 
 ## Reproduction
 
-1. Commit or build used:
-2. Command or application:
-3. Exact keys and actions:
-4. Actual output:
-5. Expected output and reference/revision, if applicable:
+List exact steps and synthetic phonetic input. Mark missing details as unknown.
 
-For Unicode differences, include code points if possible. For editing problems,
-say whether the word was still in preedit or already committed.
+## Expected behavior
+
+Include exact expected Bangla and Unicode code points when relevant.
+
+## Actual behavior
+
+Include actual output and a minimal reproduction, without personal typed text.
 
 ## Environment
 
-- OS/distro, version and CPU architecture:
-- Desktop and version:
-- Input framework/adapter and version (Fcitx5, IBus, TSF, macOS or other):
-- Application and toolkit versions:
-- Actual application/input route: Wayland / XWayland / native Windows/macOS / other:
-- Rust/Cargo or build-tool versions (for build problems):
+Commit or release, distro, desktop, input framework, application/toolkit versions,
+and Wayland or XWayland. Include package source if installation is affected.
 
-## Relevant evidence
+## Workaround
 
-Include a minimal error or reproduction result. Remove private text and unrelated
-data. State whether the core example, isolated harness or desktop route reproduces it.
+State a known workaround, or none known. Link related issues if relevant.
+Report vulnerabilities through [private reporting](https://github.com/shaadahmmed/jong-bangla-keyboard/security/advisories/new).

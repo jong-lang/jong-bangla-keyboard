@@ -1,208 +1,102 @@
-# Developer and agent guide
+# Agent instructions
 
-## Project
+Read only this file at chat start. Open another document only when the table
+below applies. Treat maintainer answers as authoritative; verify specific code
+claims with targeted reads. Report uncertainty instead of inventing evidence.
 
-Jong Bangla (`jong-bangla-board`) is a Bangla phonetic desktop input method,
-implemented from scratch with a reusable Rust engine. The staged release scope
-includes Linux Fcitx5 and IBus, Flatpak/deb/rpm/pacman packages and maintained AUR
-recipes, Windows TSF, and macOS on Apple silicon and Intel. Fcitx5 on CachyOS +
-KDE Plasma Wayland is the first implementation/test environment. Follow
-[the roadmap](docs/roadmap.md); planned targets are not delivered support.
-Project code is MIT licensed.
+## Detect the mode
 
-`docs/v1.md` distinguishes confirmed requirements from proposals and open decisions.
-Do not turn a proposal into a requirement without explaining the decision.
-User instructions take precedence over this guide; update the docs when they change.
+Check `git status --short --branch` and `gh auth status`. Inspect open issues and
+PRs with `gh issue list --state open` and `gh pr list --state open`. Report access
+failures. Preserve unrelated work. Do not delegate without an explicit request.
 
-## Read project context efficiently
+- On `main`, a problem description without an implementation request means
+  report mode: use the bug template, run `gh issue create`, include reproduction,
+  expected and actual behavior, mark unknown details, then stop. Do not edit code.
+- For a requested task, find or create its issue, update `main`, then create
+  `type/issue-number-short-description`. Use `feat`, `fix`, `refactor`, `perf`,
+  `docs`, `ci`, `test`, or `chore`. Do not reuse a completed branch.
+- For review or fixes, verify authentication and reconstruct state from
+  `gh pr view`, `gh pr diff`, and PR comments. Do not rely on previous chats.
+  Fix an existing PR on its branch; reply to every addressed finding.
 
-- Follow applicable `AGENTS.md` instructions; reuse instructions already supplied
-  in the conversation instead of reading the same file again.
-- At the start of a session, read only the
-  [Current position](docs/progress.md#current-position),
-  [Latest completed step](docs/progress.md#latest-completed-step), and
-  [Next small implementation step](docs/progress.md#next-small-implementation-step)
-  sections of the progress log for the current handoff.
-- Use [README.md](README.md) for orientation and links to the focused guides.
-  Read relevant sections of [docs/development.md](docs/development.md) for check
-  commands, [CONTRIBUTING.md](CONTRIBUTING.md) for contribution expectations, and
-  [docs/v1.md](docs/v1.md) for requirements and decisions needed by the task.
-  Use [docs/roadmap.md](docs/roadmap.md) for platform/package stages and acceptance
-  gates when the task affects release scope or delivery.
-  Use [docs/adapter-contract.md](docs/adapter-contract.md) for native event and
-  ownership rules, and [docs/compatibility.md](docs/compatibility.md) for reference
-  provenance and Unicode policy. Read only the relevant rule-family sections in
-  `docs/compatibility/` when investigating historical phonetic decisions; those
-  records are not current requirements or routine handoff reading.
-  Do not read these documents in full by default.
-- Read historical progress entries only when investigating an earlier decision
-  or regression, or when the current handoff lacks necessary context.
-- Read affected code, related tests/fixtures, and check tooling as needed. Use
-  targeted searches and line ranges instead of printing entire large files.
-- Do not reread unchanged material already available in the conversation. After
-  context compaction, recover only the sections needed to continue; reread when
-  a file changes or necessary context is missing.
-- Keep successful check output to a summary; inspect and show failure details
-  when needed. Run all required checks without printing every passing fixture.
-- Keep the current handoff accurate so routine work does not require reading
-  the full history. These reading rules do not reduce validation requirements.
+## Repository map
 
-## Collaborate in coherent steps
+| Path | Purpose |
+| --- | --- |
+| `src/transliteration/` | Phonetic conversion |
+| `src/composition.rs` | Editable input state and engine actions |
+| `adapters/fcitx5/` | C++ addon, Rust FFI, and native tests |
+| `tests/` | Integration tests and Unicode TSV fixtures |
+| `examples/`, `tools/` | Conversion, reference, measurement, and check tools |
+| `.github/` | CI, release automation, and contribution templates |
 
-- Before starting a new task, inspect open GitHub Issues and pull requests.
-  Finish existing work and prioritize actionable bugs before unrelated work.
-  Never close a valid issue just to clear the queue. Keep blocked issues open
-  with an explanation; explain blocked work or unclear priorities before
-  proceeding. If the tracker cannot be checked, report that limitation rather
-  than assuming there are no open issues.
-- Explain the purpose and expected result of the next coherent step before editing.
-- Complete one coherent, reviewable increment at a time. Avoid combining engine
-  changes, platform integration, packaging, and unrelated cleanup in one change.
-- For phonetic rule coverage, prefer the largest coherent batch of related
-  conjuncts or spellings that can be independently reference-checked, validated,
-  and reviewed together. Start by looking for 3–6 related spellings and expand
-  when the behavior remains manageable; this is a planning guide, not a cap.
-  Do not split straightforward related work merely to keep batches small.
-- Define each batch's scope before editing. Check each spelling's exact Unicode,
-  vowel/context behavior, following-`r` behavior, and overlapping matches against
-  the pinned reference independently; shared output alone does not establish
-  shared behavior. Include interactions between the selected spellings and
-  existing rules. Split only when behavioral differences, unresolved reference
-  results, or review complexity prevent a reliable coherent change.
-- Share fixture/check tooling where useful while preserving independent expected
-  outputs and evidence for every spelling. Use targeted reference checks during
-  investigation, then one full required validation run, documentation/handoff
-  update, and review summary for the completed batch. Deliver the batch through
-  the branch/PR workflow below. Repeat full checks when later edits or failures
-  require them; do not repeat the full cycle for every spelling.
-- Walk the user through the result in plain language: what changed, why it matters,
-  how it was checked, and what comes next. Explain unfamiliar terms when introduced.
-- Update the three handoff sections in `docs/progress.md` after each coherent
-  step; replace their summaries rather than extending a cumulative narrative.
-  Aim for 50–100 lines before the historical `Completed steps` section. Keep
-  current state concise and point to coverage docs instead of listing every rule.
-- In `Latest completed step`, record the date, result, actual check commands and
-  outcomes, remaining limitations, and next action. Summarize successful checks;
-  include failure details when they affect the handoff. Identify any older check
-  results as prior evidence, not checks rerun in the current step.
-- Preserve existing historical entries without routinely appending new ones.
-  Use Git for detailed change history, `docs/v1.md` for requirements and behavioral
-  decisions, and tests/fixtures for exact compatibility evidence. Reference a
-  relevant existing commit when useful; do not try to embed a commit's own hash.
-- Keep planned, in-progress, and completed work distinct. Never claim a check or
-  milestone is complete without evidence.
-- Track bugs, reproduction details, workarounds and release-blocking or deferral
-  decisions in GitHub Issues. Link to issues from docs where needed; do not keep
-  duplicate bug narratives in requirements, usage guides or the progress log.
-  Keep implementation and validation limits documented accurately.
-- Create a fresh branch from updated `main` for each coherent task, including
-  documentation and maintenance. Do not reuse a completed task's branch or push
-  task changes directly to `main`. Preserve unrelated work.
-- Complete the task, relevant documentation and checks, then commit, push and
-  create a PR to `main` without routine confirmation requests. Use descriptive
-  commit/PR messages and include only the task's work. This workflow was approved
-  on 2026-11-05 and supersedes the previous per-commit confirmation requirement.
-- **Separate review session required (2026-11-06):** after implementation and
-  self-review, leave every PR open for review in a separate chat, including
-  documentation and maintenance PRs. Supply the PR URL, head commit, validation
-  evidence and a review handoff. Do not merge based on implementation-session
-  self-review or passing CI alone. Do not substitute a sub-agent for the requested
-  separate chat or claim another session was started without evidence.
-- Follow the [separate-session review protocol](CONTRIBUTING.md#separate-session-review)
-  to review the complete PR for correctness, architecture, regressions and test
-  coverage. Assess memory ownership/leaks, unsafe boundaries, performance,
-  security, privacy and compatibility where relevant. Passing CI can supply
-  evidence for checks it actually runs; it does not replace engineering review
-  or prove leak freedom or desktop acceptance. Record the reviewer session,
-  reviewed revision, findings, limits and explicit merge recommendation on the PR.
-- Post findings on the PR with precise locations, severity, evidence, impact and
-  recommended corrections. Distinguish optional suggestions from defects. Fix
-  findings, repeat affected checks and review the updated diff. Track bugs in
-  GitHub Issues and link them from the PR without duplicating reports in docs.
-- Merge only when the separate review session has explicitly recommended merging
-  the latest revision, that revision has passed all required checks, all review
-  findings and conversations are resolved, and there are no merge conflicts.
-  Never bypass protections to finish a task. If any gate is blocked, explain it
-  on the PR and keep the work open; lack of findings is not a defect-free guarantee.
-- Link fixing PRs to their issues. Close issues only when resolved or with a
-  justified closure reason. Verify the merge and post-merge CI, then delete only
-  the completed task's remote and local branches and synchronize local `main`.
-  Preserve branches and unrelated work if verification fails; track the failure
-  in GitHub Issues and fix it on a new branch.
-- Keep release versions manual and prepare them through a release pull request.
-  Follow [the release guide](docs/releases.md); automation prepares drafts, while
-  publication remains an explicit maintainer action.
-- Continue within the requested scope without adding routine approval gates.
-  Ask concise questions when an unresolved choice materially changes behavior.
-- Keep documentation-only tasks to documentation. Do not scaffold an application
-  or add dependencies just to make a documentation change look complete.
-- Do not delegate to other agents unless the user explicitly requests it.
+## Commands
 
-## Product behavior
+Run from the repository root. Read manifests and CMake for compiler requirements.
 
-- Aim for Avro-compatible phonetic behavior, using an independently implemented
-  engine. Choose and document the compatibility reference before claiming parity.
-- Keep the active word in preedit: text remains editable before it is committed
-  to the application. Backspace removes a raw phonetic keystroke and recomputes it.
-- Ctrl+Backspace clears the whole active raw buffer without committing; with no
-  active buffer, let the application handle word deletion.
-- Space and Enter commit active Bangla, then forward the same key to the application.
-  Keep punctuation and phonetic escapes editable until an explicit boundary.
-- For v1, show converted Bangla in editable preedit without a Bangla/Latin choice
-  list or raw Latin selection. Revisit choices after the first release if needed.
-- Convert digits to Bangla by default; digit keys enter text.
-- Keep future autocorrection separate from deterministic transliteration. Do not
-  silently change spelling, add dictionaries, or implement prediction for v1.
-- Prioritize responsive typing and low resource use; verify performance claims.
+```sh
+cargo fmt --all -- --check
+cargo clippy --offline --locked --workspace --all-targets -- -D warnings
+cargo test --offline --locked --workspace
+bash tools/check-build.sh
+python3 tools/check-docs.py
+git diff --check
+wc -l AGENTS.md README.md
+```
 
-## Architecture boundaries
+The build script includes Rust checks, release builds, API docs, native tests,
+and staged installation checks. It requires Fcitx5 development files, CMake,
+Ninja, a C++ compiler, and Python. It does not install into the desktop.
+For docs-only changes, check links, budgets, and consistency. Run benchmarks and
+memory checks for relevant code changes, using the guides below. Report exact
+commands, outcomes, and unavailable checks in a short table. Never claim an old
+result as a new run. Planned checks need an issue link; do not claim they exist.
 
-- Keep transliteration independent of Fcitx5, display servers, desktop APIs, and UI.
-- Keep composition state and edit/commit actions independent of platform adapters
-  so Fcitx5, IBus, Windows TSF and macOS can share behavior.
-- Keep framework-specific key events, preedit updates, and commits in the adapter.
-  Reuse Fcitx5 UI facilities where suitable.
-- Rust is the implementation language for engine and composition logic. The
-  experimental Fcitx5 adapter uses a small C++ bridge and Rust C ABI. Other native
-  bindings/glue are chosen during each platform's feasibility step; C++ is not a
-  cross-platform requirement. Do not move transliteration rules into bridges.
-- Add concrete extension points when needed. Implement IBus, TSF and macOS in
-  their roadmap stages. Do not build a dynamic plugin system or generalize an
-  adapter framework before concrete reuse exists.
-- Keep unsafe code at a documented interoperability boundary when unavoidable.
-  Specify ownership, lifetimes, encoding, error handling, and panic containment.
+## Conventions and delivery
 
-## Correctness and validation
+- Explain the purpose and expected result before editing. Keep work coherent.
+- End every conversation with the next concrete step. If no action remains,
+  say so. When possible, provide a ready-to-use prompt for the next chat.
+- Keep modules cohesive and control flow explicit. Add no dead code. Put needed
+  refactors in their own `refactor/` branch and PR. Justify dependencies and
+  abstractions in the PR; require MIT-compatible dependency licenses.
+- Keep the Rust core deterministic, with no platform dependencies, I/O, or global
+  state. Keep adapters thin. Fix Bangla conversion bugs in the core.
+- Handle input-path errors without `unwrap`, `expect`, or panics. Confine unsafe
+  code to FFI and explain each block with `// SAFETY:`. Document API behavior,
+  ownership, encoding, errors, lifetimes, and panic containment at native borders.
+- Keep per-keystroke allocations low; benchmark changes against the baseline.
+  Keep `Cargo.toml` minimum Rust requirements consistent; justify and test raises.
+- Make typing local. Add no network access, telemetry, typed-text logging, or
+  persistence beyond typing needs. Use synthetic text in diagnostics and tests.
+- Preserve all older tests. Validate exact Unicode, not visual similarity.
+- Give the maintainer exact setup, steps, and expected results for necessary
+  manual tests. The maintainer runs them. Never change system input settings.
+- Use Conventional Commits. Complete docs and checks, then commit, push, and open
+  a PR from its template without routine confirmation. Link the issue.
+- Leave the PR open for review in a separate chat. Require a review recommending
+  the latest commit, passing required checks, resolved findings, and no conflicts.
+  Then wait for the maintainer's explicit merge instruction. Never bypass gates.
+- After authorization, squash merge, verify post-merge CI, delete only the task's
+  local and remote branches, and update `main`. Preserve work if verification fails.
+- Keep docs single-purpose. Link instead of copying. Put history in CHANGELOG.md
+  and measured performance numbers only in docs/PERFORMANCE.md and raw artifacts.
+  Keep AGENTS.md at most 120 lines and README.md at most 80. Keep CLAUDE.md to one
+  link here. Propose any additional document before creating it. Use no em dashes.
 
-- Store source and fixtures as UTF-8. Handle Rust strings at valid character
-  boundaries; deleting a raw keystroke must not delete a byte from Bangla output.
-- Add meaningful regression cases for phonetic rules and composition behavior:
-  contextual vowels, conjuncts, case-sensitive sequences, punctuation/escape
-  sequences, digits, Backspace, Ctrl+Backspace, boundary forwarding, commit,
-  cancel, and reset.
-- Track expected Unicode sequences and the source of compatibility fixtures.
-  Visually similar output alone does not establish compatibility.
-- Keep platform smoke tests separate from engine tests. Record actual distro,
-  Plasma, Fcitx5, toolkit/application versions, and whether the app uses Wayland
-  or XWayland. Do not describe an untested environment as supported.
-- Once Rust code exists, use the repository's documented format, lint, and test
-  commands. Until then, do not claim Cargo checks ran or invent setup commands.
-- Run checks appropriate to the changed behavior and report checks that could
-  not run. Documentation-only edits need link and consistency checks, not tests.
-- Do not log or persist the user's typed text by default.
+## Read when needed
 
-## Dependencies and documentation
-
-- Prefer the latest stable development tools where practical. Verify current
-  releases against official sources and record the versions actually used.
-- Prefer small, justified dependencies. Keep per-keystroke processing local;
-  typing must not depend on network access or a separate service.
-- Write original project code under MIT. Check provenance and license obligations
-  before introducing third-party source, rule tables, fixtures, or assets.
-- Keep the README focused on the project introduction, status, quick start and
-  links. Put detailed commands in the focused `docs/` guides; record notable
-  user-facing changes under `Unreleased` in `CHANGELOG.md`.
-- Record behavioral decisions in `docs/v1.md`; update usage/build instructions
-  alongside code. Explain tradeoffs without creating unnecessary documents.
-- Never overwrite unrelated work or change system input-method settings as a
-  side effect of development. Document installation separately from source edits.
+| When doing this | Read this |
+| --- | --- |
+| Install or build for use | [README.md](README.md) |
+| Change typing behavior or platform scope | [docs/FEATURES.md](docs/FEATURES.md) |
+| Change module boundaries, composition, or FFI | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) |
+| Add tests, change phonetic rules, or plan manual checks | [docs/TESTING.md](docs/TESTING.md) |
+| Change performance or run benchmarks | [docs/PERFORMANCE.md](docs/PERFORMANCE.md) |
+| Work on privacy, dependencies, or vulnerabilities | [SECURITY.md](SECURITY.md) |
+| Use reference code, fixtures, or third-party material | [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES) |
+| Plan a task, review/fix/merge a PR, or prepare a release | [CONTRIBUTING.md](CONTRIBUTING.md) |
+| Record or inspect release changes | [CHANGELOG.md](CHANGELOG.md) |
+| File an issue or open a PR | [Bug](.github/ISSUE_TEMPLATE/bug_report.md), [feature](.github/ISSUE_TEMPLATE/feature_request.md), or [PR template](.github/pull_request_template.md) |
+| Handle community conduct | [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) |
