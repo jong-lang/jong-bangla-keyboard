@@ -388,3 +388,39 @@ Container identities and results are recorded separately by the package runner.
 Report each environment and step's actual result on the implementation PR.
 Until returned, mark desktop results pending and retain the platform matrix's
 existing support limits. Release publication requires this maintainer evidence.
+
+### Release artifact acceptance
+
+First-release artifact acceptance is tracked in
+[#41](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/41).
+Carry forward the [PR #40 desktop reports](https://github.com/shaadahmmed/jong-bangla-keyboard/pull/40)
+and the [maintainer's later confirmation](https://github.com/shaadahmmed/jong-bangla-keyboard/pull/40#issuecomment-6711683895)
+with their original source and package hashes. The confirmation's RPM pair is
+unknown. Do not relabel these completed tests as new runs or request repetition
+solely for implementation review. They do not accept newly rebuilt artifacts.
+
+Before publication, the maintainer and release PR must close these items:
+
+1. Identify the selected CI run and checkout commit, download `release-bundle`
+   and the matching `package-logs-{arch,deb,rpm}` artifacts, and run
+   `sha256sum --check SHA256SUMS` inside the bundle. Match revision-1 package
+   hashes and source identity to `build-info.json` and `package-check-*.json`.
+   Obtain the revision-2 controls from the matching package logs and verify
+   their hashes against those reports. Do not mix runs or source archives.
+2. Associate each selected Arch, Debian testing and Fedora 45 package pair with
+   a maintainer acceptance record. In particular, the known Fedora 44-built
+   RPM pass and the confirmation with unknown pair do not identify a tested
+   Fedora 45-built pair. If identity cannot be established, use the package
+   desktop checklist above on the selected artifacts in the specified VMs.
+3. Record package filenames/hashes, source commit, guest checksum results,
+   image/snapshot identity, update date and application/toolkit/backend versions.
+   Record actual scenario outputs, including focus-loss commit versus clear and
+   the password restriction setting. Complete missing punctuation, escape and
+   navigation cases; run the Python GTK/Qt environments or state availability.
+   Keep unknown details explicit and retain the existing support limits.
+4. After separately reviewed merge and successful post-merge CI, obtain the
+   maintainer's release instruction before tagging. Verify the tag-built draft's
+   notes, source commit, all assets and checksums again. If the intended package
+   bytes change, record acceptance for the replacement artifacts before
+   publication; a passing container check alone is insufficient. Only the
+   maintainer publishes the complete inspected draft.

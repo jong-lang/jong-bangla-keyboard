@@ -196,6 +196,7 @@ Planned delivery:
 | Work | Issue |
 | --- | --- |
 | Native packages and lifecycle checks | Implemented in [#30](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/30); [desktop acceptance](docs/TESTING.md#package-desktop-acceptance) remains a release gate |
+| First native Fcitx5 release preparation and intended-artifact acceptance | [#41](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/41); preserve prior desktop reports and complete the [artifact handoff](docs/TESTING.md#release-artifact-acceptance) before publication |
 | Flatpak Fcitx5 add-on prototype after the native release | [#31](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/31) |
 
 For each release:
