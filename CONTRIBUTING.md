@@ -80,7 +80,9 @@ preserve the branches and unrelated work, and track the failure in an issue.
 - Keep functions and modules small and cohesive, with explicit control flow and
   no dead code. Put needed refactors in their own `refactor/` branch and PR.
 - Add dependencies or abstractions only for a concrete need stated in the PR.
-  Dependencies must be MIT-compatible and pass cargo-deny once that check lands.
+  Dependencies must satisfy the permissive license allowlist in `deny.toml`
+  and pass cargo-deny and cargo-audit. See [SECURITY.md](SECURITY.md#enforcement)
+  for scope, license obligations, and the exception process.
 - Keep the core free of platform dependencies, I/O, and global state. Treat it
   as a deterministic state machine: input event in, engine actions out.
 - Keep adapters thin: translate native events and engine actions. Put no
@@ -110,7 +112,9 @@ Review enforces rules that do not have an automated check.
 | --- | --- |
 | Formatting and Clippy with warnings denied | Implemented in `tools/check-build.sh`, called by CI |
 | No unsafe code in the core | Implemented by its Cargo lint configuration |
-| cargo-deny, license checks, cargo-audit, and networking bans | Planned: [#24](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/24) |
+| Dependency licenses, networking/telemetry crate bans, and dependency sources | Implemented by `deny.toml` and cargo-deny in the CI policy job |
+| Known dependency vulnerabilities | Implemented by cargo-audit with warnings denied in the CI policy job |
+| Known source networking, logging, persistence, and core boundary violations | Implemented by `tools/check-privacy.py`; [coverage and limits](SECURITY.md#enforcement) require complementary review |
 | Remove invariant-based panics from the FFI input path | Planned cleanup: [#25](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/25) |
 | Compatibility coverage audit and useful property tests | Planned: [#26](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/26) |
 | Reproducible Rust/native memory-check recipes | Planned: [#27](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/27) |

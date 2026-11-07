@@ -1,0 +1,50 @@
+# Applies to every workspace member, feature and target (see CI commands).
+[licenses]
+confidence-threshold = 0.95
+include-dev = true
+include-build = true
+# Permissive licenses accepted for dependencies; retain their notices and terms.
+allow = ["MIT", "Apache-2.0", "BSD-2-Clause", "BSD-3-Clause", "ISC", "Zlib", "Unicode-3.0"]
+unused-allowed-license = "allow"
+
+[licenses.private]
+# publish = false must not bypass checks on our core, FFI or local dependencies.
+ignore = false
+
+[bans]
+multiple-versions = "warn"
+wildcards = "deny"
+allow-wildcard-paths = true
+# Known networking and telemetry entry points, including low-level transports.
+# This finite list complements the source scan and dependency review.
+deny = [
+    { name = "reqwest", reason = "No runtime network access" },
+    { name = "hyper", reason = "No runtime network access" },
+    { name = "hyper-util", reason = "No runtime network access" },
+    { name = "ureq", reason = "No runtime network access" },
+    { name = "curl", reason = "No runtime network access" },
+    { name = "curl-sys", reason = "No runtime network access" },
+    { name = "attohttpc", reason = "No runtime network access" },
+    { name = "isahc", reason = "No runtime network access" },
+    { name = "surf", reason = "No runtime network access" },
+    { name = "tokio", reason = "No networking runtime on the typing path" },
+    { name = "async-std", reason = "No networking runtime on the typing path" },
+    { name = "smol", reason = "No networking runtime on the typing path" },
+    { name = "mio", reason = "No runtime network access" },
+    { name = "socket2", reason = "No runtime network access" },
+    { name = "quinn", reason = "No runtime network access" },
+    { name = "s2n-quic", reason = "No runtime network access" },
+    { name = "tungstenite", reason = "No runtime network access" },
+    { name = "tokio-tungstenite", reason = "No runtime network access" },
+    { name = "trust-dns-resolver", reason = "No runtime network access" },
+    { name = "hickory-resolver", reason = "No runtime network access" },
+    { name = "sentry", reason = "No telemetry" },
+    { name = "sentry-core", reason = "No telemetry" },
+    { name = "opentelemetry", reason = "No telemetry" },
+    { name = "opentelemetry_sdk", reason = "No telemetry" },
+    { name = "opentelemetry-otlp", reason = "No telemetry" },
+]
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"

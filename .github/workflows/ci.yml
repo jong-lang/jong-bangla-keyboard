@@ -14,6 +14,45 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  policy:
+    name: Dependency and privacy policy
+    runs-on: ubuntu-24.04
+    container: archlinux:base-devel
+    timeout-minutes: 15
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Prepare policy environment
+        run: pacman -Syu --noconfirm --needed git rust python curl
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install pinned policy tools
+        run: |
+          set -euo pipefail
+          tool_dir="$(mktemp -d "$RUNNER_TEMP/jong-policy.XXXXXX")"
+          cd "$tool_dir"
+          curl --fail --location --retry 3 -o deny.tar.gz https://github.com/EmbarkStudios/cargo-deny/releases/download/0.20.2/cargo-deny-0.20.2-x86_64-unknown-linux-musl.tar.gz
+          curl --fail --location --retry 3 -o audit.tar.gz https://github.com/rustsec/rustsec/releases/download/cargo-audit/v0.22.2/cargo-audit-x86_64-unknown-linux-musl-v0.22.2.tgz
+          echo '9f12ed4c49936e09b48bf862b595cde2fe64fcbd9d74dfacac6131ca824c8d5f  deny.tar.gz' | sha256sum --check --strict
+          echo '7fb9497f8594b389e5fce5ef9b92db08432996895b2e0c5a0167a69ed445c428  audit.tar.gz' | sha256sum --check --strict
+          mkdir bin
+          tar -xzf deny.tar.gz -C bin --strip-components=1 cargo-deny-0.20.2-x86_64-unknown-linux-musl/cargo-deny
+          tar -xzf audit.tar.gz -C bin --strip-components=1 cargo-audit-x86_64-unknown-linux-musl-v0.22.2/cargo-audit
+          echo "$tool_dir/bin" >> "$GITHUB_PATH"
+      - name: Check policy tools and deliberate violations
+        run: |
+          cargo deny --version
+          cargo audit --version
+          python3 -m unittest discover -s tools/tests -p test_dependency_policy.py -v
+          python3 -m unittest discover -s tools/tests -p test_privacy.py -v
+          python3 tools/check-privacy.py
+      - name: Check all workspace dependency licenses, bans and sources
+        run: cargo deny --workspace --all-features --locked check bans licenses sources
+      - name: Audit locked dependencies against current RustSec advisories
+        run: cargo audit --file Cargo.lock --deny warnings
+
   docs:
     name: Documentation and release tooling
     runs-on: ubuntu-24.04

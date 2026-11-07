@@ -41,6 +41,10 @@ cargo clippy --offline --locked --workspace --all-targets -- -D warnings
 cargo test --offline --locked --workspace
 bash tools/check-build.sh
 python3 tools/check-docs.py
+python3 tools/check-privacy.py
+python3 -m unittest discover -s tools/tests -v
+cargo deny --workspace --all-features --locked check bans licenses sources
+cargo audit --file Cargo.lock --deny warnings
 git diff --check
 wc -l AGENTS.md README.md
 ```
@@ -48,6 +52,9 @@ wc -l AGENTS.md README.md
 The build script includes Rust checks, release builds, API docs, native tests,
 and staged installation checks. It requires Fcitx5 development files, CMake,
 Ninja, a C++ compiler, and Python. It does not install into the desktop.
+Dependency tools and network requirements are in docs/TESTING.md. CI runs the
+license, networking-ban, vulnerability, and source privacy gates. Finite scans
+complement review; their coverage and limits are in SECURITY.md.
 For docs-only changes, check links, budgets, and consistency. Run benchmarks and
 memory checks for relevant code changes, using the guides below. Report exact
 commands, outcomes, and unavailable checks in a short table. Never claim an old
