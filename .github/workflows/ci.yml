@@ -146,6 +146,10 @@ jobs:
           rustc -vV
           clang++ --version
           valgrind --version
+      - name: Check memory-tool regressions with real Valgrind
+        env:
+          DEBUGINFOD_URLS: https://debuginfod.archlinux.org
+        run: python3 -m unittest discover -s tools/tests -p test_memory.py -v
       - name: Check native ASan, UBSan and Rust allocation leaks
         run: |
           cmake -S adapters/fcitx5 -B target/memory-sanitizers -G Ninja \

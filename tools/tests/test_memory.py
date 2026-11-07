@@ -1,7 +1,9 @@
 """Synthetic detector failures must never become successful memory checks."""
 
 import importlib.util
+import os
 from pathlib import Path
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -143,6 +145,29 @@ class MemoryChecks(unittest.TestCase):
                     else:
                         with self.assertRaises(memory.CheckFailure):
                             memory.memcheck(["synthetic"], {}, self.build, "probe", leak=leak)
+
+    @unittest.skipUnless(shutil.which("valgrind") and shutil.which("c++"),
+                         "requires Valgrind and a C++ compiler")
+    def test_memcheck_ignores_rc_file_disabling_mismatched_frees(self):
+        source = self.build / "mismatch.cpp"
+        binary = self.build / "mismatch"
+        source.write_text("#include <cstdlib>\n"
+                          "int main() { int *p = new int(7); std::free(p); }\n")
+        subprocess.run(["c++", "-O0", "-g", str(source), "-o", str(binary)],
+                       capture_output=True, text=True, check=True, timeout=30)
+        self.addCleanup(os.chdir, Path.cwd())
+        os.chdir(self.build)
+        env = dict(os.environ, LC_ALL="C")
+        env.pop("VALGRIND_OPTS", None)
+        for rc_present in (False, True):
+            with self.subTest(rc_present=rc_present):
+                if rc_present:
+                    (self.build / ".valgrindrc").write_text("--show-mismatched-frees=no\n")
+                with self.assertRaisesRegex(memory.CheckFailure, "exit 23 or Memcheck error"):
+                    memory.memcheck([str(binary)], env, self.build, "mismatch")
+                report = memory.ET.parse(self.build / "mismatch.xml")
+                self.assertIn("MismatchedFree", [e.findtext("kind")
+                                                for e in report.findall("error")])
 
 
 if __name__ == "__main__":

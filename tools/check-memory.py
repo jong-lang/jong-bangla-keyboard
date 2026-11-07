@@ -93,7 +93,8 @@ def memcheck(command, env, logs, label, leak=False, suppression=None):
     # Do not accept a previous run's report if this invocation fails to write one.
     report.unlink(missing_ok=True)
     result = run([
-        "valgrind", "--tool=memcheck", "--leak-check=full",
+        # Ignore user/local rc files and VALGRIND_OPTS, including suppressions.
+        "valgrind", "--command-line-only=yes", "--tool=memcheck", "--leak-check=full",
         "--show-leak-kinds=all", "--errors-for-leak-kinds=definite,indirect,possible",
         "--track-origins=yes", "--error-exitcode=23", "--xml=yes",
         f"--xml-file={report}",

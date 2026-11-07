@@ -246,7 +246,9 @@ and exit 23. The clean lifecycle and addon workloads must then exit zero with
 no memory errors or definite, indirect, or possible leaks. Still-reachable
 blocks are recorded and permitted, not described as leaks or zero retention.
 No project suppressions are applied to the native workloads. The helper uses
-`--leak-check=full`,
+`--command-line-only=yes` to ignore user/local `.valgrindrc` files and
+`VALGRIND_OPTS`, so inherited options or suppressions cannot disable checks.
+It also uses `--leak-check=full`,
 `--show-leak-kinds=all`, `--errors-for-leak-kinds=definite,indirect,possible`,
 `--track-origins=yes`, and `--error-exitcode=23`, and validates completed XML
 reports. Missing, malformed, incomplete, or stale reports cannot pass.
@@ -284,8 +286,11 @@ reports or detector startup failures. Each completed subprocess's synthetic
 stdout/stderr and each Memcheck XML report are retained under the selected
 build's `memory-logs-sanitizers` or `memory-logs-valgrind` directory. Python
 regressions inject missing detectors, incorrect exits/diagnostics, timeouts,
-wrong build modes and invalid reports. Run them with
-`python3 -m unittest discover -s tools/tests -p test_memory.py -v`.
+wrong build modes and invalid reports. A real Valgrind regression requires a
+mismatched allocation/free to fail even with `.valgrindrc` disabling that check.
+Run them with `python3 -m unittest discover -s tools/tests -p test_memory.py -v`.
+The real-detector case skips locally without Valgrind or `c++`; the memory CI
+job installs both and runs this suite.
 
 LSan requires process inspection. A ptrace-restricted sandbox, debugger or
 unsupported host can make its control fail; use a suitable test runner without
