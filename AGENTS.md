@@ -56,6 +56,8 @@ result as a new run. Planned checks need an issue link; do not claim they exist.
 ## Conventions and delivery
 
 - Explain the purpose and expected result before editing. Keep work coherent.
+- End every conversation with the next concrete step. If no action remains,
+  say so. When possible, provide a ready-to-use prompt for the next chat.
 - Keep modules cohesive and control flow explicit. Add no dead code. Put needed
   refactors in their own `refactor/` branch and PR. Justify dependencies and
   abstractions in the PR; require MIT-compatible dependency licenses.
