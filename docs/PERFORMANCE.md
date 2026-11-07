@@ -76,8 +76,93 @@ never on elapsed time. Shared-runner observations cannot establish parity.
 
 ## Current reference evidence
 
-Collection results will be recorded here after measuring the committed collector
-on clean source. The retained observations below remain historical evidence.
+Measured 2026-11-07, 16:27 to 16:31 Asia/Dhaka, on the Modern 15 A5M,
+CachyOS KDE 6 Wayland, Ryzen 5 5500U, Linux 7.3.1-1-cachyos, glibc 2.44,
+Rust 1.99.1, GCC 16.2.1, Fcitx5 5.1.23, CMake 4.4.5, Ninja 1.13.2,
+Python 3.14.9 and heaptrack 1.5.0. Both collections tested clean commit
+`b72917e3805325f1789bf91f4b8a4dc6fcb308c1`. The later evidence commit changes
+only documentation/artifacts; the tested source identity remains explicit.
+The machine was on battery, governor `powersave`, boost enabled, with affinity
+to all 12 logical CPUs. Scheduling, thermals and background activity were not
+controlled. These observations are a reference for this recorded environment,
+not a release guarantee or a tuned/pinned benchmark.
+
+Full evidence: [collection A](measurements/2026-11-07-baseline-a.json),
+[collection B](measurements/2026-11-07-baseline-b.json), and
+[comparison](measurements/2026-11-07-comparison.json). Each collection contains
+three core timing processes, three matched adapter memory/timing pairs, and
+three allocation profiles per mode. Core and adapter CSV rows are embedded in
+JSON, along with profile reports, source/binary hashes and exact command arrays.
+Full build/profiler logs and compressed traces remain under the local output
+directories; the committed JSON records their hashes, not the binary traces.
+
+Exact collection commands used the already extracted profiling tools on `PATH`:
+
+```sh
+PATH=/tmp/jong-memory-tools/usr/bin:$PATH python3 tools/measure-baseline.py collect --output /tmp/jong-28-baseline-a --runs 3
+PATH=/tmp/jong-memory-tools/usr/bin:$PATH python3 tools/measure-baseline.py collect --output /tmp/jong-28-baseline-b --runs 3
+python3 tools/measure-baseline.py compare \
+  /tmp/jong-28-baseline-a/baseline.json /tmp/jong-28-baseline-b/baseline.json \
+  > /tmp/jong-28-comparison.json
+```
+
+The commands above require checking out the tested commit cleanly; collection
+will otherwise record a different revision. To inspect the committed evidence:
+
+```sh
+python3 tools/measure-baseline.py compare \
+  docs/measurements/2026-11-07-baseline-a.json \
+  docs/measurements/2026-11-07-baseline-b.json > /tmp/jong-recorded-comparison.json
+```
+
+Values below are the median of three per-process medians in each collection,
+in ns/action except the lifecycle row, which is ns/cycle. The full JSON retains
+every per-process minimum, median and batch-mean p95.
+
+| Probe/workload | Collection A | Collection B |
+| --- | ---: | ---: |
+| Core convert `bangla` | 1,201.6 | 1,193.8 |
+| Core type/commit `bangla` | 632.3 | 640.1 |
+| Core edit pair, 1,024 scalars | 172,599.8 | 174,961.8 |
+| Core edit pair, 8,192 scalars | 1,350,463.0 | 1,387,719.2 |
+| Jong type/commit `bangla` | 1,910.1 | 1,896.1 |
+| Null dispatcher matching `bangla` | 800.4 | 800.1 |
+| Jong edit pair, 1,024 scalars | 187,792.3 | 185,516.1 |
+| Jong edit pair, 8,192 scalars | 1,476,566.5 | 1,476,208.2 |
+| Jong context lifecycle | 70,171.1 | 69,881.3 |
+
+Across all 40 mode/workload/size combinations, B-minus-A median changes range
+from -2.99% to +6.38%; nine per-run median ranges do not overlap even though
+both collections test identical source. Core convert `bangla` has a wider
+individual-run median range of 1,144.5 to 1,921.0 ns across the six runs.
+These observations show why neither range nonoverlap nor a small percentage
+change alone establishes a source regression. No regression thresholds are
+proposed. A changed revision still needs repeated, matched local comparisons.
+
+Memory ranges span all six paired runs. Totals are the Jong probe process;
+deltas are paired Jong-minus-null snapshots, not the complete desktop daemon.
+
+| Phase | Total Jong RSS, KiB | Total Jong PSS, KiB | PSS delta, KiB | Heap-used delta, bytes |
+| --- | ---: | ---: | ---: | ---: |
+| Idle | 8,052 to 8,208 | 2,649 to 2,699 | 281 to 439 | 7,760 |
+| Short pending | 8,176 to 8,332 | 2,773 to 2,823 | 405 to 563 | 8,544 |
+| Long pending | 8,432 to 8,588 | 3,029 to 3,079 | 661 to 819 | 98,448 |
+| Long cleared | 8,432 to 8,588 | 3,029 to 3,079 | 661 to 819 | 71,328 |
+| After 1,000 session cycles | 8,448 to 8,540 | 2,981 to 3,031 | 609 to 735 | 24,800 |
+| After 2,000 session cycles | 8,448 to 8,540 | 2,981 to 3,031 | 609 to 735 | 24,784 |
+| Context destroyed | 8,392 to 8,484 | 2,925 to 2,975 | 553 to 679 | 6,720 |
+
+The stable/decreasing heap snapshots over the sampled session batches are
+bounded retention evidence, not proof of leak freedom. Memory snapshots cover
+adapter processes; core-only live memory is not sampled separately.
+
+Allocation calls were identical in all six profiles per mode: core 47,014,
+null dispatcher 358,629, Jong dispatcher 663,689. Each matched adapter profile
+therefore had 305,060 additional allocation calls over its full 1,000-cycle
+process. Startup and teardown are included; the core profile has a different
+workload and is not a subtraction baseline for the adapter. Heaptrack's reported
+exit retention includes framework/runtime allocations and is not diagnosed as
+a production leak. Use the independent memory recipes for such investigations.
 
 ## Recorded environment
 

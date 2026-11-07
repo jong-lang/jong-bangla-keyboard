@@ -1,0 +1,1120 @@
+{
+  "before_commit": "b72917e3805325f1789bf91f4b8a4dc6fcb308c1",
+  "after_commit": "b72917e3805325f1789bf91f4b8a4dc6fcb308c1",
+  "environment_differences": [],
+  "latency": {
+    "core/convert:ami/3": {
+      "before_ns": {
+        "min": 763.4,
+        "median": 768.3,
+        "max": 1495.6
+      },
+      "after_ns": {
+        "min": 774.7,
+        "median": 794.1,
+        "max": 1028.3
+      },
+      "median_change_percent": 3.3580632565404223,
+      "nonoverlapping_run_ranges": false
+    },
+    "core/type_commit:ami/3": {
+      "before_ns": {
+        "min": 376.0,
+        "median": 376.9,
+        "max": 683.1
+      },
+      "after_ns": {
+        "min": 357.2,
+        "median": 386.7,
+        "max": 430.1
+      },
+      "median_change_percent": 2.600159193420004,
+      "nonoverlapping_run_ranges": false
+    },
+    "core/convert:bangla/6": {
+      "before_ns": {
+        "min": 1144.5,
+        "median": 1201.6,
+        "max": 1921.0
+      },
+      "after_ns": {
+        "min": 1174.0,
+        "median": 1193.8,
+        "max": 1306.6
+      },
+      "median_change_percent": -0.6491344873502003,
+      "nonoverlapping_run_ranges": false
+    },
+    "core/type_commit:bangla/6": {
+      "before_ns": {
+        "min": 624.0,
+        "median": 632.3,
+        "max": 943.4
+      },
+      "after_ns": {
+        "min": 621.9,
+        "median": 640.1,
+        "max": 653.8
+      },
+      "median_change_percent": 1.2335916495334498,
+      "nonoverlapping_run_ranges": false
+    },
+    "core/convert:krrishTi/8": {
+      "before_ns": {
+        "min": 1134.9,
+        "median": 1194.6,
+        "max": 1576.7
+      },
+      "after_ns": {
+        "min": 1153.5,
+        "median": 1169.8,
+        "max": 1268.9
+      },
+      "median_change_percent": -2.0760087058429577,
+      "nonoverlapping_run_ranges": false
+    },
+    "core/type_commit:krrishTi/8": {
+      "before_ns": {
+        "min": 540.4,
+        "median": 544.6,
+        "max": 632.0
+      },
+      "after_ns": {
+        "min": 532.0,
+        "median": 560.9,
+        "max": 580.3
+      },
+      "median_change_percent": 2.993022401762757,
+      "nonoverlapping_run_ranges": false
+    },
+    "core/convert:shadhInota/10": {
+      "before_ns": {
+        "min": 2155.3,
+        "median": 2244.7,
+        "max": 2447.7
+      },
+      "after_ns": {
+        "min": 2175.3,
+        "median": 2183.9,
+        "max": 2309.9
+      },
+      "median_change_percent": -2.70860248585556,
+      "nonoverlapping_run_ranges": false
+    },
+    "core/type_commit:shadhInota/10": {
+      "before_ns": {
+        "min": 992.7,
+        "median": 1029.5,
+        "max": 1044.9
+      },
+      "after_ns": {
+        "min": 996.4,
+        "median": 998.7,
+        "max": 1055.1
+      },
+      "median_change_percent": -2.9917435648372903,
+      "nonoverlapping_run_ranges": false
+    },
+    "core/convert:okkhor123/9": {
+      "before_ns": {
+        "min": 1805.4,
+        "median": 1861.8,
+        "max": 1863.6
+      },
+      "after_ns": {
+        "min": 1807.7,
+        "median": 1812.9,
+        "max": 1914.9
+      },
+      "median_change_percent": -2.6264904930712096,
+      "nonoverlapping_run_ranges": false
+    },
+    "core/type_commit:okkhor123/9": {
+      "before_ns": {
+        "min": 781.4,
+        "median": 797.7,
+        "max": 828.1
+      },
+      "after_ns": {
+        "min": 804.0,
+        "median": 838.8,
+        "max": 844.5
+      },
+      "median_change_percent": 5.152312899586309,
+      "nonoverlapping_run_ranges": false
+    },
+    "core/convert:k`a/3": {
+      "before_ns": {
+        "min": 598.3,
+        "median": 610.7,
+        "max": 646.1
+      },
+      "after_ns": {
+        "min": 641.7,
+        "median": 648.2,
+        "max": 660.6
+      },
+      "median_change_percent": 6.140494514491568,
+      "nonoverlapping_run_ranges": false
+    },
+    "core/type_commit:k`a/3": {
+      "before_ns": {
+        "min": 304.3,
+        "median": 308.6,
+        "max": 320.3
+      },
+      "after_ns": {
+        "min": 319.3,
+        "median": 328.3,
+        "max": 332.6
+      },
+      "median_change_percent": 6.383668178872326,
+      "nonoverlapping_run_ranges": false
+    },
+    "core/convert:\u0995\u09bf\ud83d\ude42/3": {
+      "before_ns": {
+        "min": 819.2,
+        "median": 839.5,
+        "max": 875.7
+      },
+      "after_ns": {
+        "min": 856.2,
+        "median": 856.9,
+        "max": 917.8
+      },
+      "median_change_percent": 2.072662298987482,
+      "nonoverlapping_run_ranges": false
+    },
+    "core/type_commit:\u0995\u09bf\ud83d\ude42/3": {
+      "before_ns": {
+        "min": 439.4,
+        "median": 453.5,
+        "max": 468.1
+      },
+      "after_ns": {
+        "min": 452.2,
+        "median": 452.2,
+        "max": 485.6
+      },
+      "median_change_percent": -0.2866593164277842,
+      "nonoverlapping_run_ranges": false
+    },
+    "core/convert_mixed/32": {
+      "before_ns": {
+        "min": 4843.3,
+        "median": 5058.9,
+        "max": 5098.9
+      },
+      "after_ns": {
+        "min": 4944.7,
+        "median": 5161.5,
+        "max": 5217.0
+      },
+      "median_change_percent": 2.028108877423951,
+      "nonoverlapping_run_ranges": false
+    },
+    "core/insert_backspace_pair/32": {
+      "before_ns": {
+        "min": 5050.6,
+        "median": 5307.1,
+        "max": 5333.6
+      },
+      "after_ns": {
+        "min": 5416.7,
+        "median": 5418.2,
+        "max": 5480.6
+      },
+      "median_change_percent": 2.0934220195586883,
+      "nonoverlapping_run_ranges": true
+    },
+    "core/convert_mixed/128": {
+      "before_ns": {
+        "min": 20157.8,
+        "median": 21135.5,
+        "max": 21425.5
+      },
+      "after_ns": {
+        "min": 21596.6,
+        "median": 21747.9,
+        "max": 21897.4
+      },
+      "median_change_percent": 2.897494736344064,
+      "nonoverlapping_run_ranges": true
+    },
+    "core/insert_backspace_pair/128": {
+      "before_ns": {
+        "min": 20028.5,
+        "median": 20218.7,
+        "max": 20769.8
+      },
+      "after_ns": {
+        "min": 21211.8,
+        "median": 21278.5,
+        "max": 21507.3
+      },
+      "median_change_percent": 5.241682205087361,
+      "nonoverlapping_run_ranges": true
+    },
+    "core/convert_mixed/1024": {
+      "before_ns": {
+        "min": 163727.2,
+        "median": 170802.6,
+        "max": 171564.1
+      },
+      "after_ns": {
+        "min": 174767.1,
+        "median": 176208.3,
+        "max": 176950.9
+      },
+      "median_change_percent": 3.164881565034716,
+      "nonoverlapping_run_ranges": true
+    },
+    "core/insert_backspace_pair/1024": {
+      "before_ns": {
+        "min": 171188.4,
+        "median": 172599.8,
+        "max": 173146.2
+      },
+      "after_ns": {
+        "min": 174316.2,
+        "median": 174961.8,
+        "max": 177874.2
+      },
+      "median_change_percent": 1.3684836251258714,
+      "nonoverlapping_run_ranges": true
+    },
+    "core/convert_mixed/8192": {
+      "before_ns": {
+        "min": 1360329.2,
+        "median": 1362007.5,
+        "max": 1379080.0
+      },
+      "after_ns": {
+        "min": 1381429.8,
+        "median": 1395351.5,
+        "max": 1408717.0
+      },
+      "median_change_percent": 2.448150983015873,
+      "nonoverlapping_run_ranges": true
+    },
+    "core/insert_backspace_pair/8192": {
+      "before_ns": {
+        "min": 1345616.5,
+        "median": 1350463.0,
+        "max": 1361867.5
+      },
+      "after_ns": {
+        "min": 1386098.8,
+        "median": 1387719.2,
+        "max": 1391804.5
+      },
+      "median_change_percent": 2.7587723617751747,
+      "nonoverlapping_run_ranges": true
+    },
+    "baseline/type_commit:ami/3": {
+      "before_ns": {
+        "min": 801.8,
+        "median": 802.2,
+        "max": 808.8
+      },
+      "after_ns": {
+        "min": 795.1,
+        "median": 795.2,
+        "max": 806.7
+      },
+      "median_change_percent": -0.8726003490401424,
+      "nonoverlapping_run_ranges": false
+    },
+    "baseline/type_commit:bangla/6": {
+      "before_ns": {
+        "min": 789.5,
+        "median": 800.4,
+        "max": 810.1
+      },
+      "after_ns": {
+        "min": 785.2,
+        "median": 800.1,
+        "max": 806.1
+      },
+      "median_change_percent": -0.037481259370308884,
+      "nonoverlapping_run_ranges": false
+    },
+    "baseline/type_commit:shadhInota/10": {
+      "before_ns": {
+        "min": 783.3,
+        "median": 797.2,
+        "max": 804.8
+      },
+      "after_ns": {
+        "min": 773.1,
+        "median": 799.4,
+        "max": 809.2
+      },
+      "median_change_percent": 0.27596588058202975,
+      "nonoverlapping_run_ranges": false
+    },
+    "baseline/type_commit:mixed/13": {
+      "before_ns": {
+        "min": 782.5,
+        "median": 786.7,
+        "max": 791.7
+      },
+      "after_ns": {
+        "min": 775.4,
+        "median": 800.7,
+        "max": 809.8
+      },
+      "median_change_percent": 1.7795856107791996,
+      "nonoverlapping_run_ranges": false
+    },
+    "baseline/insert_backspace_pair/32": {
+      "before_ns": {
+        "min": 782.7,
+        "median": 790.3,
+        "max": 791.8
+      },
+      "after_ns": {
+        "min": 769.5,
+        "median": 773.9,
+        "max": 780.8
+      },
+      "median_change_percent": -2.075161331140074,
+      "nonoverlapping_run_ranges": true
+    },
+    "baseline/insert_backspace_pair/128": {
+      "before_ns": {
+        "min": 783.5,
+        "median": 789.0,
+        "max": 795.5
+      },
+      "after_ns": {
+        "min": 768.0,
+        "median": 774.0,
+        "max": 783.3
+      },
+      "median_change_percent": -1.9011406844106515,
+      "nonoverlapping_run_ranges": true
+    },
+    "baseline/insert_backspace_pair/1024": {
+      "before_ns": {
+        "min": 779.6,
+        "median": 783.5,
+        "max": 784.9
+      },
+      "after_ns": {
+        "min": 769.8,
+        "median": 780.2,
+        "max": 785.4
+      },
+      "median_change_percent": -0.42118698149329337,
+      "nonoverlapping_run_ranges": false
+    },
+    "baseline/insert_backspace_pair/8192": {
+      "before_ns": {
+        "min": 786.3,
+        "median": 788.4,
+        "max": 791.2
+      },
+      "after_ns": {
+        "min": 772.1,
+        "median": 782.8,
+        "max": 786.5
+      },
+      "median_change_percent": -0.7102993404363267,
+      "nonoverlapping_run_ranges": false
+    },
+    "baseline/context_lifecycle/13": {
+      "before_ns": {
+        "min": 25907.0,
+        "median": 26041.6,
+        "max": 26364.0
+      },
+      "after_ns": {
+        "min": 25351.8,
+        "median": 26013.9,
+        "max": 26110.5
+      },
+      "median_change_percent": -0.10636827230277035,
+      "nonoverlapping_run_ranges": false
+    },
+    "jong/type_commit:ami/3": {
+      "before_ns": {
+        "min": 1666.0,
+        "median": 1671.1,
+        "max": 1672.7
+      },
+      "after_ns": {
+        "min": 1644.2,
+        "median": 1666.0,
+        "max": 1667.4
+      },
+      "median_change_percent": -0.3051881993896166,
+      "nonoverlapping_run_ranges": false
+    },
+    "jong/type_commit:bangla/6": {
+      "before_ns": {
+        "min": 1906.6,
+        "median": 1910.1,
+        "max": 1910.9
+      },
+      "after_ns": {
+        "min": 1895.4,
+        "median": 1896.1,
+        "max": 1909.8
+      },
+      "median_change_percent": -0.7329459190618337,
+      "nonoverlapping_run_ranges": false
+    },
+    "jong/type_commit:shadhInota/10": {
+      "before_ns": {
+        "min": 2246.1,
+        "median": 2275.6,
+        "max": 2277.9
+      },
+      "after_ns": {
+        "min": 2245.8,
+        "median": 2246.6,
+        "max": 2253.2
+      },
+      "median_change_percent": -1.2743891720864875,
+      "nonoverlapping_run_ranges": false
+    },
+    "jong/type_commit:mixed/13": {
+      "before_ns": {
+        "min": 2255.0,
+        "median": 2255.5,
+        "max": 2264.5
+      },
+      "after_ns": {
+        "min": 2245.6,
+        "median": 2250.6,
+        "max": 2268.3
+      },
+      "median_change_percent": -0.21724673021503715,
+      "nonoverlapping_run_ranges": false
+    },
+    "jong/insert_backspace_pair/32": {
+      "before_ns": {
+        "min": 6669.1,
+        "median": 6675.0,
+        "max": 6713.7
+      },
+      "after_ns": {
+        "min": 6615.5,
+        "median": 6664.4,
+        "max": 6672.5
+      },
+      "median_change_percent": -0.15880149812734778,
+      "nonoverlapping_run_ranges": false
+    },
+    "jong/insert_backspace_pair/128": {
+      "before_ns": {
+        "min": 24298.0,
+        "median": 24581.1,
+        "max": 24608.2
+      },
+      "after_ns": {
+        "min": 24293.7,
+        "median": 24371.8,
+        "max": 24426.6
+      },
+      "median_change_percent": -0.8514671841374,
+      "nonoverlapping_run_ranges": false
+    },
+    "jong/insert_backspace_pair/1024": {
+      "before_ns": {
+        "min": 183387.9,
+        "median": 187792.3,
+        "max": 187914.0
+      },
+      "after_ns": {
+        "min": 184847.9,
+        "median": 185516.1,
+        "max": 185524.5
+      },
+      "median_change_percent": -1.2120837755328573,
+      "nonoverlapping_run_ranges": false
+    },
+    "jong/insert_backspace_pair/8192": {
+      "before_ns": {
+        "min": 1475001.0,
+        "median": 1476566.5,
+        "max": 1478174.5
+      },
+      "after_ns": {
+        "min": 1475980.5,
+        "median": 1476208.2,
+        "max": 1482047.0
+      },
+      "median_change_percent": -0.024265754370023096,
+      "nonoverlapping_run_ranges": false
+    },
+    "jong/context_lifecycle/13": {
+      "before_ns": {
+        "min": 69727.3,
+        "median": 70171.1,
+        "max": 70485.7
+      },
+      "after_ns": {
+        "min": 69761.5,
+        "median": 69881.3,
+        "max": 69949.7
+      },
+      "median_change_percent": -0.4129905331397121,
+      "nonoverlapping_run_ranges": false
+    }
+  },
+  "paired_memory_before": {
+    "idle": {
+      "rss_kib": {
+        "min": 348,
+        "median": 428,
+        "max": 456
+      },
+      "pss_kib": {
+        "min": 368,
+        "median": 380,
+        "max": 390
+      },
+      "private_kib": {
+        "min": 372,
+        "median": 388,
+        "max": 404
+      },
+      "os_hwm_kib": {
+        "min": 348,
+        "median": 388,
+        "max": 404
+      },
+      "heap_used_bytes": {
+        "min": 7760,
+        "median": 7760,
+        "max": 7760
+      },
+      "heap_reserved_bytes": {
+        "min": 0,
+        "median": 0,
+        "max": 0
+      }
+    },
+    "short_pending": {
+      "rss_kib": {
+        "min": 472,
+        "median": 552,
+        "max": 580
+      },
+      "pss_kib": {
+        "min": 492,
+        "median": 504,
+        "max": 514
+      },
+      "private_kib": {
+        "min": 496,
+        "median": 512,
+        "max": 528
+      },
+      "os_hwm_kib": {
+        "min": 472,
+        "median": 512,
+        "max": 528
+      },
+      "heap_used_bytes": {
+        "min": 8544,
+        "median": 8544,
+        "max": 8544
+      },
+      "heap_reserved_bytes": {
+        "min": 0,
+        "median": 0,
+        "max": 0
+      }
+    },
+    "short_cleared": {
+      "rss_kib": {
+        "min": 472,
+        "median": 552,
+        "max": 580
+      },
+      "pss_kib": {
+        "min": 492,
+        "median": 504,
+        "max": 514
+      },
+      "private_kib": {
+        "min": 496,
+        "median": 512,
+        "max": 528
+      },
+      "os_hwm_kib": {
+        "min": 472,
+        "median": 512,
+        "max": 528
+      },
+      "heap_used_bytes": {
+        "min": 8544,
+        "median": 8544,
+        "max": 8544
+      },
+      "heap_reserved_bytes": {
+        "min": 0,
+        "median": 0,
+        "max": 0
+      }
+    },
+    "long_pending": {
+      "rss_kib": {
+        "min": 728,
+        "median": 808,
+        "max": 836
+      },
+      "pss_kib": {
+        "min": 748,
+        "median": 760,
+        "max": 770
+      },
+      "private_kib": {
+        "min": 752,
+        "median": 768,
+        "max": 784
+      },
+      "os_hwm_kib": {
+        "min": 728,
+        "median": 768,
+        "max": 784
+      },
+      "heap_used_bytes": {
+        "min": 98448,
+        "median": 98448,
+        "max": 98448
+      },
+      "heap_reserved_bytes": {
+        "min": 139264,
+        "median": 139264,
+        "max": 139264
+      }
+    },
+    "long_cleared": {
+      "rss_kib": {
+        "min": 728,
+        "median": 808,
+        "max": 836
+      },
+      "pss_kib": {
+        "min": 748,
+        "median": 760,
+        "max": 770
+      },
+      "private_kib": {
+        "min": 752,
+        "median": 768,
+        "max": 784
+      },
+      "os_hwm_kib": {
+        "min": 728,
+        "median": 768,
+        "max": 784
+      },
+      "heap_used_bytes": {
+        "min": 71328,
+        "median": 71328,
+        "max": 71328
+      },
+      "heap_reserved_bytes": {
+        "min": 139264,
+        "median": 139264,
+        "max": 139264
+      }
+    },
+    "sessions_1000": {
+      "rss_kib": {
+        "min": 740,
+        "median": 756,
+        "max": 784
+      },
+      "pss_kib": {
+        "min": 708,
+        "median": 718,
+        "max": 728
+      },
+      "private_kib": {
+        "min": 700,
+        "median": 716,
+        "max": 732
+      },
+      "os_hwm_kib": {
+        "min": 720,
+        "median": 736,
+        "max": 740
+      },
+      "heap_used_bytes": {
+        "min": 24800,
+        "median": 24800,
+        "max": 24800
+      },
+      "heap_reserved_bytes": {
+        "min": 90112,
+        "median": 90112,
+        "max": 90112
+      }
+    },
+    "sessions_2000": {
+      "rss_kib": {
+        "min": 740,
+        "median": 756,
+        "max": 784
+      },
+      "pss_kib": {
+        "min": 708,
+        "median": 717,
+        "max": 728
+      },
+      "private_kib": {
+        "min": 700,
+        "median": 716,
+        "max": 732
+      },
+      "os_hwm_kib": {
+        "min": 720,
+        "median": 736,
+        "max": 740
+      },
+      "heap_used_bytes": {
+        "min": 24784,
+        "median": 24784,
+        "max": 24784
+      },
+      "heap_reserved_bytes": {
+        "min": 90112,
+        "median": 90112,
+        "max": 90112
+      }
+    },
+    "context_destroyed": {
+      "rss_kib": {
+        "min": 684,
+        "median": 700,
+        "max": 728
+      },
+      "pss_kib": {
+        "min": 652,
+        "median": 661,
+        "max": 672
+      },
+      "private_kib": {
+        "min": 644,
+        "median": 660,
+        "max": 676
+      },
+      "os_hwm_kib": {
+        "min": 664,
+        "median": 680,
+        "max": 684
+      },
+      "heap_used_bytes": {
+        "min": 6720,
+        "median": 6720,
+        "max": 6720
+      },
+      "heap_reserved_bytes": {
+        "min": 32768,
+        "median": 32768,
+        "max": 32768
+      }
+    }
+  },
+  "paired_memory_after": {
+    "idle": {
+      "rss_kib": {
+        "min": 300,
+        "median": 396,
+        "max": 432
+      },
+      "pss_kib": {
+        "min": 281,
+        "median": 392,
+        "max": 439
+      },
+      "private_kib": {
+        "min": 284,
+        "median": 384,
+        "max": 400
+      },
+      "os_hwm_kib": {
+        "min": 284,
+        "median": 368,
+        "max": 396
+      },
+      "heap_used_bytes": {
+        "min": 7760,
+        "median": 7760,
+        "max": 7760
+      },
+      "heap_reserved_bytes": {
+        "min": 0,
+        "median": 0,
+        "max": 0
+      }
+    },
+    "short_pending": {
+      "rss_kib": {
+        "min": 424,
+        "median": 520,
+        "max": 556
+      },
+      "pss_kib": {
+        "min": 405,
+        "median": 516,
+        "max": 563
+      },
+      "private_kib": {
+        "min": 408,
+        "median": 508,
+        "max": 524
+      },
+      "os_hwm_kib": {
+        "min": 408,
+        "median": 492,
+        "max": 520
+      },
+      "heap_used_bytes": {
+        "min": 8544,
+        "median": 8544,
+        "max": 8544
+      },
+      "heap_reserved_bytes": {
+        "min": 0,
+        "median": 0,
+        "max": 0
+      }
+    },
+    "short_cleared": {
+      "rss_kib": {
+        "min": 424,
+        "median": 520,
+        "max": 556
+      },
+      "pss_kib": {
+        "min": 405,
+        "median": 516,
+        "max": 563
+      },
+      "private_kib": {
+        "min": 408,
+        "median": 508,
+        "max": 524
+      },
+      "os_hwm_kib": {
+        "min": 408,
+        "median": 492,
+        "max": 520
+      },
+      "heap_used_bytes": {
+        "min": 8544,
+        "median": 8544,
+        "max": 8544
+      },
+      "heap_reserved_bytes": {
+        "min": 0,
+        "median": 0,
+        "max": 0
+      }
+    },
+    "long_pending": {
+      "rss_kib": {
+        "min": 680,
+        "median": 776,
+        "max": 812
+      },
+      "pss_kib": {
+        "min": 661,
+        "median": 772,
+        "max": 819
+      },
+      "private_kib": {
+        "min": 664,
+        "median": 764,
+        "max": 780
+      },
+      "os_hwm_kib": {
+        "min": 664,
+        "median": 748,
+        "max": 776
+      },
+      "heap_used_bytes": {
+        "min": 98448,
+        "median": 98448,
+        "max": 98448
+      },
+      "heap_reserved_bytes": {
+        "min": 139264,
+        "median": 139264,
+        "max": 139264
+      }
+    },
+    "long_cleared": {
+      "rss_kib": {
+        "min": 680,
+        "median": 776,
+        "max": 812
+      },
+      "pss_kib": {
+        "min": 661,
+        "median": 772,
+        "max": 819
+      },
+      "private_kib": {
+        "min": 664,
+        "median": 764,
+        "max": 780
+      },
+      "os_hwm_kib": {
+        "min": 664,
+        "median": 748,
+        "max": 776
+      },
+      "heap_used_bytes": {
+        "min": 71328,
+        "median": 71328,
+        "max": 71328
+      },
+      "heap_reserved_bytes": {
+        "min": 139264,
+        "median": 139264,
+        "max": 139264
+      }
+    },
+    "sessions_1000": {
+      "rss_kib": {
+        "min": 628,
+        "median": 696,
+        "max": 724
+      },
+      "pss_kib": {
+        "min": 609,
+        "median": 720,
+        "max": 735
+      },
+      "private_kib": {
+        "min": 612,
+        "median": 712,
+        "max": 728
+      },
+      "os_hwm_kib": {
+        "min": 616,
+        "median": 696,
+        "max": 724
+      },
+      "heap_used_bytes": {
+        "min": 24800,
+        "median": 24800,
+        "max": 24800
+      },
+      "heap_reserved_bytes": {
+        "min": 90112,
+        "median": 90112,
+        "max": 90112
+      }
+    },
+    "sessions_2000": {
+      "rss_kib": {
+        "min": 628,
+        "median": 696,
+        "max": 724
+      },
+      "pss_kib": {
+        "min": 609,
+        "median": 720,
+        "max": 735
+      },
+      "private_kib": {
+        "min": 612,
+        "median": 712,
+        "max": 728
+      },
+      "os_hwm_kib": {
+        "min": 616,
+        "median": 696,
+        "max": 724
+      },
+      "heap_used_bytes": {
+        "min": 24784,
+        "median": 24784,
+        "max": 24784
+      },
+      "heap_reserved_bytes": {
+        "min": 90112,
+        "median": 90112,
+        "max": 90112
+      }
+    },
+    "context_destroyed": {
+      "rss_kib": {
+        "min": 572,
+        "median": 640,
+        "max": 668
+      },
+      "pss_kib": {
+        "min": 553,
+        "median": 664,
+        "max": 679
+      },
+      "private_kib": {
+        "min": 556,
+        "median": 656,
+        "max": 672
+      },
+      "os_hwm_kib": {
+        "min": 560,
+        "median": 640,
+        "max": 668
+      },
+      "heap_used_bytes": {
+        "min": 6720,
+        "median": 6720,
+        "max": 6720
+      },
+      "heap_reserved_bytes": {
+        "min": 32768,
+        "median": 32768,
+        "max": 32768
+      }
+    }
+  },
+  "allocation_calls": {
+    "before": {
+      "core": {
+        "min": 47014,
+        "median": 47014,
+        "max": 47014
+      },
+      "baseline": {
+        "min": 358629,
+        "median": 358629,
+        "max": 358629
+      },
+      "jong": {
+        "min": 663689,
+        "median": 663689,
+        "max": 663689
+      }
+    },
+    "after": {
+      "core": {
+        "min": 47014,
+        "median": 47014,
+        "max": 47014
+      },
+      "baseline": {
+        "min": 358629,
+        "median": 358629,
+        "max": 358629
+      },
+      "jong": {
+        "min": 663689,
+        "median": 663689,
+        "max": 663689
+      }
+    }
+  },
+  "interpretation": "Per-run median ranges describe repeatability, not confidence intervals. Nonoverlap is descriptive, not a regression gate. Investigate environment changes and repeat full local collections before claiming a reproducible regression; no thresholds agreed."
+}
