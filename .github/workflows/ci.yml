@@ -31,6 +31,9 @@ jobs:
           # Pacman expands these literal repository/architecture variables.
           # shellcheck disable=SC2016
           printf 'Server = https://archive.archlinux.org/repos/%s/$repo/os/$arch\n' "$RELEASE_ARCH_SNAPSHOT" > /etc/pacman.d/mirrorlist
+          # Rust's standard-library license texts must survive the base image's
+          # documentation exclusion so the binary archive can redistribute them.
+          sed -i '/^NoExtract.*usr\/share\/doc/d' /etc/pacman.conf
           pacman -Syyuu --noconfirm --needed git rust cmake ninja fcitx5 python
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:

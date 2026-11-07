@@ -17,7 +17,7 @@ IMAGES = {
     "rpm": "fedora@sha256:15da97ed9aa94dd3d92c3925eb89520f6c80e07ea7ee24cba848d1f8b6912b3e",
 }
 BUILD_SETUP = {
-    "arch": "pacman -Syu --noconfirm --needed base-devel rust cmake ninja fcitx5 python pkgconf && useradd -m builder",
+    "arch": "sed -i '/^NoExtract.*usr\\/share\\/doc/d' /etc/pacman.conf && pacman -Syu --noconfirm --needed base-devel rust cmake ninja fcitx5 python pkgconf && useradd -m builder",
     "deb": "apt-get update && apt-get install -y build-essential debhelper cmake ninja-build libfcitx5core-dev pkg-config python3 rustup && rustup toolchain install 1.99.1 --profile minimal && rustup default 1.99.1",
     "rpm": "dnf install -y gcc-c++ cmake ninja-build rust cargo fcitx5-devel python3 rpm-build pkgconf-pkg-config",
 }
