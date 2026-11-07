@@ -67,6 +67,22 @@ for (const left of ["", "k", "ng", "r", "rr", "rrq", "aZ", "w", "x", "t", "nt"])
     }
   }
 }
+// Inventory-driven probes exercise every pinned spelling independently. Contexts
+// are authored here, not copied from reference rule conditions or replacements.
+const spellings = context.OmicronLab.Avro.Phonetic.data.patterns.map((item) => item.find);
+for (const spelling of spellings) {
+  for (const prefix of ["", "a", "k", "ng", "rr", "1", "🙂", "`", "r`", "aZ"]) {
+    for (const suffix of ["", "a", "i", "o", "r", "rr", "ry", "rri", "`", "``", "y", "Z", "ng", ".", "🙂"]) {
+      add("all-spellings-contexts", prefix + spelling + suffix);
+    }
+  }
+  // Exercise insensitive aliases and sensitive forms, including mixed digraphs.
+  const variants = [...spelling].reduce((forms, ch) =>
+    [...new Set(forms.flatMap((form) => [form + ch.toLowerCase(), form + ch.toUpperCase()]))], [""]);
+  for (const variant of variants) {
+    for (const end of ["", "a", "r", "rri", "`a"]) add("all-spellings-case", variant + end);
+  }
+}
 // Keep known Unicode case policy differences separate; do not excuse any other gap.
 const policy = ["İ", "É", "Σ"];
 for (const raw of policy) add("unicode-case-policy", raw);
@@ -83,7 +99,7 @@ const run = (command, args, input) => new Promise((resolve, reject) => {
   child.stdin.on("error", (error) => reject(error));
   child.stdin.end(input);
 });
-const build = await run("cargo", ["build", "--offline", "--release", "--example", "audit_batch", "--message-format=json"]);
+const build = await run("cargo", ["build", "--offline", "--locked", "--release", "--example", "audit_batch", "--message-format=json"]);
 const artifacts = build.toString().trim().split("\n").map((line) => JSON.parse(line));
 const executable = artifacts.find((item) => item.reason === "compiler-artifact" && item.target.name === "audit_batch")?.executable;
 assert.ok(executable, "Cargo must report the batch executable");
@@ -122,7 +138,7 @@ for (const [name, cases] of groups) {
 const unexpected = differences.filter((item) => item.group !== "unicode-case-policy");
 const policyDifferences = differences.filter((item) => item.group === "unicode-case-policy");
 const report = {
-  schema: 1, scope: "mixed-context-v1", referenceSha256,
+  schema: 1, scope: "mixed-context-v2", referenceSha256,
   auditSha256: sha256(readFileSync(fileURLToPath(import.meta.url))),
   transportSha256: sha256(readFileSync(new URL("../examples/audit_batch.rs", import.meta.url))),
   node: process.version,

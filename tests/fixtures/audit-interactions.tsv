@@ -1,0 +1,45 @@
+# Independently authored for Jong Bangla under MIT; not imported fixtures.
+# Audit #26: boundaries, shadowed reference entries, and overlapping interactions.
+# Compare with jsAvroPhonetic v1.1.4 at d3790172ebff92d43f0294bc51fed1fca7c80039.
+# Parser SHA-256: 312ed3438ebf0a69f6de38036572ec39cdbafe3ef53f500caa402aaa704c2b32.
+# Columns: raw input, expected output, exact Unicode code points (tab-separated).
+kOI🙂OI	কৈ🙂ঐ	U+0995 U+09C8 U+1F642 U+0990
+kOU🙂OU	কৌ🙂ঔ	U+0995 U+09CC U+1F642 U+0994
+kO🙂O	কো🙂ও	U+0995 U+09CB U+1F642 U+0993
+krri🙂rri	কৃ🙂ঋ	U+0995 U+09C3 U+1F642 U+098B
+koo🙂oo	কু🙂উ	U+0995 U+09C1 U+1F642 U+0989
+ki🙂i	কি🙂ই	U+0995 U+09BF U+1F642 U+0987
+kI🙂I	কী🙂ঈ	U+0995 U+09C0 U+1F642 U+0988
+ku🙂u	কু🙂উ	U+0995 U+09C1 U+1F642 U+0989
+kU🙂U	কূ🙂ঊ	U+0995 U+09C2 U+1F642 U+098A
+kee🙂ee	কী🙂ঈ	U+0995 U+09C0 U+1F642 U+0988
+ke🙂e	কে🙂এ	U+0995 U+09C7 U+1F642 U+098F
+k`OI	কঐ	U+0995 U+0990
+k`OU	কঔ	U+0995 U+0994
+k`rri	কঋ	U+0995 U+098B
+i`a	িআ	U+09BF U+0986
+o`i	ই	U+0987
+rri`a	ৃআ	U+09C3 U+0986
+Sc	শ্চ	U+09B6 U+09CD U+099A
+AZ	অ্যা	U+0985 U+09CD U+09AF U+09BE
+A`	া	U+09BE
+kSca	কশ্চা	U+0995 U+09B6 U+09CD U+099A U+09BE
+kAZr	কঅ্যার	U+0995 U+0985 U+09CD U+09AF U+09BE U+09B0
+rrkShmrri	র্ক্ষ্মৃ	U+09B0 U+09CD U+0995 U+09CD U+09B7 U+09CD U+09AE U+09C3
+NgkShry	ঙ্ক্ষ্র্য	U+0999 U+09CD U+0995 U+09CD U+09B7 U+09CD U+09B0 U+09CD U+09AF
+kShN`i	ক্ষ্ণই	U+0995 U+09CD U+09B7 U+09CD U+09A3 U+0987
+t``rri	ৎঋ	U+09CE U+098B
+k...i	ক...ই	U+0995 U+002E U+002E U+002E U+0987
+k:`i	ক:ই	U+0995 U+003A U+0987
+k^`i	ক^ই	U+0995 U+005E U+0987
+k,,i	ক্‌ই	U+0995 U+09CD U+200C U+0987
+k$i	ক৳ই	U+0995 U+09F3 U+0987
+KH12🙂i	খ১২🙂ই	U+0996 U+09E7 U+09E8 U+1F642 U+0987
+কi	কই	U+0995 U+0987
+কri	করি	U+0995 U+09B0 U+09BF
+🙂khrri	🙂খৃ	U+1F642 U+0996 U+09C3
+k‍i	ক‍ই	U+0995 U+200D U+0987
+ḱi	ক́ই	U+0995 U+0301 U+0987
+kkkhri	ক্কখ্রি	U+0995 U+09CD U+0995 U+0996 U+09CD U+09B0 U+09BF
+ng`a	ংআ	U+0982 U+0986
+rrq`a	র্কআ	U+09B0 U+09CD U+0995 U+0986

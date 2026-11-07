@@ -1,13 +1,13 @@
 {
   "schema": 1,
-  "scope": "mixed-context-v1",
+  "scope": "mixed-context-v2",
   "referenceSha256": "312ed3438ebf0a69f6de38036572ec39cdbafe3ef53f500caa402aaa704c2b32",
-  "auditSha256": "d632ede67357653f254044665ebae0dd8c3c7cea6858101888772536e21998b7",
+  "auditSha256": "08baa8f5e14a3fa0222ce22a79ec60e4545daa6dacfaaf98514043aaddc58876",
   "transportSha256": "9798ca36901631ce00012a3e38c8a9afff08578d04d938434563abf688cde4e9",
   "node": "v24.21.0",
   "rustc": "rustc 1.99.1 (58cf8f9c3 2026-10-13) (Arch Linux rust 1:1.99.1-1)",
   "cargo": "cargo 1.99.1 (5f94df478 2026-08-27) (Arch Linux rust 1:1.99.1-1)",
-  "uniqueInputs": 83353,
+  "uniqueInputs": 127240,
   "groups": [
     {
       "name": "mixed-triples",
@@ -38,6 +38,18 @@
       "inputs": 3357,
       "differences": 0,
       "sha256": "91b538200ba5332a35aa2237f780a0d3316ad38063ea6f6a068a5d8c55a4c60f"
+    },
+    {
+      "name": "all-spellings-contexts",
+      "inputs": 42091,
+      "differences": 0,
+      "sha256": "caaebd784a1a5f042391cbc0b65e3af296e4333ac5adb2e61c1e8f7f32cd07ce"
+    },
+    {
+      "name": "all-spellings-case",
+      "inputs": 6243,
+      "differences": 0,
+      "sha256": "306651dbb84947304baf4516c4878c0ca90da20065bb00cfb8f1b3491c1f4ee6"
     },
     {
       "name": "unicode-case-policy",
