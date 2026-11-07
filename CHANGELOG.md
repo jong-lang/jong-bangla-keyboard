@@ -1,78 +1,24 @@
 # Changelog
 
-Notable changes to Jong Bangla are recorded here. Detailed development steps and
-validation evidence live in Git history and the [progress handoff](docs/progress.md).
+Notable changes awaiting release are listed below. Released entries retain their
+version and date. Release preparation follows [CONTRIBUTING.md](CONTRIBUTING.md#release-policy-and-checklist).
 
 ## Unreleased
 
-This is the initial development baseline, not a published release. The Cargo
-package version `0.1.0` does not establish a release date or desktop support claim.
-
 ### Added
 
-- Independent, dependency-free Rust phonetic transliteration with contextual
-  vowels, consonants, conjuncts, case-sensitive spellings, symbols, escapes,
-  reph and Bangla digits.
-- Platform-independent composition with editable Bangla, raw-key Backspace,
-  Ctrl+Backspace clearing, commit, cancel and reset.
-- Experimental Linux Fcitx5 addon with a Rust C ABI, C++ adapter, isolated
-  dispatcher harness and staged installation/removal checks.
-- Reference fixtures and comparison tooling for a pinned jsAvroPhonetic revision,
-  with separate cases for deliberate Unicode preservation differences.
-- Core latency, adapter resource and lifecycle/leak measurement tooling.
-- Focused typing, installation, development, reference and performance guides,
-  contribution instructions, and issue/pull request templates.
-- A staged release roadmap covering Linux Fcitx5 and IBus, Flatpak/deb/rpm/pacman
-  packages and maintained AUR recipes, Windows TSF, and macOS on Apple silicon
-  and Intel. These additions describe planned delivery, not implemented support.
-- GitHub CI for documentation/release tooling, Rust workspace and Fcitx5 staged
-  installation checks; version-tag validation, reviewed release-note template,
-  source archives with SHA-256 checksums, and automated draft releases.
-- Release-preparation validation before PR merge, plus clean exported-source
-  Rust/Fcitx5 builds, tests and staged-installation checks in CI.
-- User-reported basic installed-addon smoke results for KWrite 26.08.2 and
-  Firefox 159.0.1 on Wayland: Space, raw Backspace, Ctrl+Backspace and Escape.
-  KWrite follow-up results also cover Enter, Ctrl+A and switching to Firefox
-  and back while composition is pending. Further reports cover Firefox field
-  handoff and English/Bangla switching in both apps, with Meta+X reported for
-  switching to English. Firefox follow-ups cover return to the original field,
-  dummy password-field transitions, window closure/fresh composition, Enter,
-  Ctrl+A and window-focus return; one English UK AltGr+E → € result is reported.
-- Reversible Fcitx5 temporary-Shift-toggle guidance and dispatcher coverage for
-  its Meta+Space activation cycle, disabled-toggle control and Shift+I case.
-- User-reported Kate 26.08.3 follow-up results for pending-word preservation
-  under Ctrl/Shift, `ki`/`kI` case, held keys/Backspace and pointer/click relocation.
-- Grouped user-reported Firefox 159.0.1 Wayland pass for modifiers, `ki`/`kI`,
-  held keys/Backspace, pointer motion, clicking and selection while composing.
-- User-reported KWrite 26.08.3/Qt 6.12.0 modifier, case and repeat pass, immediate
-  stopping on letter/Backspace release in KWrite and Firefox, and grouped
-  Compose/dead-key success. Exact sequences and pending-word interactions for
-  Compose/dead keys remain unrecorded.
-- Weekly GitHub Actions dependency update PR configuration and a documented
-  issue-first task workflow with fresh branches, automatic agent commits/PRs,
-  relevant review, protected merging and verified branch cleanup. Release
-  versions and publication remain manual.
+- Security and vulnerability-reporting policy, contribution templates, and a
+  Contributor Covenant with a confidential reporting contact.
+- Focused architecture, feature, testing, and performance guides.
 
-### Behavior decisions
+### Changed
 
-- Keep unsupported Unicode unchanged without lowercasing or normalization.
-- Show converted Bangla without a Bangla/Latin choice list for v1.
-- Escape commits active Bangla and consumes the press; Space and Enter commit
-  before forwarding. Navigation and application shortcuts also commit first.
-- Keep autocorrection and prediction outside the first release.
-- Track bug reports, investigation and deferral decisions in GitHub Issues.
+- Made AGENTS.md the single agent entry point and clarified issue, task, review,
+  fix, and explicitly authorized merge workflows.
+- Set delivery order to Fcitx5, IBus, then Windows TSF, with native x86-64 Linux
+  packages first and Flatpak deferred to a separate prototype.
 
-### Known limitations
+### Removed
 
-- Compatibility checks cover a bounded set; full Avro parity is not established.
-- Desktop evidence is limited to recorded environments and checks. Basic
-  installed-route results cover two Wayland apps; broader lifecycle, frontend
-  and application coverage still needs confirmation.
-- Additional adapters and binary packages remain unimplemented; release scope
-  and acceptance gates are defined in the [roadmap](docs/roadmap.md).
-
-Report and track bugs in
-[GitHub Issues](https://github.com/shaadahmmed/jong-bangla-keyboard/issues).
-
-See the [requirements](docs/v1.md) and [current handoff](docs/progress.md#current-position)
-for exact decisions, environment evidence and next steps.
+- Retired overlapping specifications, historical handoff logs, and rule prose.
+  Git retains their history; fixtures and raw evidence remain in the repository.

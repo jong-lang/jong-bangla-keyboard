@@ -10,7 +10,7 @@
 //! rules, compatibility evidence, and limitations.
 //!
 //! [coverage overview]: https://github.com/shaadahmmed/jong-bangla-keyboard#current-status
-//! [behavior notes]: https://github.com/shaadahmmed/jong-bangla-keyboard/blob/main/docs/v1.md#transliteration-api
+//! [behavior notes]: https://github.com/shaadahmmed/jong-bangla-keyboard/blob/main/docs/FEATURES.md#typing-behavior
 //!
 //! ```
 //! use jong_bangla_core::transliterate;

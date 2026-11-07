@@ -1,0 +1,36 @@
+# Third-party notices
+
+## jsAvroPhonetic compatibility reference
+
+Project: https://github.com/torifat/jsAvroPhonetic
+Pinned version: v1.1.4, commit d3790172ebff92d43f0294bc51fed1fca7c80039.
+Reference file: src/avro-lib.js.
+License: Mozilla Public License 1.1 (MPL-1.1).
+Initial developer credited upstream: Rifat Nabi.
+Copyright credited upstream: OmicronLab. All Rights Reserved.
+
+Verified upstream records:
+
+- https://github.com/torifat/jsAvroPhonetic/blob/d3790172ebff92d43f0294bc51fed1fca7c80039/README.md
+- https://github.com/torifat/jsAvroPhonetic/blob/d3790172ebff92d43f0294bc51fed1fca7c80039/src/avro-lib.js
+- https://github.com/torifat/jsAvroPhonetic/blob/d3790172ebff92d43f0294bc51fed1fca7c80039/MPL-1.1.txt
+
+The external reference is used to check test expectations. It is supplied
+separately to tools/check-reference.mjs, which verifies its pinned hash before
+running it. The reference source is not bundled with the Rust core or Fcitx5
+adapter and is not used by the typing runtime.
+
+Fixture headers identify the project's cases as independently authored under
+MIT. Jong Bangla's original implementation remains under its MIT license.
+The upstream reference retains its MPL-1.1 license and attribution.
+
+Before redistributing or adapting upstream reference source, retain its notices
+and license, and satisfy the applicable MPL source-availability requirements.
+Review that distribution separately; this credit does not replace those duties.
+
+## Contributor Covenant
+
+CODE_OF_CONDUCT.md adopts and condenses Contributor Covenant 3.0, stewarded by
+the Organization for Ethical Source, with a project-specific reporting contact.
+The Covenant and that adaptation use CC BY-SA 4.0. Attribution, the upstream
+text, and the license are linked from CODE_OF_CONDUCT.md.
