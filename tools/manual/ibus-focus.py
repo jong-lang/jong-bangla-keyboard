@@ -22,6 +22,7 @@ def main():
         parser.error("the reset-only probe uses GTK3's public Entry.reset_im_context")
 
     gi.require_version("Gtk", f"{args.gtk}.0")
+    gi.require_version("Gdk", f"{args.gtk}.0")
     from gi.repository import Gdk, GLib, GObject, Gtk
 
     app = Gtk.Application(application_id="org.jongbangla.ManualFocusProbe")

@@ -236,12 +236,26 @@ start/stop instructions remain local under ignored `target/ibus-vm/`.
 
 The maintainer owns further testing. The interactive
 [GTK probe](../tools/manual/ibus-focus.py) and
-[Firefox page](../tools/manual/ibus-focus.html) are **unrun** manual tools for
+[Firefox page](../tools/manual/ibus-focus.html) are manual tools with
+**behavioral results pending** for
 [#22](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/22), not a
 production correction or acceptance evidence. They inject no keys, call no
 engine methods and do not save or transmit typed text. Use synthetic text only.
 The GTK probe requires Python GObject introspection and the chosen GTK version;
 these were available in the saved VM. No application build is needed.
+The probe explicitly selects matching Gtk and Gdk versions before importing
+either namespace. A maintainer GTK3 launch exposed automatic Gdk4 selection;
+the corrected launcher still needs a manual retry.
+
+If the saved VM is stopped, start it from the **host checkout root** and keep
+that terminal open until shutdown:
+
+```sh
+python3 target/ibus-vm/run-vm.py
+```
+
+Wait for the GNOME desktop. Use a second host terminal for the copy below;
+SSH port 22719 is available only while the VM is running and SSH has started.
 
 Copy the probes into the running disposable VM from the **host checkout root**:
 

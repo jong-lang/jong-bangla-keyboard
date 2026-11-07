@@ -22,12 +22,14 @@ Dates use the project's Asia/Dhaka timezone.
   the traced Firefox failures do not. No safe adapter-only correction has been
   established. PR #19 stays open pending a default-route fix, final validation
   and separate-chat review; this implementation session cannot recommend merge.
-- **Manual investigation tools prepared, not run:** ordinary GTK3/GTK4 entries
+- **Manual investigation tools, behavioral results pending:** ordinary GTK3/GTK4 entries
   and a local Firefox page provide timed focus changes without key
   injection; a GTK3 reset-only case narrows the missing-reset investigation.
   Exact commands, Unicode expectations and controls are in the
-  [manual worksheet](ibus.md#manual-focus-investigation). No production fix is
-  claimed; #22 retains the frontend source evidence and open hypotheses.
+  [manual worksheet](ibus.md#manual-focus-investigation). The first maintainer
+  GTK3 launch failed from mixed Gtk/Gdk versions; explicit matching namespace
+  selection is corrected, awaiting retry. No production fix is claimed; #22
+  retains the frontend source evidence and open hypotheses.
 - **Manual workaround confirmed:** the maintainer reports that Firefox launched
   with `GTK_IM_MODULE=ibus` retains the old word in A and commits only the new
   word in B. This is one manual result, not default-route acceptance.
@@ -50,21 +52,22 @@ Dates use the project's Asia/Dhaka timezone.
 
 ## Latest completed step
 
-- **2026-11-07 — Prepare manual frontend/reset probes for #22.**
-  Added interactive GTK3/GTK4 and Firefox probes plus exact guest launch,
-  timing, Unicode and control steps. They only schedule ordinary frontend
-  calls; the maintainer supplies all keystrokes. Observations remain in the
-  probe window, without file/network logging. No production adapter, Rust
-  semantics, ABI, dependencies or input-method settings changed.
-- **Source inspection:** reviewed GTK 3.24.52's Wayland reset and the saved
-  GTK4/Mutter boundary; #22 records the missing-reset lead and its limits.
-  A source-level explanation is not a validated correction. Firefox main was
-  also inspected as a lead, not as the installed 159.0.1 revision.
-- **Commands/outcomes this increment:** read-only `gh issue view 22`,
-  `gh issue list`, `gh pr list`, `gh pr view 19`, `git fetch origin`, targeted
-  source reads and diff review; `git diff --check` passed. No tests or builds
-  ran, and no manual result for the new probes is available. The worksheet
-  remains NOT RUN; required validation and separate review remain merge gates.
+- **2026-11-07 — Correct manual probe namespace selection.**
+  The maintainer's `--gtk 3 --action reset` launch failed before opening a
+  window: Gdk4 was automatically imported before Gtk3 required Gdk3. The probe
+  now explicitly selects matching Gdk and Gtk versions before imports. Added
+  the missing VM startup prerequisite to the manual worksheet after an earlier
+  connection-refused report. No production adapter, Rust semantics, ABI,
+  dependencies or input-method settings changed.
+- **Commands/outcomes this increment:** `gh issue list`, `gh pr list`,
+  `git fetch origin`, targeted source reads and diff review;
+  `git diff --check` and `git diff --cached --check` passed. No agent-run tests
+  or builds. The corrected probe has not been launched by the agent; manual
+  startup and behavioral results remain pending. Required validation and
+  separate review remain merge gates.
+- **Prior investigation, not rerun:** GTK 3.24.52/4.24.1 Wayland reset and
+  Mutter's text-change-cause handler supplied the missing-reset source lead in
+  #22; this is not a proven Firefox 159.0.1 runtime explanation.
 - **Prior diagnosis, not rerun:** GTK4 reset/focus callbacks clear raw state
   while late frontend commits reach B; traced Firefox failures lack engine
   lifecycle notifications. A temporary CLEAR control lost A's word and was
@@ -80,10 +83,11 @@ Dates use the project's Asia/Dhaka timezone.
 
 ## Next small implementation step
 
-1. Have the maintainer run the [manual worksheet](ibus.md#manual-focus-investigation),
-   prioritizing default-route GTK3 A/B and reset-only cases, followed by GTK4
-   and Firefox. Do not run tests on their behalf. Record observations in #22;
-   no passing result is implied by the probes or source inspection.
+1. Have the maintainer recopy the corrected probe into the running VM and retry
+   GTK3 reset-only, then GTK3 A/B, GTK4 and Firefox using the
+   [manual worksheet](ibus.md#manual-focus-investigation). Do not run tests on
+   their behalf. Record observations in #22; the import correction establishes
+   no behavioral pass or production fix.
 2. Continue #22 at the frontend boundary using those results: correct GTK4's
    old-preedit delivery and Firefox's missing reset/field-change notification.
    Keep explicit IBus a workaround; reject word-loss CLEAR mode and caret/text
