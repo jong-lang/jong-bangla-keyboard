@@ -1,6 +1,7 @@
 """Release archive reproducibility and draft failure gates without GitHub access."""
 
 import importlib.util
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -10,6 +11,8 @@ import sys
 import tarfile
 import tempfile
 import unittest
+
+from tools.package_bundle import package_assets, package_names
 
 
 TOOLS = Path(__file__).resolve().parents[1]
@@ -158,7 +161,8 @@ class DraftTests(unittest.TestCase):
                      f"jong-bangla-{self.version}-fcitx5-x86_64-linux-gnu.tar.gz"):
             (self.bundle / name).write_bytes(b"synthetic archive")
         self.info = {"commit": commit, "version": self.version, "target": "x86_64-linux-gnu",
-                     "independent_builds_identical": True}
+                     "independent_builds_identical": True, "source_date_epoch": 1234567890}
+        self.write_packages()
         self.write_info()
         self.remote = self.root / "remote"
         self.remote.mkdir()
@@ -174,6 +178,25 @@ class DraftTests(unittest.TestCase):
         (self.bundle / "build-info.json").write_text(json.dumps(self.info))
         (self.bundle / "SHA256SUMS").unlink(missing_ok=True)
         builder.checksum_manifest(self.bundle)
+
+    def write_packages(self):
+        source_hash = hashlib.sha256((self.bundle / f"jong-bangla-{self.version}.tar.gz").read_bytes()).hexdigest()
+        for kind, name in package_names(self.version).items():
+            (self.bundle / name).write_bytes(b"synthetic native package")
+            digest = hashlib.sha256((self.bundle / name).read_bytes()).hexdigest()
+            info = {"image": "example@sha256:" + "a" * 64,
+                    "builds": [{"revision": rev, "version": self.version, "format": kind,
+                                "source_date_epoch": 1234567890,
+                                "source_sha256": source_hash, "package": name if rev == 1 else "revision-2"}
+                               for rev in (1, 2)],
+                    "runtime": {"format": kind, "install_upgrade_remove": True,
+                                "missing_library_rejected": True, "unrelated_files_preserved": True,
+                                "installed_versions": ["1", "2"], "artifacts": {name: digest}}}
+            if kind == "arch":
+                info["builds"][0]["maintained_recipe_verified"] = True
+                info["builds"][0]["recipe_sha256"] = hashlib.sha256(b"synthetic recipe").hexdigest()
+            (self.bundle / f"package-check-{kind}.json").write_text(json.dumps(info))
+        (self.bundle / f"jong-bangla-{self.version}-aur.tar.gz").write_bytes(b"synthetic recipe")
 
     def draft(self, mode="success"):
         return subprocess.run([sys.executable, str(TOOLS / "draft-release.py"), self.tag,
@@ -199,6 +222,8 @@ class DraftTests(unittest.TestCase):
                      "adapters/fcitx5/jong-bangla.conf.in", "CHANGELOG.md"):
             path = self.root / name
             path.write_text(path.read_text().replace(self.version, "0.1.0"))
+        for name in package_assets(self.version):
+            (self.bundle / name).unlink()
         for path in self.bundle.glob("*.tar.gz"):
             path.rename(path.with_name(path.name.replace(self.version, "0.1.0")))
         self.version, self.tag = "0.1.0", "v0.1.0"
@@ -207,6 +232,7 @@ class DraftTests(unittest.TestCase):
             subprocess.run(["git", *args], cwd=self.root, check=True, capture_output=True)
         self.info["version"] = self.version
         self.info["commit"] = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=self.root, text=True).strip()
+        self.write_packages()
         self.write_info()
         self.env["FAKE_TAG"] = self.tag
         result = self.draft()
@@ -270,6 +296,61 @@ class DraftTests(unittest.TestCase):
         path = self.root / "CHANGELOG.md"
         path.write_text(path.read_text().replace("Reviewed note.", "{{Pending review}}"))
         self.assertNotEqual(self.draft().returncode, 0)
+        self.assertEqual(self.calls(), [])
+
+    def test_rechecksums_cannot_substitute_an_untested_package_or_stale_source(self):
+        name = package_names(self.version)["deb"]
+        (self.bundle / name).write_bytes(b"untested replacement")
+        self.write_info()
+        self.assertNotEqual(self.draft().returncode, 0)
+        self.write_packages()
+        (self.bundle / f"jong-bangla-{self.version}.tar.gz").write_bytes(b"different source")
+        self.write_info()
+        self.assertNotEqual(self.draft().returncode, 0)
+        self.assertEqual(self.calls(), [])
+
+    def test_assembly_preserves_verified_assets_and_rejects_duplicates(self):
+        native, packages = self.root / "native", self.root / "packages"
+        native.mkdir()
+        (packages / "one").mkdir(parents=True)
+        for path in self.bundle.iterdir():
+            if path.name == "SHA256SUMS":
+                continue
+            target = packages / "one" if path.name in package_assets(self.version) else native
+            shutil.copyfile(path, target / path.name)
+        builder.checksum_manifest(native)
+        assembled = self.root / "assembled"
+        command = [sys.executable, str(TOOLS / "assemble-release.py"), "--native", str(native),
+                   "--packages", str(packages), "--output", str(assembled)]
+        result = subprocess.run(command, capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual({p.name: p.read_bytes() for p in assembled.iterdir()},
+                         {p.name: p.read_bytes() for p in self.bundle.iterdir()})
+        (packages / "two").mkdir()
+        name = package_names(self.version)["deb"]
+        shutil.copyfile(packages / "one" / name, packages / "two" / name)
+        command[-1] = str(self.root / "duplicate")
+        result = subprocess.run(command, capture_output=True, text=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertFalse((self.root / "duplicate/SHA256SUMS").exists())
+
+    def test_incomplete_package_evidence_fails_before_github(self):
+        path = self.bundle / "package-check-arch.json"
+        original = path.read_text()
+        mutations = (
+            lambda info: info["runtime"].update(install_upgrade_remove=False),
+            lambda info: info["runtime"].update(installed_versions=["1", "1"]),
+            lambda info: info.update(image="moving:latest"),
+            lambda info: info["builds"][0].update(source_date_epoch=0),
+            lambda info: info["builds"][0].update(maintained_recipe_verified=False),
+            lambda info: info["builds"][0].update(recipe_sha256="0" * 64),
+        )
+        for mutate in mutations:
+            info = json.loads(original)
+            mutate(info)
+            path.write_text(json.dumps(info))
+            self.write_info()
+            self.assertNotEqual(self.draft().returncode, 0)
         self.assertEqual(self.calls(), [])
 
 

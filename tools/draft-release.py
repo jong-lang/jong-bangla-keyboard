@@ -10,6 +10,8 @@ import subprocess
 import sys
 import tempfile
 
+from package_bundle import package_assets, verify_packages
+
 
 def capture(args):
     return subprocess.check_output([str(arg) for arg in args], text=True).strip()
@@ -17,7 +19,7 @@ def capture(args):
 
 def verify_bundle(directory, version, commit):
     expected = {f"jong-bangla-{version}.tar.gz",
-                f"jong-bangla-{version}-fcitx5-x86_64-linux-gnu.tar.gz", "build-info.json"}
+                f"jong-bangla-{version}-fcitx5-x86_64-linux-gnu.tar.gz", "build-info.json"} | package_assets(version)
     actual = {path.name for path in directory.iterdir()}
     if actual != expected | {"SHA256SUMS"}:
         raise ValueError("release bundle has missing or unexpected artifacts")
@@ -26,7 +28,7 @@ def verify_bundle(directory, version, commit):
         raise ValueError("release assets must be nonempty regular files")
     checksums = {}
     for line in (directory / "SHA256SUMS").read_text().splitlines():
-        match = re.fullmatch(r"([0-9a-f]{64})  ([A-Za-z0-9._-]+)", line)
+        match = re.fullmatch(r"([0-9a-f]{64})  ([A-Za-z0-9._~+-]+)", line)
         if not match or match[2] in checksums:
             raise ValueError("malformed or duplicate checksum entry")
         checksums[match[2]] = match[1]
@@ -39,6 +41,7 @@ def verify_bundle(directory, version, commit):
     if (info["commit"] != commit or info["version"] != version
             or info["target"] != "x86_64-linux-gnu" or info["independent_builds_identical"] is not True):
         raise ValueError("build info must match the tagged commit, version and reproducibility check")
+    verify_packages(directory, version)
     return sorted(directory.iterdir())
 
 

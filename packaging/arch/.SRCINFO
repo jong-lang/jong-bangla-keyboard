@@ -1,0 +1,21 @@
+pkgbase = jong-bangla
+	pkgdesc = Bangla phonetic input method for Fcitx5
+	pkgver = 0.1.0
+	pkgrel = 1
+	url = https://github.com/shaadahmmed/jong-bangla-keyboard
+	arch = x86_64
+	license = MIT
+	license = BSD-2-Clause
+	license = Unicode-3.0
+	makedepends = rust>=1:1.99.1
+	makedepends = cmake>=3.25
+	makedepends = ninja
+	makedepends = python
+	depends = fcitx5>=5.1.23
+	depends = gcc-libs
+	depends = glibc
+	options = !debug
+	source = source.tar.gz::https://github.com/shaadahmmed/jong-bangla-keyboard/archive/2f25dc4264eb7cef714108b8a766c509d2b6a236.tar.gz
+	sha256sums = 9d8a83fa4a8507a88d3125d4caf1e5ce1d2352eb3eaa16d2c8f59d5f7116249f
+
+pkgname = jong-bangla

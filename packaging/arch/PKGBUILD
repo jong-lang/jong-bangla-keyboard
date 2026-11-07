@@ -1,0 +1,33 @@
+# Maintained in the Jong Bangla repository. Regenerate .SRCINFO with makepkg.
+pkgname=jong-bangla
+pkgver=0.1.0
+pkgrel=1
+pkgdesc='Bangla phonetic input method for Fcitx5'
+arch=('x86_64')
+url='https://github.com/shaadahmmed/jong-bangla-keyboard'
+license=('MIT' 'BSD-2-Clause' 'Unicode-3.0')
+options=('!debug')
+depends=('fcitx5>=5.1.23' 'gcc-libs' 'glibc')
+makedepends=('rust>=1:1.99.1' 'cmake>=3.25' 'ninja' 'python')
+source=('source.tar.gz::https://github.com/shaadahmmed/jong-bangla-keyboard/archive/2f25dc4264eb7cef714108b8a766c509d2b6a236.tar.gz')
+sha256sums=('9d8a83fa4a8507a88d3125d4caf1e5ce1d2352eb3eaa16d2c8f59d5f7116249f')
+
+build() {
+  cmake -S "jong-bangla-keyboard-2f25dc4264eb7cef714108b8a766c509d2b6a236/adapters/fcitx5" -B build -G Ninja \
+    -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr \
+    -DFCITX_INSTALL_USE_FCITX_SYS_PATHS=ON
+  cmake --build build
+}
+
+check() {
+  ctest --test-dir build --output-on-failure
+  python "jong-bangla-keyboard-2f25dc4264eb7cef714108b8a766c509d2b6a236/tools/check-install.py" build
+}
+
+package() {
+  DESTDIR="$pkgdir" cmake --install build
+  install -Dm644 "jong-bangla-keyboard-2f25dc4264eb7cef714108b8a766c509d2b6a236/LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+  install -Dm644 "jong-bangla-keyboard-2f25dc4264eb7cef714108b8a766c509d2b6a236/THIRD_PARTY_NOTICES" "$pkgdir/usr/share/licenses/$pkgname/THIRD_PARTY_NOTICES"
+  install -Dm644 "jong-bangla-keyboard-2f25dc4264eb7cef714108b8a766c509d2b6a236/docs/PACKAGING.md" "$pkgdir/usr/share/doc/$pkgname/PACKAGING.md"
+  python "jong-bangla-keyboard-2f25dc4264eb7cef714108b8a766c509d2b6a236/tools/copy-rust-notices.py" "$pkgdir/usr/share/licenses/$pkgname/rust-stdlib"
+}

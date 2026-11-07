@@ -6,8 +6,9 @@ Avro-compatible behavior as its target. Original project code is MIT licensed.
 ## Current status
 
 Working on CachyOS KDE Plasma Wayland through Fcitx5. The maintainer considers
-that desktop implementation complete; release preparation remains. Other
-Linux distributions are untested. Exhaustive Avro parity is unverified.
+that desktop implementation complete; release preparation remains. Debian and
+Fedora test reports and their limits are in the [platform matrix](docs/FEATURES.md#platform-matrix).
+Exhaustive Avro parity is unverified.
 
 Release order: Fcitx5, then IBus, then Windows TSF. The first release targets
 x86-64. Native packages come first; Flatpak is a later prototype. macOS is out
@@ -22,9 +23,10 @@ Fcitx5 Configuration for desktop setup. Compiler requirements are declared in
 Offline Cargo builds require dependencies to be available locally.
 
 Version tags prepare unpublished drafts with source, a reproducibility-checked
-x86-64 Fcitx5 payload, build provenance, and checksums. The payload targets the
-pinned Arch build environment; native packages and clean-image installation
-verification remain in [#30](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/30).
+x86-64 Fcitx5 payload, Debian/Fedora/Arch packages, an AUR recipe, build and
+clean-image verification records, and checksums. See
+[package installation and activation](docs/PACKAGING.md). Container verification
+does not establish interactive desktop support.
 See the [release process](CONTRIBUTING.md#release-policy-and-checklist).
 
 ```sh

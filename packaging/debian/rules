@@ -1,0 +1,19 @@
+#!/usr/bin/make -f
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+%:
+	dh $@ --buildsystem=cmake+ninja --sourcedirectory=adapters/fcitx5 --builddirectory=target/debian
+
+override_dh_auto_configure:
+	dh_auto_configure -- -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DFCITX_INSTALL_USE_FCITX_SYS_PATHS=ON
+
+override_dh_auto_test:
+	ctest --test-dir target/debian --output-on-failure
+	python3 tools/check-install.py target/debian
+
+override_dh_compress:
+	dh_compress -XPACKAGING.md -XLICENSE -XTHIRD_PARTY_NOTICES -Xrust-stdlib
+
+override_dh_auto_install:
+	dh_auto_install
+	python3 tools/copy-rust-notices.py debian/jong-bangla/usr/share/doc/jong-bangla/rust-stdlib

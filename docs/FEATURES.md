@@ -34,6 +34,8 @@ autocorrection in the first-release scope.
 | Platform | Status |
 | --- | --- |
 | CachyOS, KDE Plasma, Wayland, Fcitx5 | Working; maintainer considers the KDE Plasma implementation complete. Release preparation remains |
+| Debian testing (forky), KDE Plasma, Wayland, Fcitx5 | Maintainer reports desktop tests and package installation, revision upgrade and removal passed; evidence limits below |
+| Fedora 45, KDE Plasma, Wayland, Fcitx5 | Maintainer reports desktop tests and RPM installation, revision upgrade and removal passed; evidence limits below |
 | Other Linux distributions and desktops with Fcitx5 | Untested; no support claim |
 | Linux with IBus | Planned after the Fcitx5 release |
 | Windows TSF | Planned after IBus |
@@ -47,6 +49,13 @@ The reference desktop is a Modern 15 A5M running CachyOS KDE Plasma.
 The maintainer reports successful typing in Kate, Firefox, and KWrite on
 Wayland, plus Python GTK and Qt test environments. These reports do not
 establish XWayland or other application coverage.
+
+The Debian testing and Fedora 45 reports cover the supplied packaging-task
+artifacts in Kate, KWrite and Firefox (Firefox ESR on Debian). They do not
+establish desktop acceptance of subsequently rebuilt packages, Python GTK/Qt
+environments, XWayland, or individual application backends. The Fedora 45 report
+used Fedora 44-built RPMs. Fedora 45 is the native RPM and desktop acceptance
+target.
 
 No user-visible bugs are currently known to the maintainer. Track new bugs
 in [GitHub Issues](https://github.com/shaadahmmed/jong-bangla-keyboard/issues).

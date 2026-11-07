@@ -31,6 +31,9 @@ jobs:
           # Pacman expands these literal repository/architecture variables.
           # shellcheck disable=SC2016
           printf 'Server = https://archive.archlinux.org/repos/%s/$repo/os/$arch\n' "$RELEASE_ARCH_SNAPSHOT" > /etc/pacman.d/mirrorlist
+          # Rust's standard-library license texts must survive the base image's
+          # documentation exclusion so the binary archive can redistribute them.
+          sed -i '/^NoExtract.*usr\/share\/doc/d' /etc/pacman.conf
           pacman -Syyuu --noconfirm --needed git rust cmake ninja fcitx5 python
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -41,6 +44,82 @@ jobs:
           GIT_CONFIG_KEY_0: safe.directory
           GIT_CONFIG_VALUE_0: ${{ github.workspace }}
         run: python3 tools/build-release.py --output target/release-dist
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release-native
+          path: target/release-dist/
+          if-no-files-found: error
+          retention-days: 14
+
+  packages:
+    name: Native package lifecycle (${{ matrix.format }})
+    needs: release-native
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        format: [deb, rpm, arch]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          name: release-native
+          path: target/release-native
+      - name: Build packages and check fresh runtime installation, upgrade and removal
+        env:
+          PACKAGE_FORMAT: ${{ matrix.format }}
+        run: |
+          version=$(python3 -c 'import json; print(json.load(open("target/release-native/build-info.json"))["version"])')
+          epoch=$(python3 -c 'import json; print(json.load(open("target/release-native/build-info.json"))["source_date_epoch"])')
+          python3 tools/check-packages.py "$PACKAGE_FORMAT" \
+            --source "target/release-native/jong-bangla-$version.tar.gz" \
+            --epoch "$epoch" --output "target/packages-$PACKAGE_FORMAT"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release-packages-${{ matrix.format }}
+          path: |
+            target/packages-${{ matrix.format }}/*.deb
+            target/packages-${{ matrix.format }}/*.rpm
+            target/packages-${{ matrix.format }}/*.pkg.tar.zst
+            target/packages-${{ matrix.format }}/*-aur.tar.gz
+            target/packages-${{ matrix.format }}/package-check-*.json
+          if-no-files-found: error
+          retention-days: 14
+      - name: Retain package verification logs
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: package-logs-${{ matrix.format }}
+          path: |
+            target/packages-${{ matrix.format }}/*.log
+            target/packages-${{ matrix.format }}/*.json
+            target/packages-${{ matrix.format }}/revision-2/*.deb
+            target/packages-${{ matrix.format }}/revision-2/*.rpm
+            target/packages-${{ matrix.format }}/revision-2/*.pkg.tar.zst
+          if-no-files-found: warn
+          retention-days: 14
+
+  release-bundle:
+    name: Assemble verified release artifacts
+    needs: [release-native, packages]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          name: release-native
+          path: target/release-native
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          pattern: release-packages-*
+          path: target/package-inputs
+      - run: python3 tools/assemble-release.py --native target/release-native --packages target/package-inputs --output target/release-dist
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: release-bundle
