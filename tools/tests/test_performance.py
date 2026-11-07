@@ -6,12 +6,13 @@ import csv
 import importlib.util
 import io
 import json
+import os
 from pathlib import Path
 import subprocess
 import sys
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 
 PATH = Path(__file__).resolve().parents[1] / "measure-baseline.py"
@@ -49,6 +50,43 @@ def baseline():
 
 
 class PerformanceTests(unittest.TestCase):
+    def test_environment_records_only_explicit_measurement_settings(self):
+        settings = {"CC": "synthetic-cc", "CXX": "synthetic-cxx",
+                    "RUSTUP_TOOLCHAIN": "synthetic-toolchain", "CARGO_BUILD_JOBS": "2",
+                    "CARGO_INCREMENTAL": "0",
+                    "MALLOC_ARENA_MAX": "2", "GLIBC_TUNABLES": "glibc.malloc.trim_threshold=1024"}
+        excluded = {key: "synthetic-private-value" for key in (
+            "CARGO_REGISTRY_TOKEN", "CARGO_REGISTRIES_SYNTHETIC_TOKEN",
+            "CARGO_REGISTRY_CREDENTIAL_PROVIDER", "CARGO_FUTURE_SETTING",
+            "RUST_PRIVATE_SETTING", "CXX_PRIVATE_SETTING", "CC_PRIVATE_SETTING",
+            "MALLOC_PRIVATE_SETTING", "UNRELATED_PRIVATE_SETTING")}
+        with patch.dict(os.environ, settings | excluded, clear=True):
+            metadata = PERF.environment(Mock(run=Mock(return_value="synthetic-tool")))
+        self.assertEqual(metadata["build_environment"], settings)
+        serialized = json.dumps(metadata)
+        self.assertNotIn("synthetic-private-value", serialized)
+        for key in excluded:
+            self.assertNotIn(key, serialized)
+
+    def test_adapter_metadata_omits_unknown_allocator_variables(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "CMakeCache.txt").write_text("CMAKE_BUILD_TYPE:STRING=Release\n")
+            for name in ("jong-fcitx5-resources", "libjong-bangla.so"):
+                (root / name).write_text("synthetic")
+            output = root / "output"
+            with patch.dict(os.environ, {"MALLOC_ARENA_MAX": "2",
+                                         "MALLOC_PRIVATE_SETTING": "synthetic-private-value"}, clear=True), \
+                    patch.object(sys, "argv", ["measure-adapter.py", str(root), "--output", str(output)]), \
+                    patch.object(PERF.ADAPTER, "command", return_value="synthetic"), \
+                    patch.object(PERF.ADAPTER, "memory_probe", return_value=[]), \
+                    patch.object(PERF.ADAPTER, "timing_probe", return_value=[]):
+                PERF.ADAPTER.main()
+            serialized = (output / "metadata.json").read_text()
+            self.assertEqual(json.loads(serialized)["allocator_environment"], {"MALLOC_ARENA_MAX": "2"})
+            self.assertNotIn("MALLOC_PRIVATE_SETTING", serialized)
+            self.assertNotIn("synthetic-private-value", serialized)
+
     def test_protocol_rejects_missing_reordered_duplicate_or_extra_workloads(self):
         expected = PERF.core_workloads(False)
         rows = timings(expected)

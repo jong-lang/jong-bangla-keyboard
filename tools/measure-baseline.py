@@ -128,9 +128,17 @@ def environment(runner):
         "fcitx5": runner.run(["pkg-config", "--modversion", "Fcitx5Core"]).strip(),
         "cmake": runner.run(["cmake", "--version"]),
         "ninja": runner.run(["ninja", "--version"]).strip(),
-        "build_environment": {key: value for key, value in os.environ.items() if
-                              key.startswith(("CARGO_", "RUST", "CXX", "CC", "MALLOC_"))
-                              or key in ("GLIBC_TUNABLES", "LD_LIBRARY_PATH", "LD_PRELOAD", "LD_AUDIT")},
+        # Record only known measurement settings. Tool-prefix matches also
+        # include credentials and arbitrary application-defined variables.
+        "build_environment": {key: os.environ[key] for key in (
+            "CC", "CXX", "RUSTC", "RUSTC_WRAPPER", "RUSTC_WORKSPACE_WRAPPER",
+            "RUSTUP_TOOLCHAIN", "RUSTC_BOOTSTRAP", "CARGO_INCREMENTAL",
+            "CARGO_BUILD_JOBS", "CARGO_BUILD_TARGET", "CARGO_BUILD_INCREMENTAL",
+            "CARGO_BUILD_RUSTC", "CARGO_BUILD_RUSTC_WRAPPER", "CARGO_BUILD_RUSTC_WORKSPACE_WRAPPER",
+            "LD_LIBRARY_PATH", "GLIBC_TUNABLES",
+            "MALLOC_ARENA_MAX", "MALLOC_ARENA_TEST", "MALLOC_CHECK_",
+            "MALLOC_MMAP_MAX_", "MALLOC_MMAP_THRESHOLD_", "MALLOC_PERTURB_",
+            "MALLOC_TOP_PAD_", "MALLOC_TRIM_THRESHOLD_") if key in os.environ},
     }
 
 

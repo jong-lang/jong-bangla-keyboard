@@ -146,8 +146,10 @@ def main():
         "cmake_flags": [line for line in cache.splitlines() if line.startswith(
             ("CMAKE_BUILD_TYPE:", "CMAKE_CXX_COMPILER:", "CMAKE_CXX_FLAGS",
              "CMAKE_EXE_LINKER_FLAGS:", "CMAKE_SHARED_LINKER_FLAGS:"))],
-        "allocator_environment": {key: value for key, value in os.environ.items()
-                                  if key.startswith("MALLOC_") or key == "GLIBC_TUNABLES"},
+        "allocator_environment": {key: os.environ[key] for key in (
+            "GLIBC_TUNABLES", "MALLOC_ARENA_MAX", "MALLOC_ARENA_TEST", "MALLOC_CHECK_",
+            "MALLOC_MMAP_MAX_", "MALLOC_MMAP_THRESHOLD_", "MALLOC_PERTURB_",
+            "MALLOC_TOP_PAD_", "MALLOC_TRIM_THRESHOLD_") if key in os.environ},
         "rust_environment": {key: os.environ[key] for key in
                              ("RUSTFLAGS", "CARGO_ENCODED_RUSTFLAGS", "CARGO_PROFILE_RELEASE_OPT_LEVEL")
                              if key in os.environ},

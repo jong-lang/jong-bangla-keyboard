@@ -31,6 +31,10 @@ with memory before timing. Each full timing workload calibrates to at least
 median and nearest-rank p95 are recorded in ns/action. One lifecycle action is
 an entire create/type/clear/type/destroy cycle, reported as ns/cycle.
 
+Environment metadata records explicit compiler, toolchain, build parallelism,
+library-path and glibc allocator settings. It omits other inherited variables,
+including registry credentials and unknown variables sharing a tool prefix.
+
 Short words, whole-string conversion, and editing prefilled 32/128/1024/8192
 scalar buffers remain separate. Editing setup is untimed and each pair is
 divided by two actions. Core and adapter mixed strings differ as recorded in
