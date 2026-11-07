@@ -274,7 +274,8 @@ env -u GTK_IM_MODULE GDK_BACKEND=wayland MOZ_ENABLE_WAYLAND=1 firefox --no-remot
 ```
 
 Check Firefox's `about:support` reports **Window Protocol: wayland**, then
-return to the probe before starting. In GTK, the header must show
+return to the probe before starting. If needed, use F11 before arming to fit
+the browser probe in the saved VM's small display. In GTK, the header must show
 `GdkWaylandDisplay` and `GTK_IM_MODULE=(unset)`. An unset variable alone does not
 prove the selected IM module; record any independent module identification
 separately. Do not run this baseline with `GTK_IM_MODULE=ibus`.

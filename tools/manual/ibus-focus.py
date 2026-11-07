@@ -29,10 +29,10 @@ def main():
     def activate(application):
         window = Gtk.ApplicationWindow(application=application)
         window.set_title(f"Jong Bangla manual probe: GTK{args.gtk} / {args.action}")
-        window.set_default_size(680, 560)
-        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        window.set_default_size(600, 420)
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         for side in ("top", "bottom", "start", "end"):
-            getattr(box, f"set_margin_{side}")(16)
+            getattr(box, f"set_margin_{side}")(8)
         if args.gtk == "4":
             window.set_child(box)
             append = box.append
@@ -56,17 +56,16 @@ def main():
                            for part in ("major", "minor", "micro"))
         module = os.environ.get("GTK_IM_MODULE", "(unset)")
         label(f"GTK {version}; {GObject.type_name(display)}; GTK_IM_MODULE={module}")
-        label("Synthetic input only. Values below are committed text, excluding preedit. "
-              "Nothing is saved or sent. Close and relaunch for each case.")
+        label("Synthetic text only; values exclude preedit. Relaunch for each case.")
         entries = {}
         for name in ("A", "B"):
-            label(name)
             entries[name] = Gtk.Entry()
+            entries[name].set_placeholder_text(f"Field {name}")
             append(entries[name])
 
         prefix = "ki" if args.action == "focus" else "k"
-        label(f"Select Jong Bangla, click Arm, then type {prefix} in A without Space. "
-              "Stop typing until the action completes. Wait 2 seconds, then type i and Space.")
+        label(f"Select Jong Bangla. Arm; type {prefix} in A without Space. "
+              "After the action, wait 2 seconds; type i and Space.")
         arm = Gtk.Button(label=f"Arm {args.action} in 8 seconds")
         append(arm)
         status = label("Not armed")
@@ -89,11 +88,11 @@ def main():
             # It never calls IBus, inserts text, or synthesizes a keyboard event.
             if args.action == "focus":
                 entries["B"].grab_focus()
-                status.set_text("B.grab_focus() called. Wait 2 seconds; type i and Space in B.")
+                status.set_text("B.grab_focus() called. Wait 2s; type i and Space in B.")
             else:
                 entries["A"].reset_im_context()
-                status.set_text("A.reset_im_context() called; focus stays in A. "
-                                "Wait 2 seconds; type i and Space.")
+                status.set_text("A.reset_im_context() called. Stay in A. "
+                                "Wait 2s; type i and Space.")
             refresh()
             action_id = None
             return False

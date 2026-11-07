@@ -5,17 +5,18 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'none'; form-action 'none'; base-uri 'none'">
 <title>Jong Bangla manual focus probe</title>
 <style>
-  body { max-width: 44rem; margin: 2rem auto; padding: 0 1rem; font: 18px sans-serif; }
-  label { display: block; margin: 1rem 0; }
-  input { display: block; width: 100%; box-sizing: border-box; font: 28px sans-serif; }
-  pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+  body { max-width: 44rem; margin: .5rem auto; padding: 0 .5rem; font: 16px sans-serif; }
+  h1 { font-size: 20px; margin: .5rem 0; }
+  p, pre { margin: .5rem 0; }
+  label { display: block; margin: .5rem 0; }
+  input { display: block; width: 100%; box-sizing: border-box; font: 24px sans-serif; }
+  pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 14px; }
 </style>
 <h1>Jong Bangla manual focus probe</h1>
-<p>Use synthetic input only. Nothing is saved or sent. The values below include
-  the browser's current DOM values, which may include live composition.</p>
-<p>Select Jong Bangla and click Arm. Type <code>ki</code> in A without Space,
-  then stop typing. After focus moves to B, wait 2 seconds and type
-  <code>i</code> and Space. Do not click or press Tab during the handoff.</p>
+<p>Synthetic text only; this page does not save or send it. Values may include live composition.</p>
+<p>Select Jong Bangla. Click Arm; type <code>ki</code> in A without Space.
+  After focus moves to B, wait 2 seconds; type <code>i</code> and Space.
+  Do not click or press Tab during the handoff.</p>
 <label>A <input id="a" autocomplete="off" spellcheck="false"></label>
 <label>B <input id="b" autocomplete="off" spellcheck="false"></label>
 <button id="arm">Arm focus change in 8 seconds</button>
