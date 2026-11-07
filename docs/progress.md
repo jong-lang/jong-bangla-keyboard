@@ -22,14 +22,14 @@ Dates use the project's Asia/Dhaka timezone.
   the traced Firefox failures do not. No safe adapter-only correction has been
   established. PR #19 stays open pending a default-route fix, final validation
   and separate-chat review; this implementation session cannot recommend merge.
-- **Manual investigation tools, behavioral results pending:** ordinary GTK3/GTK4 entries
+- **Manual GTK3 observations received:** ordinary GTK3/GTK4 entries
   and a local Firefox page provide timed focus changes without key
   injection; a GTK3 reset-only case narrows the missing-reset investigation.
   Exact commands, Unicode expectations and controls are in the
-  [manual worksheet](ibus.md#manual-focus-investigation). The first maintainer
-  GTK3 launch failed from mixed Gtk/Gdk versions; explicit matching namespace
-  selection is corrected, awaiting retry. No production fix is claimed; #22
-  retains the frontend source evidence and open hypotheses.
+  [manual worksheet](ibus.md#manual-focus-investigation). The import correction
+  now launches for the maintainer: three reset-survival reports and three
+  visual A-to-B transfers. Committed-value readouts and the final post-focus
+  `i`/Space phase remain pending. No production fix is claimed; #22 owns detail.
 - **Manual workaround confirmed:** the maintainer reports that Firefox launched
   with `GTK_IM_MODULE=ibus` retains the old word in A and commits only the new
   word in B. This is one manual result, not default-route acceptance.
@@ -52,19 +52,21 @@ Dates use the project's Asia/Dhaka timezone.
 
 ## Latest completed step
 
-- **2026-11-07 — Correct manual probe namespace selection.**
-  The maintainer's `--gtk 3 --action reset` launch failed before opening a
-  window: Gdk4 was automatically imported before Gtk3 required Gdk3. The probe
-  now explicitly selects matching Gdk and Gtk versions before imports. Added
-  the missing VM startup prerequisite to the manual worksheet after an earlier
-  connection-refused report. No production adapter, Rust semantics, ABI,
-  dependencies or input-method settings changed.
-- **Commands/outcomes this increment:** `gh issue list`, `gh pr list`,
-  `git fetch origin`, targeted source reads and diff review;
+- **2026-11-07 — Record maintainer GTK3 observations and narrow their limits.**
+  The corrected probe launches. Maintainer reports three reset-only runs where
+  `k`, widget reset, then `i` leaves visible `কি`; three focus runs move visible
+  `কি` from A to B at the timer, with A empty. Final committed readouts, exact
+  Unicode and post-focus `i`/Space were not reported. #22 owns the full result;
+  this is not a completed manual suite or a new engine-callback trace.
+- **Source inspection:** GTK 3.24.52's public Entry reset is conditional on
+  `need_im_reset`. The report alone does not prove delegation to GtkIMContext
+  or delivery of a reset to the engine. The next observation reads committed
+  text before/after the final keys to distinguish it from live preedit.
+- **Commands/outcomes this documentation increment:** `gh issue view 22`,
+  `gh issue list`, `gh pr list`, `git fetch origin`, targeted source reads;
   `git diff --check` and `git diff --cached --check` passed. No agent-run tests
-  or builds. The corrected probe has not been launched by the agent; manual
-  startup and behavioral results remain pending. Required validation and
-  separate review remain merge gates.
+  or builds. No production code or manual-probe code changed. Remaining manual
+  phases, required validation and separate review remain merge gates.
 - **Prior investigation, not rerun:** GTK 3.24.52/4.24.1 Wayland reset and
   Mutter's text-change-cause handler supplied the missing-reset source lead in
   #22; this is not a proven Firefox 159.0.1 runtime explanation.
@@ -77,17 +79,17 @@ Dates use the project's Asia/Dhaka timezone.
   Firefox normal suites; the [IBus record](ibus.md#gnome-vm-smoke-result) owns
   exact environment and scope. No XWayland, complete layout/lifecycle matrix
   or desktop latency acceptance is established. #20 and #21 remain open until
-  their fixing PR merges. Next action: obtain the manual default-route and
-  reset-only results, then target the responsible frontend correction while
+  their fixing PR merges. Next action: obtain committed-value observations,
+  then target the responsible frontend correction while
   preserving the original-field commit requirement.
 
 ## Next small implementation step
 
-1. Have the maintainer recopy the corrected probe into the running VM and retry
-   GTK3 reset-only, then GTK3 A/B, GTK4 and Firefox using the
-   [manual worksheet](ibus.md#manual-focus-investigation). Do not run tests on
-   their behalf. Record observations in #22; the import correction establishes
-   no behavioral pass or production fix.
+1. Have the maintainer use the existing GTK3 focus probe to record the bottom
+   committed A/B values immediately after the timer, then after `i` and Space;
+   see the [pending observation](ibus.md#pending-committed-text-observation).
+   No recopy is needed. Keep visual preedit separate from committed text and
+   record exact observations in #22. Do not run tests on their behalf.
 2. Continue #22 at the frontend boundary using those results: correct GTK4's
    old-preedit delivery and Firefox's missing reset/field-change notification.
    Keep explicit IBus a workaround; reject word-loss CLEAR mode and caret/text

@@ -210,6 +210,7 @@ words and invisible-buffer clearing.
 | --- | --- | --- |
 | GTK4, native Wayland, `GTK_IM_MODULE` unset | 12 passed | Failed at all three settling delays; [#22](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/22) |
 | GTK4, Wayland, explicit `GTK_IM_MODULE=ibus` control | Not rerun | All three delays passed |
+| GTK3, native Wayland, `GTK_IM_MODULE` unset, maintainer manual probe | Not run | Three reported visual transfers: A empty, `কি` appears in B at the timed focus change; final `i`/Space phase not reported |
 | Qt, Wayland, session `QT_IM_MODULE=ibus` | 12 passed | All three delays passed |
 | Firefox, forced Wayland, `GTK_IM_MODULE` unset | 12 passed | Initial two passes/one failure; three additional two-second-delay repeats failed; #22 |
 | Firefox, explicit `GTK_IM_MODULE=ibus` | Not rerun | Maintainer-reported manual A → B pass on 2026-11-07; exact expected field contents confirmed |
@@ -236,8 +237,7 @@ start/stop instructions remain local under ignored `target/ibus-vm/`.
 
 The maintainer owns further testing. The interactive
 [GTK probe](../tools/manual/ibus-focus.py) and
-[Firefox page](../tools/manual/ibus-focus.html) are manual tools with
-**behavioral results pending** for
+[Firefox page](../tools/manual/ibus-focus.html) are manual tools for
 [#22](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/22), not a
 production correction or acceptance evidence. They inject no keys, call no
 engine methods and do not save or transmit typed text. Use synthetic text only.
@@ -245,7 +245,9 @@ The GTK probe requires Python GObject introspection and the chosen GTK version;
 these were available in the saved VM. No application build is needed.
 The probe explicitly selects matching Gtk and Gdk versions before importing
 either namespace. A maintainer GTK3 launch exposed automatic Gdk4 selection;
-the corrected launcher still needs a manual retry.
+the corrected launcher now has maintainer-reported GTK3 reset/focus observations
+in #22. These are visual observations; the final committed-value/Unicode
+readouts and post-focus `i`/Space phase remain pending. No agent rerun is claimed.
 
 If the saved VM is stopped, start it from the **host checkout root** and keep
 that terminal open until shutdown:
@@ -331,7 +333,27 @@ fresh runs. B must stay empty. With discard semantics A is `ই `, U+0987 U+0020
 Record `কই `, U+0995 U+0987 U+0020, separately: it indicates the old displayed
 text was committed rather than discarded, without proving raw carryover.
 The status confirms the widget API was invoked; it does not prove GTK forwarded
-a protocol reset. This probe does not determine Firefox's exact callback path.
+a protocol reset. In GTK 3.24.52 the widget delegates to its IM context only
+when its internal `need_im_reset` flag is set. Composition surviving the widget
+call therefore does not establish that an IM-context/engine reset was delivered
+and ignored. This probe does not determine Firefox's exact callback path.
+
+### Pending committed-text observation
+
+The maintainer reports three GTK3 runs where `k`, the timed widget-reset call,
+then `i` leaves visible `কি`, and three focus runs where visible `কি` transfers
+to B as soon as focus changes, leaving A empty. Full details belong in #22.
+Do not infer a trailing Space, exact code points or engine callback delivery
+from those reports.
+
+For the next GTK3 focus run, use the existing `--gtk 3` command and type `ki`
+after Arm. Immediately after the timer moves focus to B, read the **bottom
+values display**, without typing or clicking. Record A and B exactly. That
+display excludes live preedit: B containing `কি` there means committed text;
+an empty B there with visible `কি` in the entry means live preedit. Then wait
+two seconds, type `i` and one Space in B, and record the bottom values/code
+points again. This completes the previously unreported phase without assuming
+whether GTK3 shares GTK4's traced cached-commit failure or another path.
 
 Only after recording the default-route cases, optionally repeat a fresh case
 with `GTK_IM_MODULE=ibus` to compare the existing workaround. Label that result
