@@ -7,6 +7,10 @@ version and date. Release preparation follows [CONTRIBUTING.md](CONTRIBUTING.md#
 
 ### Added
 
+- Conventional Commits release-note candidates, reproducibility-checked x86-64
+  Fcitx5 payloads, build provenance, and complete checksummed release drafts.
+  Native packages and clean-image installation checks remain in
+  [#30](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/30).
 - Security and vulnerability-reporting policy, contribution templates, and a
   Contributor Covenant with a confidential reporting contact.
 - Focused architecture, feature, testing, and performance guides.
