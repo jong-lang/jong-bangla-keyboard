@@ -11,6 +11,34 @@ const OK: u32 = 0;
 const INVALID: u32 = 1;
 const PANIC: u32 = 2;
 
+// Decode before borrowing or mutating a session. Insertion carries the validated
+// scalar so dispatch needs neither a second conversion nor an impossible arm.
+enum SessionAction {
+    Insert(char),
+    Key(CompositionKey),
+    Commit,
+    Cancel,
+    Reset,
+    Escape,
+}
+
+impl SessionAction {
+    fn decode(action: u32, scalar: u32) -> Option<Self> {
+        Some(match action {
+            0 => return char::from_u32(scalar).map(Self::Insert),
+            1 => Self::Key(CompositionKey::Backspace),
+            2 => Self::Key(CompositionKey::CtrlBackspace),
+            3 => Self::Key(CompositionKey::Space),
+            4 => Self::Key(CompositionKey::Enter),
+            5 => Self::Commit,
+            6 => Self::Cancel,
+            7 => Self::Reset,
+            8 => Self::Escape,
+            _ => return None,
+        })
+    }
+}
+
 /// Opaque, uniquely owned, single-threaded composition handle.
 #[derive(Default)]
 pub struct JongSession {
@@ -100,6 +128,8 @@ fn operate(session: &mut JongSession, f: impl FnOnce(&mut JongSession) -> bool) 
 }
 
 /// Runs an action from `jong.h`; insertion takes one Unicode scalar value.
+/// Other actions ignore `scalar`. Whitespace/control insertion succeeds but is
+/// not consumed and leaves composition unchanged, as specified by the core.
 /// Invalid arguments return status 1 without mutating state. A caught panic
 /// clears state and returns status 2. No input is logged by this crate.
 ///
@@ -112,32 +142,31 @@ pub unsafe extern "C" fn jong_session_action(
     action: u32,
     scalar: u32,
 ) -> JongResult {
-    if session.is_null() || action > 8 || (action == 0 && char::from_u32(scalar).is_none()) {
+    if session.is_null() {
         return JongResult::error(INVALID);
     }
+    let Some(action) = SessionAction::decode(action, scalar) else {
+        return JongResult::error(INVALID);
+    };
     // SAFETY: null is checked; validity and exclusive access are caller obligations.
     let session = unsafe { &mut *session };
     operate(session, |session| {
         let effect = match action {
-            0 => return session.word.insert(char::from_u32(scalar).unwrap()),
-            1 => session.word.handle_key(CompositionKey::Backspace),
-            2 => session.word.handle_key(CompositionKey::CtrlBackspace),
-            3 => session.word.handle_key(CompositionKey::Space),
-            4 => session.word.handle_key(CompositionKey::Enter),
-            5 => KeyEffect {
+            SessionAction::Insert(input) => return session.word.insert(input),
+            SessionAction::Key(key) => session.word.handle_key(key),
+            SessionAction::Commit => KeyEffect {
                 consumed: false,
                 committed: session.word.commit(),
             },
-            6 => return session.word.cancel(),
-            7 => {
+            SessionAction::Cancel => return session.word.cancel(),
+            SessionAction::Reset => {
                 session.word.reset();
                 return false;
             }
-            8 => KeyEffect {
+            SessionAction::Escape => KeyEffect {
                 consumed: session.word.is_active(),
                 committed: session.word.commit(),
             },
-            _ => unreachable!(),
         };
         session.committed = effect.committed.unwrap_or_default();
         effect.consumed
@@ -188,6 +217,7 @@ mod tests {
     #[test]
     fn invalid_arguments_preserve_state() {
         let session = jong_session_new();
+        assert!(!session.is_null());
         // SAFETY: null is supported; all non-null handles are live and unique.
         unsafe {
             assert_eq!(
@@ -196,8 +226,96 @@ mod tests {
             );
             jong_session_free(std::ptr::null_mut());
             jong_session_action(session, 0, 'k' as u32);
-            for (action, scalar) in [(0, 0xd800), (0, 0x110000), (9, 0)] {
+            let invalid = [
+                (0, 0xd800),
+                (0, 0xdfff),
+                (0, 0x110000),
+                (0, u32::MAX),
+                (9, 0),
+                (u32::MAX, 'i' as u32),
+            ];
+            for (action, scalar) in invalid {
+                let result = jong_session_action(session, action, scalar);
+                assert_eq!(result.status, INVALID);
+                assert_eq!((result.consumed, result.active), (0, 0));
+                assert!(result.preedit.is_null());
+                assert!(result.committed.is_null());
+                assert_eq!((result.preedit_len, result.committed_len), (0, 0));
+            }
+            let result = jong_session_action(session, 5, 0);
+            assert_eq!(strings(&result), ("".into(), "ক".into()));
+            // Invalid input also preserves the last committed output. In
+            // particular, it must not enter operate(), which clears this text.
+            for (action, scalar) in invalid {
                 assert_eq!(jong_session_action(session, action, scalar).status, INVALID);
+                assert_eq!((*session).committed, "ক");
+                assert!(!(*session).word.is_active());
+            }
+            jong_session_free(session);
+        }
+    }
+
+    #[test]
+    fn editing_actions_preserve_dispatch_and_ignore_scalar() {
+        for (action, consumed, preedit, committed) in [
+            (1, 1, "ক", ""),
+            (2, 1, "", ""),
+            (3, 0, "", "কি"),
+            (4, 0, "", "কি"),
+            (5, 0, "", "কি"),
+            (6, 1, "", ""),
+            (7, 0, "", ""),
+            (8, 1, "", "কি"),
+        ] {
+            let session = jong_session_new();
+            assert!(!session.is_null());
+            // SAFETY: this test owns a live handle until the final free.
+            unsafe {
+                let empty = jong_session_action(session, action, u32::MAX);
+                assert_eq!(strings(&empty), ("".into(), "".into()));
+                assert_eq!((empty.consumed, empty.active), (0, 0));
+                jong_session_action(session, 0, 'k' as u32);
+                jong_session_action(session, 0, 'i' as u32);
+                let result = jong_session_action(session, action, u32::MAX);
+                assert_eq!(strings(&result), (preedit.into(), committed.into()));
+                assert_eq!(result.consumed, consumed);
+                assert_eq!(result.active, u32::from(action == 1));
+                // Only Backspace leaves raw input; no earlier commit may repeat.
+                let result = jong_session_action(session, 5, u32::MAX);
+                assert_eq!(
+                    strings(&result),
+                    ("".into(), if action == 1 { "ক" } else { "" }.into())
+                );
+                jong_session_free(session);
+            }
+        }
+    }
+
+    #[test]
+    fn insertion_accepts_unicode_boundaries_and_rejects_core_boundaries() {
+        let session = jong_session_new();
+        assert!(!session.is_null());
+        // SAFETY: this test owns a live handle until the final free.
+        unsafe {
+            for input in [
+                '\u{d7ff}',
+                '\u{e000}',
+                '\u{ffff}',
+                '\u{10000}',
+                '\u{10ffff}',
+            ] {
+                let result = jong_session_action(session, 0, input as u32);
+                assert_eq!(strings(&result), (input.to_string(), "".into()));
+                assert_eq!((result.consumed, result.active), (1, 1));
+                let result = jong_session_action(session, 1, 0);
+                assert_eq!(strings(&result), ("".into(), "".into()));
+                assert_eq!((result.consumed, result.active), (1, 0));
+            }
+            jong_session_action(session, 0, 'k' as u32);
+            for scalar in [0, 0x20, 0x7f, 0x85, 0x2003] {
+                let result = jong_session_action(session, 0, scalar);
+                assert_eq!(strings(&result), ("ক".into(), "".into()));
+                assert_eq!((result.consumed, result.active), (0, 1));
             }
             let result = jong_session_action(session, 5, 0);
             assert_eq!(strings(&result), ("".into(), "ক".into()));
