@@ -14,7 +14,10 @@ the check list. Use synthetic input, never real typing or credentials.
 | Synthetic Fcitx5 and FFI lifecycle | `ctest --test-dir target/ci-fcitx5 --output-on-failure` | Yes, after the full script builds this directory |
 | Staged installation | `python3 tools/check-install.py target/ci-fcitx5` | Yes; does not configure a desktop |
 | Documentation links | `python3 tools/check-docs.py` | Yes |
-| Release-tool regression tests | `python3 -m unittest discover -s tools/tests -v` | Yes |
+| Tool regression tests | `python3 -m unittest discover -s tools/tests -v` | Yes; real cargo-deny cases run in the policy job |
+| Source privacy tripwires | `python3 tools/check-privacy.py` | Yes, also included in the full build and exported-source run |
+| Rust dependency licenses, bans, and sources | `cargo deny --workspace --all-features --locked check bans licenses sources` | Yes, separate policy job |
+| RustSec vulnerabilities and advisory warnings | `cargo audit --file Cargo.lock --deny warnings` | Yes, separate policy job with current advisory data |
 | External phonetic reference | `node tools/check-reference.mjs /path/to/avro-lib.js` | Not currently run in CI |
 
 The full script also checks formatting and Clippy with warnings denied, builds
@@ -25,6 +28,48 @@ commands require dependencies to be available locally.
 
 The ordinary CTest lifecycle test is not a sanitizer run. Synthetic tests do
 not establish acceptance in a real desktop or application.
+
+## Dependency and privacy checks
+
+CI pins cargo-deny 0.20.2 and cargo-audit 0.22.2, verifies the official release
+archive SHA-256 hashes before extracting binaries, and records both versions.
+For local checks install these versions with Cargo into your development tool
+directory, then make its `bin` directory available on `PATH`:
+
+```sh
+cargo install --locked --version 0.20.2 cargo-deny
+cargo install --locked --version 0.22.2 cargo-audit
+cargo deny --workspace --all-features --locked check bans licenses sources
+cargo audit --file Cargo.lock --deny warnings
+python3 tools/check-privacy.py
+python3 -m unittest discover -s tools/tests -v
+```
+
+Tool installation, missing registry metadata/sources, and the current advisory
+database require network access. The normal offline build does not install
+these tools or fetch advisories. The source scan and its Python regression
+tests need only Python; the dependency regression tests additionally require
+Cargo and cargo-deny on `PATH`. They use temporary offline path crates without
+building or downloading the real banned packages. Without cargo-deny, that
+module reports skips locally and in the documentation job; the policy CI job
+requires the tool and runs every dependency regression case.
+
+The regressions accept a permissive private graph and reject renamed/direct,
+transitive, dev, build, and target-specific banned dependencies, plus missing,
+unapproved, dev, and build dependency licenses. Synthetic source cases reject
+Rust and native networking calls/imports, logging, persistence, telemetry,
+process launches, and core global/platform patterns. A CLI test confirms future
+adapter discovery and diagnostics without source contents. All older Rust,
+Unicode fixture, native, and release-tool tests remain part of their usual runs.
+
+The [privacy policy](../SECURITY.md#enforcement) specifies exact scan scope,
+exclusions, review duties, and limitations. The
+[cargo-deny license](https://embarkstudios.github.io/cargo-deny/checks/licenses/cfg.html)
+and [ban](https://embarkstudios.github.io/cargo-deny/checks/bans/cfg.html) documentation
+describe the policy checks; [cargo-audit](https://github.com/rustsec/rustsec/tree/cargo-audit/v0.22.2/cargo-audit)
+documents RustSec auditing. A passing text scan does not establish the privacy
+of arbitrary code. No desktop acceptance, benchmark, or sanitizer run is needed
+for policy tooling alone; changes to typing still require the applicable layers.
 
 ## Fixtures and compatibility
 

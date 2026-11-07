@@ -2,6 +2,7 @@
 # Run from a checkout or exported source root. No installation or desktop changes.
 set -euo pipefail
 
+python3 tools/check-privacy.py
 cargo fmt --all -- --check
 cargo clippy --offline --locked --workspace --all-targets -- -D warnings
 cargo test --offline --locked --workspace
