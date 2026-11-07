@@ -18,6 +18,8 @@ the check list. Use synthetic input, never real typing or credentials.
 | Source privacy tripwires | `python3 tools/check-privacy.py` | Yes, also included in the full build and exported-source run |
 | Rust dependency licenses, bans, and sources | `cargo deny --workspace --all-features --locked check bans licenses sources` | Yes, separate policy job |
 | RustSec vulnerabilities and advisory warnings | `cargo audit --file Cargo.lock --deny warnings` | Yes, separate policy job with current advisory data |
+| Native ASan/UBSan and allocator LSan | `python3 tools/check-memory.py target/memory-sanitizers` | Yes, separate Clang build; see recipes below |
+| Release Rust/native Memcheck | `python3 tools/check-memory.py --mode valgrind target/memory-release` | Yes, separate unsanitized build |
 | External phonetic reference | `node tools/check-reference.mjs /path/to/avro-lib.js` | Not currently run in CI |
 
 The full script also checks formatting and Clippy with warnings denied, builds
@@ -156,20 +158,171 @@ remain unverified. Selected-rule coverage does not prove exhaustive parity.
 
 ## Memory checks
 
-`python3 tools/check-memory.py SANITIZED_BUILD_DIRECTORY` requires a separately
-sanitized native build. It first requires the detector to find an intentionally
-leaked Rust session. An unavailable or broken detector fails the check.
-Success does not prove all Rust code was instrumented or guarantee leak freedom.
+Run both recipes for ownership/native boundary changes and before a release.
+The separate memory CI job runs both, retains synthetic stdout/stderr and
+Memcheck XML as artifacts, and records toolchain versions. The ordinary build's
+CTest run remains unsanitized. No desktop acceptance or performance benchmark
+is needed for changes to memory tooling alone.
 
-Planned in [#27](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/27):
-verify reproducible ASan/LSan boundary checks and their Rust/native coverage,
-plus appropriate UBSan checks. Use Valgrind Memcheck separately on an unsanitized
-local release build for release/leak checks. Use heaptrack to investigate
-allocation growth. Add exact recipes only after verifying them.
+### Prerequisites and coverage
+
+Use x86-64 Linux, the ordinary build prerequisites, Clang with its matching
+compiler-rt, LLVM tools (`llvm-nm`, `llvm-symbolizer`), and Valgrind. Install
+`clang compiler-rt llvm valgrind debuginfod` alongside the build packages on
+Arch. The verified local combination is Rust 1.99.1, Clang/compiler-rt 23.1.4,
+Fcitx5 5.1.23, and Valgrind 3.25.1. CI records rolling Arch package versions;
+other compiler/OS combinations are not established by this recipe. Neither
+Cargo manifest's minimum Rust requirement changes. No nightly or
+`RUSTC_BOOTSTRAP` is used.
+
+Use fresh, separate Ninja build directories and ordinary Cargo release settings.
+Unset custom `RUSTFLAGS`, `CARGO_ENCODED_RUSTFLAGS`, `CXXFLAGS`, linker overrides,
+and preloads before reproducing these commands. Do not combine Valgrind with
+sanitizers. The checker verifies the CMake build marker and uses `llvm-nm` to
+check ASan/UBSan references in the addon, both workload objects, and Rust archive.
+Unexpected or missing instrumentation fails, rather than changing coverage claims.
+These symbol checks establish references, not exhaustive instruction coverage.
+
+| Component | Native sanitizer build | Release Memcheck |
+| --- | --- | --- |
+| C++ addon, FFI workload, Fcitx5 harness | ASan and UBSan `undefined` group instrumented | Executed machine code checked dynamically |
+| Native fault controls | ASan/UBSan instrumented and required to fail | Not built/run; release uses the Rust-session leak control |
+| Rust core, FFI, Rust standard library | Ordinary stable release archive, no ASan/UBSan instrumentation | Executed machine code checked dynamically |
+| System Fcitx5, C/C++ libraries | Not rebuilt/instrumented | Executed machine code checked dynamically |
+| Rust heap allocations through the system allocator | LSan observes lost allocations; verified with a leaked Rust session | Memcheck observes lost allocations; same control |
+
+Native ASan does not check arbitrary Rust loads/stores, and native UBSan is not
+a Rust undefined-behavior checker. The `undefined` group does not include every
+Clang check (for example `vptr`). Full Rust ASan instrumentation would require a
+separate verified nightly/runtime/standard-library recipe; none is claimed here.
+LSan uses allocator interception and conservative reachability, so a positive
+leak control does not establish full Rust instrumentation or general leak freedom.
+Memcheck also has limits for stack/global bounds, custom allocators, optimized
+code, and unexecuted paths. It is not a Rust aliasing/provenance checker.
+
+### Native ASan, UBSan and allocator LSan
+
+```sh
+cmake -S adapters/fcitx5 -B target/memory-sanitizers -G Ninja \
+  -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+  -DJONG_ENABLE_SANITIZERS=ON
+cmake --build target/memory-sanitizers
+python3 tools/check-memory.py target/memory-sanitizers
+```
+
+The option supplies `-fsanitize=address,undefined`, debug information and frame
+pointers to native compilation, and sanitizer flags to native linking. The
+instrumented executable supplies ASan runtime symbols to the loaded addon;
+only this build omits the module's `--no-undefined` link constraint. Run these
+binaries through the checker; do not install them into the desktop.
+
+Before clean workloads, the checker requires three independent positive controls:
+a native heap overread, native signed overflow, and an intentionally lost Rust
+session with live buffers. Each must produce its specific diagnostic and exit 23.
+Only then must `jong-ffi-memory` and `jong-fcitx5-harness` exit zero with no
+ASan/LSan/UBSan diagnostic. Detector environment options are overridden to enable
+leak detection and stop on errors, with a common exit code of 23. Controls are
+not ordinary CTest cases, and are never passed to the clean workloads implicitly.
+
+The FFI workload covers creation, Unicode insertion, editing, commit, all reset
+and cancellation actions, destruction with pending composition, null handles,
+invalid arguments and C++ RAII cleanup after an injected exception. The real
+addon harness exercises isolated synthetic input contexts and lifecycle events.
+It does not force every addon allocation or UI callback to fail. Rust panic
+cleanup is checked separately below and by the ordinary Rust test suite.
+
+### Unsanitized release Memcheck and exceptional cleanup
+
+```sh
+cmake -S adapters/fcitx5 -B target/memory-release -G Ninja \
+  -DCMAKE_BUILD_TYPE=Release -DJONG_ENABLE_SANITIZERS=OFF \
+  -DCMAKE_CXX_FLAGS_RELEASE='-O2 -g -DNDEBUG'
+cmake --build target/memory-release
+python3 tools/check-memory.py --mode valgrind target/memory-release
+```
+
+Memcheck first must detect the lost Rust session with a definitely-lost report
+and exit 23. The clean lifecycle and addon workloads must then exit zero with
+no memory errors or definite, indirect, or possible leaks. Still-reachable
+blocks are recorded and permitted, not described as leaks or zero retention.
+No project suppressions are applied to the native workloads. The helper uses
+`--command-line-only=yes` to ignore user/local `.valgrindrc` files and
+`VALGRIND_OPTS`, so inherited options or suppressions cannot disable checks.
+It also uses `--leak-check=full`,
+`--show-leak-kinds=all`, `--errors-for-leak-kinds=definite,indirect,possible`,
+`--track-origins=yes`, and `--error-exitcode=23`, and validates completed XML
+reports. Missing, malformed, incomplete, or stale reports cannot pass.
+
+The helper also builds the existing private Rust panic tests with
+`cargo test --offline --locked --release -p jong-bangla-fcitx5-ffi --lib --no-run
+--message-format=json`, using a separate `rust-panic-tests` target directory
+inside the build. It runs `panic_tests::panic_policy_child --exact --ignored
+--nocapture --test-threads=1` directly under Memcheck. `JONG_TEST_PANIC_MODE=0`
+must reclaim an ordinary heap panic payload and recover the session cleanly.
+Mode 1 must detect the deliberately retained replacement payload when the
+original payload's destructor panics. This is an expected positive control,
+not a clean-workload exemption or a production fault-injection interface.
+
+Both Rust-only probes apply [a narrow libtest suppression](../tools/valgrind-rust-tests.supp)
+for an observed possible leak in the Rust test runner's main-thread context.
+It matches the allocator, standard-library thread/context, and libtest receive
+stack frames. It suppresses only that possible-leak stack, never definite leaks
+or Jong allocation paths. Suppression counts are printed and retained in XML.
+This is a limit of the Rust probe evidence, not a claim that all runtime
+allocations are freed. A changed toolchain may require renewed investigation.
+
+The existing ordinary Rust `panic_policy_subprocesses` test also verifies
+unrecoverable double-panic and panicking-hook aborts. Those abort probes are not
+clean leak workloads. Exceptional retention remains as documented in
+[jong.h](../adapters/fcitx5/jong.h) and
+[the architecture](ARCHITECTURE.md#ffi-boundary); these checks do not promise
+recovery from OOM/abort, invalid pointers, or every exceptional cleanup path.
+
+### Failures, logs and optional profiling
+
+The helper exits nonzero with `FAIL:` for missing tools/binaries, wrong build
+mode, timeouts (300 seconds per process), failed controls, unexpected workload
+reports or detector startup failures. Each completed subprocess's synthetic
+stdout/stderr and each Memcheck XML report are retained under the selected
+build's `memory-logs-sanitizers` or `memory-logs-valgrind` directory. Python
+regressions inject missing detectors, incorrect exits/diagnostics, timeouts,
+wrong build modes and invalid reports. A real Valgrind regression requires a
+mismatched allocation/free to fail even with `.valgrindrc` disabling that check.
+Run them with `python3 -m unittest discover -s tools/tests -p test_memory.py -v`.
+The real-detector case skips locally without Valgrind or `c++`; the memory CI
+job installs both and runs this suite.
+
+LSan requires process inspection. A ptrace-restricted sandbox, debugger or
+unsupported host can make its control fail; use a suitable test runner without
+changing host ptrace settings. Valgrind may require matching glibc loader debug
+symbols (for example `libc6-dbg` on Debian). On Arch, install `debuginfod` and use
+`DEBUGINFOD_URLS=https://debuginfod.archlinux.org` for the Memcheck command;
+on CachyOS use the distro's matching server. This tool-only lookup needs network
+access, or pre-cached debug symbols. CI enables the Arch lookup explicitly.
+A detector that cannot start is unavailable evidence, never a passing check.
+
+Heaptrack is optional for allocation-growth investigations on the same
+unsanitized release build. With heaptrack installed, a verified synthetic recipe is:
+
+```sh
+heaptrack --record-only -o /tmp/jong-synthetic-allocations \
+  target/memory-release/jong-ffi-memory
+heaptrack_print /tmp/jong-synthetic-allocations.zst > /tmp/jong-synthetic-allocations.txt
+```
+
+Heaptrack 1.5.0 writes the `.zst` file shown above; use the printed output filename
+if your distribution chooses another compression format. Review allocation
+stacks and retained capacity for growth investigations; profiler leak labels
+are not a substitute for ASan/LSan or Memcheck acceptance. Profile only these
+synthetic harnesses, never a real input-method daemon or application containing
+typed text. Keep benchmark numbers in [PERFORMANCE.md](PERFORMANCE.md).
 
 References: [ASan](https://clang.llvm.org/docs/AddressSanitizer.html),
 [LSan](https://clang.llvm.org/docs/LeakSanitizer.html),
-[Valgrind](https://valgrind.org/docs/manual/QuickStart.html),
+[UBSan](https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html),
+[Rust sanitizer limitations](https://doc.rust-lang.org/unstable-book/compiler-flags/sanitizer.html),
+[Memcheck](https://valgrind.org/docs/manual/mc-manual.html),
+[Valgrind debuginfod](https://valgrind.org/docs/manual/manual-core.html#manual-core.debuginfod),
 [heaptrack](https://apps.kde.org/heaptrack/).
 
 ## Maintainer-run desktop acceptance

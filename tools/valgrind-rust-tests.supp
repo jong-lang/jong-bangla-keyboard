@@ -1,0 +1,17 @@
+# Rust 1.99.1 libtest main-thread context retention, observed with Valgrind 3.25.1.
+# Only the private panic probes use this file. Match a possible leak through the
+# complete libtest receive path, never Jong allocations or definite leaks.
+# Wildcards cover Rust symbol disambiguators; keep the named frames explicit.
+{
+   rust-libtest-main-thread-context
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:malloc
+   fun:*3std6thread6thread*6Thread3new
+   fun:*3std6thread7current12init_current
+   fun:*3std4sync4mpmc7context*7Context3new
+   fun:*3std3sys12thread_local6native4lazy*16get_or_init_slow*
+   fun:*3std4sync4mpmc4list*4test5event13CompletedTestE4recv*
+   fun:*4test7console17run_tests_console
+   fun:*4test16test_main_static
+}

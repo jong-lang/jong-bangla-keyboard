@@ -53,6 +53,22 @@ void cycle(JongSession *session, unsigned index) {
     throw std::runtime_error("invalid arguments accepted");
   }
 }
+
+void exceptionalCleanup() {
+  try {
+    Session session(jong_session_new(), jong_session_free);
+    if (!session) {
+      throw std::runtime_error("allocate exception session");
+    }
+    type(session.get());
+    throw std::runtime_error("synthetic exception with pending composition");
+  } catch (const std::runtime_error &error) {
+    if (std::string_view(error.what()) !=
+        "synthetic exception with pending composition") {
+      throw;
+    }
+  }
+}
 } // namespace
 
 int main(int argc, char **argv) {
@@ -87,8 +103,12 @@ int main(int argc, char **argv) {
         action(reused.get(), JongInsert, U'k');
       }
     }
+    exceptionalCleanup();
+    if (jong_session_action(nullptr, JongInsert, U'k').status != 1) {
+      throw std::runtime_error("null session accepted");
+    }
     jong_session_free(nullptr);
-    std::cout << "20000 lifecycle cycles; 10001 sessions freed\n";
+    std::cout << "20000 lifecycle cycles; 10002 sessions freed, including exception cleanup\n";
     return 0;
   } catch (const std::exception &error) {
     std::cerr << "Memory workload failed: " << error.what() << '\n';
