@@ -464,11 +464,17 @@ plasmashell --version
 printenv XDG_SESSION_TYPE
 pacman -Q fcitx5 fcitx5-configtool fcitx5-gtk fcitx5-qt kate kwrite
 flatpak --version
-flatpak list --user --columns=application,arch,branch,version,commit,runtime
+flatpak list --user --columns=application,arch,branch,version,active,runtime
+for jong_app in org.kde.kate org.mozilla.firefox org.gnome.TextEditor; do
+  flatpak info --user --show-commit "$jong_app"
+  flatpak info --user --show-runtime "$jong_app"
+done
 ```
 
-Expect x86-64, Plasma Wayland and native Fcitx5 5.1.23 or newer. Record app/runtime
-commits and any overrides with `flatpak override --user --show APP_ID` and
+Expect x86-64, Plasma Wayland and native Fcitx5 5.1.23 or newer. The list's active
+column abbreviates commits; retain the full hashes from `info`. For every runtime
+ref printed above, record its full hash with `flatpak info --show-commit REF`.
+Record any overrides with `flatpak override --user --show APP_ID` and
 `flatpak override --system --show APP_ID` for each app. Record relevant GTK/Qt
 input-module environment variables, including their absence. Use the upstream
 [KDE setup](https://fcitx-im.org/wiki/Using_Fcitx_5_on_Wayland#KDE_Plasma), with no
