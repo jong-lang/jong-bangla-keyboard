@@ -36,6 +36,10 @@ setups require their own upstream configuration and acceptance evidence.
 Before removal, select another input method; restart the session afterwards.
 User-created Fcitx5 configuration is retained by removal.
 
+After native activation on the reference desktop, the optional
+[KWrite/Firefox input-path proof](TESTING.md#kwritefirefox-input-path-proof)
+can check committed synthetic text. It is not full package or desktop acceptance.
+
 The binary `.tar.gz` contains the Arch `usr/` payload, MIT license, attribution,
 this guide, and `payload-info.json`. Prefer the package manager for installation
 and upgrades. For an isolated staging inspection, extract it into a temporary

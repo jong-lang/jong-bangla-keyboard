@@ -12,6 +12,7 @@ the check list. Use synthetic input, never real typing or credentials.
 | Core integration and fixtures | `cargo test --offline --locked -p jong-bangla-core --tests` | Included in the full workspace test run |
 | Documentation examples | `cargo test --offline --locked --workspace --doc` | Included in the full workspace test run |
 | Synthetic Fcitx5 and FFI lifecycle | `ctest --test-dir target/ci-fcitx5 --output-on-failure` | Yes, after the full script builds this directory |
+| KWrite/Firefox desktop input-path proof | [Maintainer-run command](#kwritefirefox-input-path-proof) | No; requires the actual graphical session and desktop authorization |
 | Staged installation | `python3 tools/check-install.py target/ci-fcitx5` | Yes; does not configure a desktop |
 | Native package lifecycle | [Container commands and coverage](PACKAGING.md#recipes-and-verification) | Yes; separate Arch, Debian testing and Fedora 45 runtime images |
 | Documentation links | `python3 tools/check-docs.py` | Yes |
@@ -340,8 +341,11 @@ Use CachyOS KDE Plasma Wayland on the reference Modern 15 A5M. The maintainer
 runs tests and any required installation or input-method setup. Agents provide
 exact setup instructions for the build and never change system input settings.
 
-Before a Fcitx5 release, test in Kate, Firefox, KWrite, and the Python GTK and Qt
+Before a Fcitx5 release, test in Firefox, KWrite, and the Python GTK and Qt
 test environments. For a task, run the affected scenarios.
+KWrite is the representative native KDE editor; a separate Kate run is not
+required. Both are KDE applications and share the editor component. Historical
+Kate reports remain valid records of the tests actually performed.
 
 | Steps | Expected result |
 | --- | --- |
@@ -360,6 +364,70 @@ or XWayland backend, steps, and actual results on the PR or bug issue. Do not
 infer XWayland or other distro coverage. Keep package tests separate from engine
 tests. Report only checks actually run in this task.
 
+### KWrite/Firefox input-path proof
+
+[#47](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/47) adds a small
+maintainer-run prototype, not a replacement for the acceptance checklist above.
+Run from a checkout on the CachyOS/Arch x86-64 KDE Plasma Wayland desktop with
+native KWrite and Firefox, Python/PyGObject, the AT-SPI 2 typelib, and the KDE
+RemoteDesktop portal installed. On Arch the optional test-tool packages are
+`python-gobject at-spi2-core xdg-desktop-portal-kde kwrite firefox`.
+These are system tools, not bundled or linked into Jong. Their distro licenses
+and notices remain applicable; this does not add Cargo dependencies.
+
+Install the intended native Jong package and restart the Fcitx5 session first.
+Keep Jong and `Keyboard - English (US)` in the current Fcitx5 group. Do the normal
+[activation setup](PACKAGING.md#install-upgrade-activate-and-remove) yourself.
+No agent runs the interactive command or changes desktop input settings.
+
+```sh
+python3 tools/check-desktop.py
+python3 tools/check-desktop.py --run --output target/desktop-proof-001
+```
+
+The first command checks local prerequisites without contacting a desktop
+session. The second requires a new output directory. Approve the portal's
+temporary keyboard-control request, then leave the keyboard and mouse idle.
+This is local desktop control, not a network remote-desktop connection.
+The runner uses owned temporary KWrite configuration and an empty document,
+plus a separate offline Firefox profile and a local test page. It requests
+no screenshots, clipboard access, screen sharing or persistent portal grant.
+It temporarily selects input methods through Fcitx5, then attempts to restore
+the previous selection/state even on failure. It does not rewrite Fcitx5 or
+desktop configuration. Owned test applications and temporary data are removed
+on normal exit, Ctrl+C or termination handling; a forced kill cannot run cleanup.
+
+In each application the proof sends raw evdev `k`, `i`, Space events through
+the portal. The English control must produce `ki `; appending the same keys
+with `jong-bangla` selected must produce `ki কি `, exactly U+006B U+0069 U+0020
+U+0995 U+09BF U+0020. AT-SPI reads only the owned test field; it never sets text.
+Focus/ownership and the selected engine are checked before every key. Backend
+evidence requires the owned test title in a Wayland `xdg_toplevel.set_title`
+request, alongside the forced Wayland application launch. Only that boolean
+evidence is retained; temporary protocol traces are discarded.
+
+Read `summary.txt` and share `report.json` from the output directory on the
+issue. Expect four passed cases and `proof_status: pass`, with
+`acceptance_status: incomplete`. The report records tool/source identity,
+available distro/application/toolkit versions, and the installed native library
+hash at `/usr/lib/fcitx5/libjong-bangla.so`. That disk hash does not establish
+which library an already running Fcitx5 daemon has loaded. Preserve the original
+package hash separately. Source checkout identity is not installed-engine identity.
+
+Missing APIs, denied control, ambiguous fields, unverified backends, wrong focus,
+timeouts, incorrect Unicode or failed restoration prevent a proof pass. Failures
+after initialization retain a report; a prerequisite failure can stop earlier.
+Preedit content/rendering, editing, shortcuts, focus-transition behavior,
+password restrictions and package lifecycle are explicitly unverified. Continue
+their existing acceptance steps. Report the first actual run before using this
+prototype as evidence; mocked tool regressions do not demonstrate desktop support.
+
+The independently written transports use the public
+[RemoteDesktop API](https://flatpak.github.io/xdg-desktop-portal/docs/doc-org.freedesktop.portal.RemoteDesktop.html),
+[AT-SPI observation/focus APIs](https://gnome.pages.gitlab.gnome.org/at-spi2-core/libatspi/),
+and [Fcitx5 controller](https://fcitx-im.org/wiki/DBus_Interface).
+IBus and Windows drivers are not implemented by this proof.
+
 ### Package desktop acceptance
 
 The maintainer runs this checklist in disposable x86-64 KDE Plasma Wayland VMs
@@ -372,13 +440,13 @@ Container identities and results are recorded separately by the package runner.
 1. Install the matching PR artifact with the command in
    [PACKAGING.md](PACKAGING.md#install-upgrade-activate-and-remove). Install
    `fcitx5-configtool` on Arch/Fedora or `fcitx5-config-qt` on Debian, plus
-   Kate, KWrite and Firefox from that distro. Check that the package manager
+   KWrite and Firefox from that distro. Check that the package manager
    resolves dependencies without copying libraries or modifying system paths.
 2. Log out/in. Select Fcitx5 in KDE's Virtual Keyboard settings and add Jong
    Bangla in Fcitx5 Configuration. Expect one Jong entry, and successful
    activation without a missing-addon error. Record the exact setup changes;
    agents never perform these changes on the maintainer's desktop.
-3. Run the typing scenarios above in Kate, KWrite and Firefox on Wayland,
+3. Run the typing scenarios above in KWrite and Firefox on Wayland,
    including focus changes, password fields, input-method switching and
    synthetic `kh12T`. Record exact actual output and any duplicated commits.
    Repeat the existing Python GTK and Qt acceptance environments if available;
@@ -454,18 +522,18 @@ before claiming those environments. XWayland is a separate test lane.
 Install prerequisites in the Arch VM, then install the selected applications:
 
 ```sh
-sudo pacman -Syu --needed flatpak fcitx5 fcitx5-configtool fcitx5-gtk fcitx5-qt kate kwrite
+sudo pacman -Syu --needed flatpak fcitx5 fcitx5-configtool fcitx5-gtk fcitx5-qt kwrite
 flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-flatpak install --user flathub org.kde.kate org.mozilla.firefox org.gnome.TextEditor
+flatpak install --user flathub org.kde.kwrite org.mozilla.firefox org.gnome.TextEditor
 date -Iseconds
 cat /etc/os-release
 uname -mrv
 plasmashell --version
 printenv XDG_SESSION_TYPE
-pacman -Q fcitx5 fcitx5-configtool fcitx5-gtk fcitx5-qt kate kwrite
+pacman -Q fcitx5 fcitx5-configtool fcitx5-gtk fcitx5-qt kwrite
 flatpak --version
 flatpak list --user --columns=application,arch,branch,version,active,runtime
-for jong_app in org.kde.kate org.mozilla.firefox org.gnome.TextEditor; do
+for jong_app in org.kde.kwrite org.mozilla.firefox org.gnome.TextEditor; do
   flatpak info --user --show-commit "$jong_app"
   flatpak info --user --show-runtime "$jong_app"
 done
@@ -535,8 +603,8 @@ each application; failures there indicate a broader integration problem.
 
 ### Applications and cases
 
-Run the [desktop scenarios](#maintainer-run-desktop-acceptance) in native Kate
-and KWrite as controls, plus Flatpak Kate (Qt), Firefox and GNOME Text Editor
+Run the [desktop scenarios](#maintainer-run-desktop-acceptance) in native
+KWrite as a control, plus Flatpak KWrite (Qt), Firefox and GNOME Text Editor
 (GTK). Launch Flatpak apps explicitly with `flatpak run APP_ID` to avoid native
 copies. Record actual backend evidence per app: Firefox `about:support` Window
 Protocol; Qt/GTK application diagnostics where available, corroborated by the

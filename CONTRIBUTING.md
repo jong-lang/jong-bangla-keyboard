@@ -52,6 +52,9 @@ When manual testing is needed, give the maintainer the exact desktop, VM, or
 container setup, steps, and expected result. The maintainer runs these tests.
 Record the returned result and any remaining limits before opening the PR.
 Never change the maintainer's input-method settings as a development side effect.
+The [KWrite/Firefox proof](docs/TESTING.md#kwritefirefox-input-path-proof) is an
+optional maintainer-run prototype. Its report remains incomplete acceptance;
+do not use it to waive the remaining desktop or artifact acceptance checks.
 
 Complete the relevant documentation and checks, then commit, push, and open a PR
 using the PR template. Link its issue and include the head commit, validation,
