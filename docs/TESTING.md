@@ -431,3 +431,158 @@ Before publication, the maintainer and release PR must close these items:
    bytes change, record acceptance for the replacement artifacts before
    publication; a passing container check alone is insufficient. Only the
    maintainer publishes the complete inspected draft.
+
+## Flatpak prototype comparison
+
+This is the maintainer-run test plan for
+[#31](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/31). Build the
+two unsigned local bundles using the [recipe](PACKAGING.md#flatpak-extension-prototype).
+Results are pending until reported on the prototype PR. Native release desktop
+reports do not establish either Flatpak route. Do not change the main desktop
+to run these experiments. Agents do not activate daemons or change input settings.
+
+### Environment and route isolation
+
+Start with a disposable x86-64 Arch KDE Plasma Wayland VM and record its ISO
+URL/checksum or image identity, snapshot, last update date, kernel and Plasma.
+Use separate snapshots for route A (native Fcitx5 plus the published native Jong
+package) and route B (Flatpak Fcitx5 plus this extension). Keep exactly one
+daemon serving the session. Preserve the pre-test snapshot for restoration.
+After a first successful comparison, repeat on Debian testing and Fedora 45
+before claiming those environments. XWayland is a separate test lane.
+
+Install prerequisites in the Arch VM, then install the selected applications:
+
+```sh
+sudo pacman -Syu --needed flatpak fcitx5 fcitx5-configtool fcitx5-gtk fcitx5-qt kate kwrite
+flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+flatpak install --user flathub org.kde.kate org.mozilla.firefox org.gnome.TextEditor
+date -Iseconds
+cat /etc/os-release
+uname -mrv
+plasmashell --version
+printenv XDG_SESSION_TYPE
+pacman -Q fcitx5 fcitx5-configtool fcitx5-gtk fcitx5-qt kate kwrite
+flatpak --version
+flatpak list --user --columns=application,arch,branch,version,commit,runtime
+```
+
+Expect x86-64, Plasma Wayland and native Fcitx5 5.1.23 or newer. Record app/runtime
+commits and any overrides with `flatpak override --user --show APP_ID` and
+`flatpak override --system --show APP_ID` for each app. Record relevant GTK/Qt
+input-module environment variables, including their absence. Use the upstream
+[KDE setup](https://fcitx-im.org/wiki/Using_Fcitx_5_on_Wayland#KDE_Plasma), with no
+globally forced GTK/Qt input module. Missing modules or required per-app setup
+are findings to record, not reasons to add broad sandbox overrides silently.
+
+For route A, verify the downloaded native package against the published
+`SHA256SUMS`, then install that single package via the
+[native instructions](PACKAGING.md#install-upgrade-activate-and-remove).
+The maintainer selects native Fcitx5 in KDE Virtual Keyboard, logs out/in and
+adds Jong in the native configuration tool. Record package filename/hash and
+every setup change. No Flatpak Fcitx5 daemon or Jong extension should be installed
+in this snapshot. Native Fcitx5 must serve both native and sandboxed applications.
+
+For route B, restore the pre-Jong snapshot; leave native host input modules
+installed but disable native Fcitx5 autostart in the VM. Transfer the two exact
+prototype bundles and a trusted checksum manifest from the build environment.
+In the directory holding those files:
+
+```sh
+sha256sum --check Jong-SHA256SUMS
+flatpak install --user flathub org.fcitx.Fcitx5//stable
+flatpak info --user --show-commit org.fcitx.Fcitx5
+flatpak info --user --show-permissions org.fcitx.Fcitx5
+flatpak install --user ./Jong-r1.flatpak
+flatpak info --user --show-commit org.fcitx.Fcitx5.Addon.Jong//stable
+flatpak run --command=sh org.fcitx.Fcitx5 -c \
+  'cat /.flatpak-info; cat /app/addons/Jong/share/jong-bangla/source-info.json; ldd /app/addons/Jong/lib/fcitx5/libjong-bangla.so'
+```
+
+Expect the selected source commit, an `app-extensions` entry identifying Jong,
+all library dependencies resolved, and no toolchain in `/app/addons/Jong`.
+Record the parent/runtime commits; if they differ from the build environment,
+stop and align them or rebuild against the selected parent before acceptance.
+The shell inspection does not start the daemon or establish addon loading.
+
+The parent exports a desktop entry marked `X-KDE-Wayland-VirtualKeyboard=true`.
+The maintainer selects the Flatpak entry in KDE Virtual Keyboard and logs out/in.
+Native and Flatpak entries can have the same visible name: verify the selected
+entry's Exec line names `org.fcitx.Fcitx5`. If it is unavailable, record a blocked
+KDE integration result instead of replacing the compositor-launched daemon with
+an arbitrary terminal launch. Open the parent's configuration tool:
+
+```sh
+flatpak run --command=fcitx5-config-qt org.fcitx.Fcitx5
+flatpak ps --columns=application,pid,instance
+pgrep -a -x fcitx5
+pgrep -a -x fcitx5-bin
+```
+
+Add Jong Bangla, disabling the language filter if needed. Expect one available
+Jong engine and one daemon. Inspect `/proc/PID/maps` for that daemon using
+`rg 'libjong-bangla' /proc/PID/maps` after activating Jong; expect the extension's
+library path. Use only this selected PID, not arbitrary process memory or input
+logs. Record blocked access explicitly. A mounted extension alone is not proof
+the daemon loaded it. First verify an existing known-working input method in
+each application; failures there indicate a broader integration problem.
+
+### Applications and cases
+
+Run the [desktop scenarios](#maintainer-run-desktop-acceptance) in native Kate
+and KWrite as controls, plus Flatpak Kate (Qt), Firefox and GNOME Text Editor
+(GTK). Launch Flatpak apps explicitly with `flatpak run APP_ID` to avoid native
+copies. Record actual backend evidence per app: Firefox `about:support` Window
+Protocol; Qt/GTK application diagnostics where available, corroborated by the
+KWin Debug Console's Wayland/X11 window classification. Report a backend as
+unknown if it cannot be verified; the session variable alone is insufficient.
+
+In every cell test editable `kh12T` = `খ১২ট` (U+0996 U+09E7 U+09E8 U+099F),
+Backspace then Ctrl+Backspace, inactive deletion, Space/Enter, active/inactive
+Escape, Left and Ctrl+F during composition, focus changes and input-method
+switching. Include fresh `.` = `।` (U+0964), fresh period followed by backtick =
+`.` (U+002E), and fresh `R` = `ড়` (U+09DC); clear between probes.
+Expect single commits, normal shortcut delivery and no cross-field preedit.
+Record whether focus loss commits or clears. Disable input methods in password
+fields in the serving daemon's configuration and use synthetic password input;
+expect no Jong composition/stale preedit. Use a local synthetic browser form
+with a password field rather than entering credentials. Report app scenarios
+that are unavailable, not applicable, or blocked individually.
+
+After dependencies are installed, disconnect the VM's network and repeat
+activation and the typing cases. Expect unchanged local typing. This establishes
+offline usability only; it is not a proof of no network calls. Retain the
+[permission assessment](PACKAGING.md#permission-assessment) with the results.
+
+### Upgrade, removal and failure controls
+
+In route B record the extension commit, install `Jong-r2.flatpak` with
+`flatpak install --user ./Jong-r2.flatpak`, then record the commit again. Expect a
+different OSTree commit with unchanged runtime files. Log out/in and repeat
+activation, `kh12T`, focus changes and a shortcut in every app. Expect one engine
+and unchanged behavior. This is a same-code packaging transaction, not an engine
+version upgrade. Also test a second logout/login without reinstalling.
+
+Select another input method, uninstall only the extension with
+`flatpak uninstall --user org.fcitx.Fcitx5.Addon.Jong//stable`, and log out/in.
+Expect its mount and available addon registration gone, alternative input methods
+working, and unrelated extensions/user configuration retained. A saved Jong
+profile entry can remain; it must not load a removed library. Reinstall revision
+1, restart and repeat activation. Restore the VM snapshot afterwards.
+
+In a separate snapshot with no stable Jong installed, export/install a control
+on branch `wrong-branch` using the same `flatpak build-export` and
+`flatpak build-bundle` commands with that final branch argument. The stable
+parent must not mount it or make Jong available. Record the missing-extension
+case before installing any Jong as well. The build's staged missing-library
+control separately checks that a developer/system copy cannot mask a failure.
+
+For each route/app/backend/scenario record pass, fail, blocked or unavailable,
+exact steps and actual Unicode/commit behavior. Attach artifact hashes, source,
+parent/SDK/runtime identities and setup changes. Do not collect real typed text
+or enable daemon key-event logging. Recommend a route only after the agreed
+matrix and lifecycle checks pass, setup and inherited permissions are understood,
+and the extension has a practical benefit over native Jong serving Flatpak apps.
+Keep unsupported distributions, XWayland, IBus, ARM64 and untested app/runtime
+combinations outside any support claim. Maintainer results and separate review
+remain required before treating the prototype as accepted.
