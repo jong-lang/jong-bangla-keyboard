@@ -37,6 +37,13 @@ not establish acceptance in a real desktop or application.
 
 CI pins cargo-deny 0.20.2 and cargo-audit 0.22.2, verifies the official release
 archive SHA-256 hashes before extracting binaries, and records both versions.
+CI uses `tools/install-policy-tools.py`: bounded HTTPS retries fall back from
+the upstream browser URL to the official GitHub asset API only on transport
+failure. Both paths require the same pinned SHA-256; a checksum mismatch stops
+installation without fallback. No executable is installed until both archives
+pass. Installer and release-recovery rejection tests run in the tool suite
+without network access. Recovery of an existing tagged run follows the
+[release policy](../CONTRIBUTING.md#release-policy-and-checklist).
 For local checks install these versions with Cargo into your development tool
 directory, then make its `bin` directory available on `PATH`:
 

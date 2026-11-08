@@ -145,14 +145,7 @@ jobs:
         run: |
           set -euo pipefail
           tool_dir="$(mktemp -d "$RUNNER_TEMP/jong-policy.XXXXXX")"
-          cd "$tool_dir"
-          curl --fail --location --retry 3 -o deny.tar.gz https://github.com/EmbarkStudios/cargo-deny/releases/download/0.20.2/cargo-deny-0.20.2-x86_64-unknown-linux-musl.tar.gz
-          curl --fail --location --retry 3 -o audit.tar.gz https://github.com/rustsec/rustsec/releases/download/cargo-audit/v0.22.2/cargo-audit-x86_64-unknown-linux-musl-v0.22.2.tgz
-          echo '9f12ed4c49936e09b48bf862b595cde2fe64fcbd9d74dfacac6131ca824c8d5f  deny.tar.gz' | sha256sum --check --strict
-          echo '7fb9497f8594b389e5fce5ef9b92db08432996895b2e0c5a0167a69ed445c428  audit.tar.gz' | sha256sum --check --strict
-          mkdir bin
-          tar -xzf deny.tar.gz -C bin --strip-components=1 cargo-deny-0.20.2-x86_64-unknown-linux-musl/cargo-deny
-          tar -xzf audit.tar.gz -C bin --strip-components=1 cargo-audit-x86_64-unknown-linux-musl-v0.22.2/cargo-audit
+          python3 tools/install-policy-tools.py --output "$tool_dir/bin"
           echo "$tool_dir/bin" >> "$GITHUB_PATH"
       - name: Check policy tools and deliberate violations
         run: |
