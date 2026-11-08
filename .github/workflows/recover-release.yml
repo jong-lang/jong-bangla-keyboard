@@ -1,0 +1,124 @@
+name: Recover release draft
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing accepted release tag (never moved)
+        required: true
+        type: string
+      source_run_id:
+        description: Original release run with only a policy-tool installation failure
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read
+
+defaults:
+  run:
+    shell: bash
+
+# Share the tag workflow's lock; two draft writers must never run together.
+concurrency:
+  group: release-refs/tags/${{ inputs.tag }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Verify original release evidence
+    if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      commit: ${{ steps.evidence.outputs.commit }}
+      artifact_id: ${{ steps.evidence.outputs.artifact_id }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          path: automation
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.tag }}
+          fetch-depth: 0
+          persist-credentials: false
+          path: source
+      - name: Require matching source, successful original gates and retained bundle
+        id: evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.tag }}
+          SOURCE_RUN_ID: ${{ inputs.source_run_id }}
+        run: |
+          python3 automation/tools/check-release-recovery.py "$RELEASE_TAG" \
+            --run "$SOURCE_RUN_ID" --repo "$GITHUB_REPOSITORY" --source source \
+            --github-output "$GITHUB_OUTPUT" | tee -a "$GITHUB_STEP_SUMMARY"
+
+  policy:
+    name: Recheck policy on tagged source
+    needs: validate
+    runs-on: ubuntu-24.04
+    container: archlinux:base-devel
+    timeout-minutes: 15
+    steps:
+      - name: Prepare policy environment
+        run: pacman -Syu --noconfirm --needed git rust python curl
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          path: automation
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.validate.outputs.commit }}
+          persist-credentials: false
+          path: source
+      - name: Install pinned policy tools with official API fallback
+        run: |
+          tool_dir="$(mktemp -d "$RUNNER_TEMP/jong-policy.XXXXXX")"
+          python3 automation/tools/install-policy-tools.py --output "$tool_dir/bin"
+          echo "$tool_dir/bin" >> "$GITHUB_PATH"
+      - name: Check policy tools and deliberate violations
+        working-directory: source
+        run: |
+          cargo deny --version
+          cargo audit --version
+          python3 -m unittest discover -s tools/tests -p test_dependency_policy.py -v
+          python3 -m unittest discover -s tools/tests -p test_privacy.py -v
+          python3 tools/check-privacy.py
+      - name: Check all workspace dependency licenses, bans and sources
+        working-directory: source
+        run: cargo deny --workspace --all-features --locked check bans licenses sources
+      - name: Audit locked dependencies against current RustSec advisories
+        working-directory: source
+        run: cargo audit --file Cargo.lock --deny warnings
+
+  draft:
+    name: Prepare recovered unpublished draft
+    needs: [validate, policy]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.validate.outputs.commit }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          artifact-ids: ${{ needs.validate.outputs.artifact_id }}
+          merge-multiple: true
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.source_run_id }}
+          path: ${{ runner.temp }}/release-bundle
+      - name: Verify accepted bundle and create draft without overwriting
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.tag }}
+        run: |
+          python3 tools/draft-release.py "$RELEASE_TAG" \
+            --artifacts "$RUNNER_TEMP/release-bundle" --repo "$GITHUB_REPOSITORY"

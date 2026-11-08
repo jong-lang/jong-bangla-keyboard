@@ -225,6 +225,30 @@ For each release:
    and resolve the failure manually without overwriting an existing release.
    The maintainer performs publication after inspecting the complete draft.
 
+If a tagged run fails only while installing policy tools, preserve its tag and
+accepted artifacts. The [recovery workflow](.github/workflows/recover-release.yml)
+can be dispatched from the default branch after its implementation is separately
+reviewed and merged. It verifies the original run's repository, tag, commit,
+successful non-policy jobs, skipped draft and retained bundle. It then runs all
+policy checks on that exact tagged source with the repaired installer, before
+the original tagged draft tool verifies and uploads the original bundle.
+Only the draft job has write permission. Recovery rejects actual policy failures,
+other failed/missing jobs, expired artifacts and existing releases; it never
+moves a tag, rebuilds accepted packages, overwrites a draft or publishes.
+The failed original run remains failed; retain both run links as release evidence.
+
+For the v0.1.0 installation-download failure tracked in
+[#43](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/43), after merge:
+
+```sh
+gh workflow run recover-release.yml --ref main \
+  -f tag=v0.1.0 -f source_run_id=42466621401
+```
+
+After success, inspect every downloaded draft asset and compare it byte for byte
+with the accepted source-run bundle under the ordinary draft inspection gate.
+Maintainer artifact acceptance and publication requirements still apply.
+
 When TSF lands, add a Windows installer and Windows acceptance checks. Initially
 the installer is unsigned; document the SmartScreen warning. Revisit IBus
 Flatpak feasibility in its adapter stage. Do not promise untested artifacts.
