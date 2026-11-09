@@ -214,7 +214,7 @@ class LinuxDesktop:
             process = subprocess.Popen(args, env=env, stdin=subprocess.DEVNULL,
                                        stdout=subprocess.DEVNULL, stderr=log, start_new_session=True)
             app = SimpleNamespace(name=name, process=process, token=token, log=log,
-                                  field=None, window=None)
+                                  field=None, window=None, focus_attempts=[])
             try:
                 app.field = wait_for(lambda: self.find_field(app), f"{name} owned editable field")
                 wait_for(lambda: wayland_title(log, token), f"{name} Wayland test-window title")
@@ -259,26 +259,61 @@ class LinuxDesktop:
                     raise ProofError("Ambiguous owned editable field")
         return None
 
-    def focus(self, app):
-        if not owned(app.process, app.field):
-            raise ProofError("Application ownership check failed")
-        if not app.field.get_component_iface().grab_focus():
-            raise ProofError("Could not focus the test field")
-        def focused():
-            app.field.clear_cache()
-            app.window.clear_cache()
-            return (app.field.get_state_set().contains(Atspi.StateType.FOCUSED)
-                    and app.window.get_state_set().contains(Atspi.StateType.ACTIVE))
-        wait_for(focused, "owned active window and field keyboard focus")
-
-    def guard(self, app, engine=None):
+    def focus_state(self, app):
+        """Observe owned field/window states, independent of focus API returns."""
         app.field.clear_cache()
         app.window.clear_cache()
         if not owned(app.process, app.field) or not owned(app.process, app.window):
             raise ProofError("Test application exited or ownership changed")
-        if (app.token not in (app.window.get_name() or "")
-                or not app.window.get_state_set().contains(Atspi.StateType.ACTIVE)
-                or not app.field.get_state_set().contains(Atspi.StateType.FOCUSED)):
+        if app.token not in (app.window.get_name() or ""):
+            raise ProofError("Owned window no longer has the test title")
+        return {"field_focused": app.field.get_state_set().contains(Atspi.StateType.FOCUSED),
+                "window_active": app.window.get_state_set().contains(Atspi.StateType.ACTIVE)}
+
+    def focus(self, app):
+        state = self.focus_state(app)
+        app.focus_attempts.append({"method": "initial_state", **state})
+        if all(state.values()):
+            return
+        component = app.field.get_component_iface()
+        if component is not None:
+            accepted = component.grab_focus()
+            state = self.focus_state(app)
+            app.focus_attempts.append({"method": "GrabFocus", "accepted": bool(accepted), **state})
+            if all(state.values()):
+                return
+        # Custom Qt text accessibles may omit SetFocus while their containing
+        # widget exposes it. Only request focus, never invoke arbitrary actions.
+        node = app.field
+        ancestors = []
+        for _ in range(8):
+            if node is None or not owned(app.process, node):
+                break
+            ancestors.append(node)
+            if node == app.window:
+                break
+            node = node.get_parent()
+        if not ancestors or ancestors[-1] != app.window:
+            ancestors = []
+        for node in ancestors:
+            action = node.get_action_iface()
+            if action is not None:
+                for index in range(min(action.get_n_actions(), 32)):
+                    if action.get_action_name(index) != "SetFocus":
+                        continue
+                    accepted = action.do_action(index)
+                    state = self.focus_state(app)
+                    app.focus_attempts.append({"method": "SetFocus", "accepted": bool(accepted), **state})
+                    if all(state.values()):
+                        return
+        try:
+            wait_for(lambda: all(self.focus_state(app).values()),
+                     "owned active window and field keyboard focus", timeout=5)
+        finally:
+            app.focus_attempts.append({"method": "final_state", **self.focus_state(app)})
+
+    def guard(self, app, engine=None):
+        if not all(self.focus_state(app).values()):
             raise ProofError("Test field lost focus; stopped before further input")
         if engine is not None and self.remote("-n") != engine:
             raise ProofError("Focused input method is not the required engine")
@@ -304,12 +339,14 @@ class LinuxDesktop:
 
     def application_identity(self, app):
         executable = Path(shutil.which(app.name)).resolve()
+        application = app.field.get_application()
         return {"backend": "wayland", "evidence": "owned xdg_toplevel test-title request",
                 "pid": app.process.pid,
                 "executable": str(executable),
                 "executable_sha256": hashlib.sha256(executable.read_bytes()).hexdigest(),
-                "toolkit": app.field.get_toolkit_name(),
-                "toolkit_version": app.field.get_toolkit_version(),
+                "toolkit": application.get_toolkit_name(),
+                "toolkit_version": application.get_toolkit_version(),
+                "focus_attempts": app.focus_attempts,
                 "packages": command(["pacman", "-Q", app.name, "fcitx5", "kwin",
                                      "plasma-workspace"]) if os.path.exists("/usr/bin/pacman")
                 else "unavailable: record distribution package versions separately"}

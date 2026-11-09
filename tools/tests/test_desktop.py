@@ -203,6 +203,87 @@ class OrchestrationTests(unittest.TestCase):
 
 
 class BackendTests(unittest.TestCase):
+    def focus_app(self, focused=False, active=True):
+        field, window = Mock(), Mock()
+        field.get_state_set.return_value.contains.return_value = focused
+        window.get_state_set.return_value.contains.return_value = active
+        window.get_name.return_value = "owned"
+        field.get_component_iface.return_value.grab_focus.return_value = False
+        field.get_action_iface.return_value = None
+        field.get_parent.return_value = window
+        window.get_action_iface.return_value = None
+        return SimpleNamespace(name="kwrite", process=Mock(), field=field, window=window,
+                               token="owned", focus_attempts=[])
+
+    def test_already_focused_owned_field_needs_no_grab_focus(self):
+        desktop = linux.LinuxDesktop()
+        app = self.focus_app(focused=True)
+        with patch.object(linux, "owned", return_value=True):
+            desktop.focus(app)
+        app.field.get_component_iface.assert_not_called()
+        self.assertEqual(app.focus_attempts, [{"method": "initial_state", "field_focused": True,
+                                               "window_active": True}])
+
+    def test_false_focus_request_can_succeed_only_with_observed_focus(self):
+        desktop = linux.LinuxDesktop()
+        app = self.focus_app()
+        def focused_despite_false():
+            app.field.get_state_set.return_value.contains.return_value = True
+            return False
+        app.field.get_component_iface.return_value.grab_focus.side_effect = focused_despite_false
+        with patch.object(linux, "owned", return_value=True):
+            desktop.focus(app)
+        self.assertEqual(app.focus_attempts[-1]["accepted"], False)
+        self.assertEqual(app.focus_attempts[-1]["field_focused"], True)
+
+    def test_successful_focus_request_without_focus_still_fails(self):
+        desktop = linux.LinuxDesktop()
+        app = self.focus_app()
+        app.field.get_component_iface.return_value.grab_focus.return_value = True
+        with patch.object(linux, "owned", return_value=True), \
+                patch.object(linux, "wait_for", side_effect=immediate):
+            with self.assertRaisesRegex(proof.ProofError, "keyboard focus"):
+                desktop.focus(app)
+        self.assertEqual(app.focus_attempts[-1]["field_focused"], False)
+
+    def test_parent_focus_action_must_focus_the_actual_field_and_window(self):
+        desktop = linux.LinuxDesktop()
+        app = self.focus_app(active=False)
+        action = app.window.get_action_iface.return_value = Mock()
+        action.get_n_actions.return_value = 2
+        action.get_action_name.side_effect = ["press", "SetFocus"]
+        def focus_target(index):
+            self.assertEqual(index, 1)
+            app.field.get_state_set.return_value.contains.return_value = True
+            app.window.get_state_set.return_value.contains.return_value = True
+            return True
+        action.do_action.side_effect = focus_target
+        with patch.object(linux, "owned", return_value=True):
+            desktop.focus(app)
+        action.do_action.assert_called_once_with(1)
+        self.assertEqual(app.focus_attempts[-1]["method"], "SetFocus")
+
+    def test_focused_field_in_inactive_window_is_not_accepted(self):
+        desktop = linux.LinuxDesktop()
+        app = self.focus_app(focused=True, active=False)
+        with patch.object(linux, "owned", return_value=True), \
+                patch.object(linux, "wait_for", side_effect=immediate):
+            with self.assertRaisesRegex(proof.ProofError, "keyboard focus"):
+                desktop.focus(app)
+        self.assertFalse(app.focus_attempts[-1]["window_active"])
+
+    def test_focus_actions_cannot_escape_owned_test_window_ancestry(self):
+        desktop = linux.LinuxDesktop()
+        app = self.focus_app()
+        unrelated_parent = Mock()
+        unrelated_parent.get_parent.return_value = None
+        app.field.get_parent.return_value = unrelated_parent
+        with patch.object(linux, "owned", return_value=True), \
+                patch.object(linux, "wait_for", side_effect=immediate):
+            with self.assertRaises(proof.ProofError):
+                desktop.focus(app)
+        unrelated_parent.get_action_iface.assert_not_called()
+
     def test_wayland_evidence_requires_the_owned_surface_title(self):
         for line, expected in [
             (' -> xdg_toplevel#7.set_title("jong-proof-owned")', True),

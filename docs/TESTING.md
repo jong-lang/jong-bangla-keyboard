@@ -387,8 +387,8 @@ python3 tools/check-desktop.py --run --output target/desktop-proof-001
 
 The first command checks local prerequisites without contacting a desktop
 session. The second requires a new output directory; use a different numbered
-directory after an earlier attempt instead of overwriting its reports. Approve the portal's
-temporary keyboard-control request, then leave the keyboard and mouse idle.
+directory after an earlier attempt instead of overwriting its reports. Approve
+the portal's temporary keyboard-control request, then leave the keyboard and mouse idle.
 This is local desktop control, not a network remote-desktop connection.
 The runner uses owned temporary KWrite configuration and an empty document,
 plus a separate offline Firefox profile and a local test page. It requests
@@ -402,8 +402,14 @@ In each application the proof sends raw evdev `k`, `i`, Space events through
 the portal. The English control must produce `ki `; appending the same keys
 with `jong-bangla` selected must produce `ki কি `, exactly U+006B U+0069 U+0020
 U+0995 U+09BF U+0020. AT-SPI reads only the owned test field; it never sets text.
-Focus/ownership and the selected engine are checked before every key. Backend
-evidence requires the owned test title in a Wayland `xdg_toplevel.set_title`
+Focus/ownership and the selected engine are checked before every key. Successful
+focus requests alone are not proof of focus: the owned field must report
+`FOCUSED` and its test window must report `ACTIVE`. An already focused field
+needs no focus request. Otherwise the runner tries `GrabFocus` and an exposed
+`SetFocus` action on the field or its ancestors within that test window, then
+verifies the same states again. `focus_attempts` records these observations.
+No pointer control or keyboard fallback is used to bypass a focus failure.
+Backend evidence requires the owned test title in a Wayland `xdg_toplevel.set_title`
 request, alongside the forced Wayland application launch. Only that boolean
 evidence is retained; temporary protocol traces are discarded.
 
