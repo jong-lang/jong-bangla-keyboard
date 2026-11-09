@@ -329,10 +329,18 @@ class LinuxDesktop:
             raise ProofError("Refusing text observation outside the owned test application")
         app.field.clear_cache()
         interface = app.field.get_text_iface()
-        count = interface.get_character_count()
-        if count > 64:
+        if interface is None:
+            raise ProofError("Owned field no longer exposes the AT-SPI Text interface")
+        count = Atspi.Text.get_character_count(interface)
+        if not 0 <= count <= 64:
             raise ProofError("Owned field exceeded the synthetic proof text limit")
-        return interface.get_text(0, count)
+        # PyGObject returns an Accessible implementing Text here. Its deprecated
+        # get_text() accessor shadows Text.get_text(start, end), so dispatch the
+        # Text interface explicitly rather than through the Accessible instance.
+        text = Atspi.Text.get_text(interface, 0, count)
+        if not isinstance(text, str):
+            raise ProofError("AT-SPI Text did not return readable text")
+        return text
 
     def key(self, code):
         self.portal.key(code)

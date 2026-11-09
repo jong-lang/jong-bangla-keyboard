@@ -341,6 +341,66 @@ class BackendTests(unittest.TestCase):
                 desktop.text(app)
         app.field.get_text_iface.assert_not_called()
 
+    def test_text_read_uses_interface_despite_accessible_method_collision(self):
+        class AccessibleText:
+            def __init__(self, text):
+                self.text = text
+
+            def clear_cache(self):
+                pass
+
+            def get_text_iface(self):
+                return self
+
+            def get_character_count(self):
+                return len(self.text)
+
+            def get_text(self):
+                # Same zero-argument accessor as the real Accessible binding.
+                raise AssertionError("Deprecated Accessible accessor must not be used")
+
+        class TextInterface:
+            @staticmethod
+            def get_character_count(interface):
+                return len(interface.text)
+
+            @staticmethod
+            def get_text(interface, start, end):
+                return interface.text[start:end]
+
+        desktop = linux.LinuxDesktop()
+        for text in ("", "ki ", "ki কি "):
+            app = SimpleNamespace(process=Mock(), field=AccessibleText(text))
+            with self.subTest(text=text), patch.object(linux, "owned", return_value=True), \
+                    patch.object(linux.Atspi, "Text", TextInterface, create=True):
+                self.assertEqual(desktop.text(app), text)
+
+    def test_text_read_rejects_missing_interface_and_invalid_lengths(self):
+        desktop = linux.LinuxDesktop()
+        app = SimpleNamespace(process=Mock(), field=Mock())
+        with patch.object(linux, "owned", return_value=True):
+            app.field.get_text_iface.return_value = None
+            with self.assertRaisesRegex(proof.ProofError, "no longer exposes"):
+                desktop.text(app)
+            app.field.get_text_iface.return_value = app.field
+            for count in (-1, 65):
+                interface = SimpleNamespace(get_character_count=Mock(return_value=count), get_text=Mock())
+                with self.subTest(count=count), \
+                        patch.object(linux.Atspi, "Text", interface, create=True):
+                    with self.assertRaisesRegex(proof.ProofError, "text limit"):
+                        desktop.text(app)
+                    interface.get_text.assert_not_called()
+
+    def test_text_read_rejects_null_response(self):
+        desktop = linux.LinuxDesktop()
+        app = SimpleNamespace(process=Mock(), field=Mock())
+        interface = SimpleNamespace(get_character_count=Mock(return_value=0),
+                                    get_text=Mock(return_value=None))
+        with patch.object(linux, "owned", return_value=True), \
+                patch.object(linux.Atspi, "Text", interface, create=True):
+            with self.assertRaisesRegex(proof.ProofError, "readable text"):
+                desktop.text(app)
+
     def test_application_failure_cleans_only_owned_group_and_temporary_profile(self):
         for name in ("kwrite", "firefox"):
             with self.subTest(name=name):
