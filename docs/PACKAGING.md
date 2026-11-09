@@ -82,8 +82,9 @@ a higher package release number to test upgrade transactions. It is a test
 control, not a published release or evidence of migration from an older engine.
 The missing-library control must fail; removal must delete package files while
 preserving an unrelated addon and synthetic user profile. No display or host
-session is used. Full logs are retained in CI artifacts. Interactive acceptance
-uses [the desktop checklist](TESTING.md#package-desktop-acceptance).
+session is used. Full logs are retained in CI artifacts. Maintainer VM checks
+use [installation/removal acceptance](TESTING.md#package-desktop-acceptance);
+application behavior uses the separate reference-desktop matrix in that guide.
 
 ## Maintaining the Arch/AUR recipe
 

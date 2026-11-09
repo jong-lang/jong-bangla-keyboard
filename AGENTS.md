@@ -55,7 +55,8 @@ Ninja, a C++ compiler, and Python. It does not install into the desktop.
 Dependency tools and network requirements are in docs/TESTING.md. CI runs the
 license, networking-ban, vulnerability, and source privacy gates. Finite scans
 complement review; their coverage and limits are in SECURITY.md.
-For docs-only changes, check links, budgets, and consistency. Run benchmarks and
+Select checks by impact in docs/TESTING.md; avoid redundant local runs. For
+docs-only changes, check links, budgets, and consistency. Run benchmarks and
 memory checks for relevant code changes, using the guides below. Report exact
 commands, outcomes, and unavailable checks in a short table. Never claim an old
 result as a new run. Planned checks need an issue link; do not claim they exist.

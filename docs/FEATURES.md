@@ -54,9 +54,14 @@ The Debian testing and Fedora 45 reports cover the supplied packaging-task
 artifacts in Kate, KWrite and Firefox (Firefox ESR on Debian). They do not
 establish desktop acceptance of subsequently rebuilt packages, Python GTK/Qt
 environments, XWayland, or individual application backends. The Fedora 45 report
-used Fedora 44-built RPMs. Fedora 45 is the native RPM and desktop acceptance
-target.
+used Fedora 44-built RPMs. Fedora 45 is the native RPM packaging target.
 
 No user-visible bugs are currently known to the maintainer. Track new bugs
 in [GitHub Issues](https://github.com/shaadahmmed/jong-bangla-keyboard/issues).
 Engineering follow-ups are separate from user-visible bug reports.
+
+The [testing policy](TESTING.md#maintainer-run-desktop-acceptance) uses CachyOS
+KDE Wayland as the desktop reference and Debian/Fedora KDE VMs for packaging.
+Compatibility with comparable KDE setups is an engineering assumption, not a
+claim that every distribution or application was tested. The agreed application
+targets and future Windows 11 AMD64 matrix are acceptance goals, not new passes.

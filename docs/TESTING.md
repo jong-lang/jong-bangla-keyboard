@@ -3,6 +3,32 @@
 Run commands from the repository root. Start with [AGENTS.md](../AGENTS.md) for
 the check list. Use synthetic input, never real typing or credentials.
 
+## Select checks by impact
+
+Choose local validation before running it. Run a check once for the relevant
+revision; repeat after affected changes, a failure, or an unresolved concern.
+Preserve supported regression tests even when a task does not need every layer.
+
+| Change | Validation |
+| --- | --- |
+| Documentation only | Links, shell syntax, line budgets and consistency; no desktop run |
+| Test/build tooling | Relevant existing tool regressions and checks of the behavior changed |
+| Core conversion or composition | Formatting, Clippy, Rust unit/integration tests and exact Unicode regressions; affected desktop cases when input behavior changes |
+| Native adapter, FFI or ownership | Relevant Rust/native checks, lifecycle tests and affected memory/boundary checks |
+| Package recipe or installation | Build and lifecycle checks for affected formats; VM installation/removal where needed; no duplicate application matrix |
+| Per-keystroke performance | Relevant correctness checks plus the committed benchmark comparison |
+| Release | Full applicable automated checks, reference-desktop acceptance for the current adapter stage, and selected-package identity/lifecycle checks |
+
+Reuse earlier evidence only with its original revision, environment and artifact
+identity, explaining why it still applies. Rerun affected cases when behavior,
+runtime payload, toolchain, framework, backend or test assertions change. New
+integration paths need a baseline; unchanged paths do not need repeated full
+desktop matrices. Unknown impact calls for broader checks.
+
+CI currently runs its full configured jobs on PRs. Change-aware scheduling is
+planned in [#51](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/51);
+this selection policy does not alter required GitHub checks.
+
 ## Automated layers
 
 | Layer | Command | Current CI coverage |
@@ -336,12 +362,42 @@ References: [ASan](https://clang.llvm.org/docs/AddressSanitizer.html),
 
 ## Maintainer-run desktop acceptance
 
-Use CachyOS KDE Plasma Wayland on the reference Modern 15 A5M. The maintainer
-runs tests and any required installation or input-method setup. Agents provide
-exact setup instructions for the build and never change system input settings.
+The maintainer runs interactive scripts and any necessary installation or
+input-method setup. Agents never change system input settings. The agreed matrix
+is a target for acceptance, not evidence that these applications already passed.
 
-Before a Fcitx5 release, test in Kate, Firefox, KWrite, and the Python GTK and Qt
-test environments. For a task, run the affected scenarios.
+| Environment | Application targets and purpose |
+| --- | --- |
+| CachyOS KDE Plasma Wayland, AMD64, reference Modern 15 A5M | Fcitx5 desktop behavior: Firefox, Brave as the Chromium representative, KWrite and LibreOffice Writer |
+| Debian KDE and Fedora KDE, AMD64 VMs | Package installation and removal; no repeated full desktop application matrix |
+| Windows 11, AMD64, during the TSF stage | Desktop Microsoft Word and Notepad; Brave is the provisional browser representative |
+
+Windows Firefox, Microsoft 365 web apps, Excel, PowerPoint and Windows
+LibreOffice are not required by this initial matrix. Keep historical Kate and
+Python GTK/Qt reports, but do not require these as additional routine app runs.
+Comparable KDE compatibility is assumed for planning; report desktop behavior
+only for environments actually tested. Revisit the assumption after a relevant
+framework/backend change or a distribution-specific integration failure.
+
+Linux runner expansion is tracked in
+[#47](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/47).
+[PR #48](https://github.com/shaadahmmed/jong-bangla-keyboard/pull/48) provides an
+open KWrite/Firefox committed-text proof, not full acceptance or Brave/Writer
+coverage. Windows automation is planned in
+[#52](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/52), after TSF
+exists; no Windows driver or coverage is claimed now.
+
+Runners should keep named, maintainable scenarios and exact Unicode expectations
+separate from platform transports where behavior is shared. Send actual keys
+through the input method and independently observe owned test fields. Pasting
+expected output or setting text directly is not input-path proof. Retain readable
+and machine-readable results, artifact/environment identity, inactive-engine
+controls, bounded cleanup and explicit failures or unavailable observations.
+
+Use the proven automated assertions first. For remaining gaps, provide only
+the affected rows below as a brief manual checklist. Begin in an empty owned
+document or local browser test field with the intended Jong package activated.
+Never use personal documents, credentials or typed-text logs.
 
 | Steps | Expected result |
 | --- | --- |
@@ -355,46 +411,34 @@ test environments. For a task, run the affected scenarios.
 | Change focus, switch input methods, then revisit the field | No duplicate commit or composition shared across fields |
 | Disable password input methods in Fcitx5 and type synthetic text in a password field | No Jong composition or stale preedit |
 
-Record the commit, distro, desktop, Fcitx5, application/toolkit versions, Wayland
-or XWayland backend, steps, and actual results on the PR or bug issue. Do not
-infer XWayland or other distro coverage. Keep package tests separate from engine
-tests. Report only checks actually run in this task.
+Record source/package identity, OS, input framework, application/toolkit versions,
+backend, exact actual Unicode and per-case results. Missing required observations
+are incomplete, not passes. Preedit appearance and other assertions remain manual
+until reliable automation is demonstrated. For each manual request, state setup,
+keys/actions and expected result, then record the maintainer's observation.
+Select task cases and reuse baselines under the change-impact policy above.
 
 ### Package desktop acceptance
 
-The maintainer runs this checklist in disposable x86-64 KDE Plasma Wayland VMs
-for Debian testing and Fedora 45, plus the CachyOS reference desktop or an Arch
-VM. Use a fresh snapshot and repositories supplying Fcitx5 5.1.23 or newer.
-Record the ISO URL/checksum or VM image identity, distro update date, kernel,
-Plasma, Fcitx5, package version/hash, application/toolkit versions and backend.
-Container identities and results are recorded separately by the package runner.
+Use disposable AMD64 Debian testing KDE and Fedora 45 KDE VMs for the affected
+package formats, with fresh snapshots and repositories supplying required
+dependencies. The automated package runner already checks synthetic loading,
+revision upgrades and removal in clean containers; retain those checks.
 
-1. Install the matching PR artifact with the command in
-   [PACKAGING.md](PACKAGING.md#install-upgrade-activate-and-remove). Install
-   `fcitx5-configtool` on Arch/Fedora or `fcitx5-config-qt` on Debian, plus
-   Kate, KWrite and Firefox from that distro. Check that the package manager
-   resolves dependencies without copying libraries or modifying system paths.
-2. Log out/in. Select Fcitx5 in KDE's Virtual Keyboard settings and add Jong
-   Bangla in Fcitx5 Configuration. Expect one Jong entry, and successful
-   activation without a missing-addon error. Record the exact setup changes;
-   agents never perform these changes on the maintainer's desktop.
-3. Run the typing scenarios above in Kate, KWrite and Firefox on Wayland,
-   including focus changes, password fields, input-method switching and
-   synthetic `kh12T`. Record exact actual output and any duplicated commits.
-   Repeat the existing Python GTK and Qt acceptance environments if available;
-   report unavailable applications explicitly. XWayland needs a separate run.
-4. Install the supplied revision-2 test package over revision 1, restart the
-   Fcitx5 session and repeat activation and `kh12T`. Expect the newer package
-   revision, one registration and unchanged behavior. This tests a package
-   revision upgrade, not migration from an earlier public engine release.
-5. Switch to another input method, remove Jong with the documented command,
-   then log out/in. Expect Jong's library and registrations removed, other
-   input methods working, and existing user configuration retained. Restore
-   the VM snapshot when finished.
+1. Record VM/image identity, distro update date, framework version and exact
+   package filename/hash. Verify its published or PR checksum.
+2. Install that one package using
+   [PACKAGING.md](PACKAGING.md#install-upgrade-activate-and-remove). Expect the
+   package manager to resolve dependencies and own Jong's library, registration
+   and license files, without manual library copies or input-setting changes.
+3. Remove it with the documented command. Expect package-owned files removed,
+   unrelated packages/addons intact and existing user configuration retained.
+   Record actual results and restore the snapshot.
 
-Report each environment and step's actual result on the implementation PR.
-Until returned, mark desktop results pending and retain the platform matrix's
-existing support limits. Release publication requires this maintainer evidence.
+No full typing checklist or routine desktop reconfiguration is required in these
+VMs. These results establish installation/removal only. A packaging change that
+affects activation or input routing requires a targeted reference-desktop check
+or investigation of the affected environment, rather than an assumed pass.
 
 ### Release artifact acceptance
 
@@ -404,7 +448,8 @@ Preserve the [PR #40 desktop reports](https://github.com/shaadahmmed/jong-bangla
 and the [maintainer's later confirmation](https://github.com/shaadahmmed/jong-bangla-keyboard/pull/40#issuecomment-6711683895)
 with their original source and package hashes. The confirmation's RPM pair is
 unknown. Do not relabel these completed tests as new runs or request repetition
-solely for implementation review. They do not accept newly rebuilt artifacts.
+solely for implementation review. They do not establish new artifact-specific
+passes; apply the evidence-reuse rules above to later work.
 
 For subsequent releases, close these items before publication:
 
@@ -414,20 +459,19 @@ For subsequent releases, close these items before publication:
    hashes and source identity to `build-info.json` and `package-check-*.json`.
    Obtain the revision-2 controls from the matching package logs and verify
    their hashes against those reports. Do not mix runs or source archives.
-2. Associate each selected Arch, Debian testing and Fedora 45 package pair with
-   a maintainer acceptance record. In particular, the known Fedora 44-built
-   RPM pass and the confirmation with unknown pair do not identify a tested
-   Fedora 45-built pair. If identity cannot be established, use the package
-   desktop checklist above on the selected artifacts in the specified VMs.
-3. Record package filenames/hashes, source commit, guest checksum results,
-   image/snapshot identity, update date and application/toolkit/backend versions.
-   Record actual scenario outputs, including focus-loss commit versus clear and
-   the password restriction setting. Complete missing punctuation, escape and
-   navigation cases; run the Python GTK/Qt environments or state availability.
-   Keep unknown details explicit and retain the existing support limits.
+2. Associate selected packages with automated lifecycle results, necessary
+   installation/removal records and reference-desktop behavior evidence. Keep
+   package results distinct from application behavior; no full Debian/Fedora
+   desktop matrix is required. Record which prior cases remain applicable and
+   rerun affected cases when their runtime/build/environment inputs change.
+3. Record actual application/scenario results against the agreed matrix, including
+   manual automation gaps and unavailable cases. Preserve original hashes and
+   unknown historical details; do not transfer an old pass to a new package hash.
+   Keep support claims within the resulting evidence.
 4. After separately reviewed merge and successful post-merge CI, obtain the
    maintainer's release instruction before tagging. Verify the tag-built draft's
    notes, source commit, all assets and checksums again. If the intended package
-   bytes change, record acceptance for the replacement artifacts before
-   publication; a passing container check alone is insufficient. Only the
+   bytes change, verify the replacement identities and rerun affected checks
+   under the impact policy before publication; package checks do not replace
+   reference-desktop behavior evidence. Only the
    maintainer publishes the complete inspected draft.

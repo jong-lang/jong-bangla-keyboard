@@ -28,15 +28,14 @@ starting a task. Report access failures; do not assume the tracker is empty.
 Explain the purpose and expected result before editing. Keep each task coherent.
 Use Conventional Commits: `type: description` or `type(scope): description`.
 
-Implement the change and relevant regression tests. Select checks by impact:
-
-| Change | Required validation |
-| --- | --- |
-| Documentation only | Local links, line budgets, and consistency with agreed behavior and verified code |
-| Rust code | Formatting, Clippy with warnings denied, unit and integration tests |
-| Performance or per-keystroke behavior | Relevant code checks and comparison against the committed performance baseline |
-| Memory ownership or native boundary | Relevant code checks, memory checks, and appropriate boundary sanitizers |
-| Platform behavior or packaging | Relevant automated checks and a maintainer-run desktop or installation test |
+Implement the change and relevant regression tests. Use
+[change-impact selection](docs/TESTING.md#select-checks-by-impact) and the
+[agreed application matrix](docs/TESTING.md#maintainer-run-desktop-acceptance).
+Prefer maintainer-run scripts with independently verified assertions. Ask for
+manual testing only for remaining automation gaps, with brief exact steps.
+Do not repeat every application on each KDE distribution. CI scheduling changes
+are tracked in [#51](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/51);
+existing required checks remain in force until that work is delivered.
 
 Use the exact commands in AGENTS.md and the task-specific testing guide. Report
 actual commands and outcomes in a short table. Identify skipped or unavailable
@@ -216,6 +215,8 @@ Current delivery:
 | Native Fcitx5 release | [v0.1.0 published](https://github.com/shaadahmmed/jong-bangla-keyboard/releases/tag/v0.1.0); preserve the recorded desktop coverage limits |
 | AUR publication | [#46](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/46); supported recipe, publication awaits maintainer account approval |
 | Desktop acceptance automation | [#47](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/47); ongoing, not a full acceptance claim |
+| Change-aware CI scheduling | [#51](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/51); planned |
+| Windows TSF acceptance automation | [#52](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/52); implement during the TSF stage |
 | Windows TSF, then IBus | Adapter sequence; [current platform scope](docs/FEATURES.md#platform-matrix) |
 
 For each release:
@@ -226,12 +227,12 @@ For each release:
    validator requires nonempty `Highlights`, `Fixes`, `Breaking changes`,
    `Installation and upgrade`, `Tested environments`, and `Known issues` sections.
    Run `python3 tools/check-release.py --base origin/main` before the PR.
-2. Pass the applicable automated checks and obtain the maintainer's desktop
-   acceptance from [TESTING.md](docs/TESTING.md#maintainer-run-desktop-acceptance).
-   Verify every package by installing and removing it in a clean Arch,
-   Debian or Ubuntu, and Fedora container or VM, as applicable to its format.
-   Record image identities and results on the PR. Container checks do not
-   establish interactive desktop support.
+2. Pass the applicable automated checks and record reference-desktop acceptance
+   under [TESTING.md](docs/TESTING.md#maintainer-run-desktop-acceptance), reusing
+   evidence only under its change-impact rules. Verify packages through their
+   automated lifecycle checks and necessary installation/removal on the agreed
+   Debian KDE and Fedora KDE VMs. Record artifact/image identities and actual
+   results. Package checks do not establish desktop application support.
 3. Complete separate review and obtain explicit merge authorization. After
    merging and verifying CI, obtain the maintainer's release instruction before
    creating or pushing a `vX.Y.Z` tag. Do not overwrite tags or existing releases.
