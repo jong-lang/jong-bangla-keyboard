@@ -5,6 +5,12 @@ version and date. Release preparation follows [CONTRIBUTING.md](CONTRIBUTING.md#
 
 ## Unreleased
 
+### Highlights
+
+- Remove the Flatpak packaging prototype and its build and comparison guides.
+  Adapter delivery now proceeds from Fcitx5 to Windows TSF, then IBus. Native
+  packages and the AUR recipe remain supported.
+
 ## 0.1.0 - 2026-11-08
 
 ### Highlights

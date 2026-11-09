@@ -3,6 +3,32 @@
 Run commands from the repository root. Start with [AGENTS.md](../AGENTS.md) for
 the check list. Use synthetic input, never real typing or credentials.
 
+## Select checks by impact
+
+Choose local validation before running it. Run a check once for the relevant
+revision; repeat after affected changes, a failure, or an unresolved concern.
+Preserve supported regression tests even when a task does not need every layer.
+
+| Change | Validation |
+| --- | --- |
+| Documentation only | Links, shell syntax, line budgets and consistency; no desktop run |
+| Test/build tooling | Relevant existing tool regressions and checks of the behavior changed |
+| Core conversion or composition | Formatting, Clippy, Rust unit/integration tests and exact Unicode regressions; affected desktop cases when input behavior changes |
+| Native adapter, FFI or ownership | Relevant Rust/native checks, lifecycle tests and affected memory/boundary checks |
+| Package recipe or installation | Build and lifecycle checks for affected formats; VM installation/removal where needed; no duplicate application matrix |
+| Per-keystroke performance | Relevant correctness checks plus the committed benchmark comparison |
+| Release | Full applicable automated checks, reference-desktop acceptance for the current adapter stage, and selected-package identity/lifecycle checks |
+
+Reuse earlier evidence only with its original revision, environment and artifact
+identity, explaining why it still applies. Rerun affected cases when behavior,
+runtime payload, toolchain, framework, backend or test assertions change. New
+integration paths need a baseline; unchanged paths do not need repeated full
+desktop matrices. Unknown impact calls for broader checks.
+
+CI currently runs its full configured jobs on PRs. Change-aware scheduling is
+planned in [#51](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/51);
+this selection policy does not alter required GitHub checks.
+
 ## Automated layers
 
 | Layer | Command | Current CI coverage |
@@ -336,12 +362,42 @@ References: [ASan](https://clang.llvm.org/docs/AddressSanitizer.html),
 
 ## Maintainer-run desktop acceptance
 
-Use CachyOS KDE Plasma Wayland on the reference Modern 15 A5M. The maintainer
-runs tests and any required installation or input-method setup. Agents provide
-exact setup instructions for the build and never change system input settings.
+The maintainer runs interactive scripts and any necessary installation or
+input-method setup. Agents never change system input settings. The agreed matrix
+is a target for acceptance, not evidence that these applications already passed.
 
-Before a Fcitx5 release, test in Kate, Firefox, KWrite, and the Python GTK and Qt
-test environments. For a task, run the affected scenarios.
+| Environment | Application targets and purpose |
+| --- | --- |
+| CachyOS KDE Plasma Wayland, AMD64, reference Modern 15 A5M | Fcitx5 desktop behavior: Firefox, Brave as the Chromium representative, KWrite and LibreOffice Writer |
+| Debian KDE and Fedora KDE, AMD64 VMs | Package installation and removal; no repeated full desktop application matrix |
+| Windows 11, AMD64, during the TSF stage | Desktop Microsoft Word and Notepad; Brave is the provisional browser representative |
+
+Windows Firefox, Microsoft 365 web apps, Excel, PowerPoint and Windows
+LibreOffice are not required by this initial matrix. Keep historical Kate and
+Python GTK/Qt reports, but do not require these as additional routine app runs.
+Comparable KDE compatibility is assumed for planning; report desktop behavior
+only for environments actually tested. Revisit the assumption after a relevant
+framework/backend change or a distribution-specific integration failure.
+
+Linux runner expansion is tracked in
+[#47](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/47).
+[PR #48](https://github.com/shaadahmmed/jong-bangla-keyboard/pull/48) provides an
+open KWrite/Firefox committed-text proof, not full acceptance or Brave/Writer
+coverage. Windows automation is planned in
+[#52](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/52), after TSF
+exists; no Windows driver or coverage is claimed now.
+
+Runners should keep named, maintainable scenarios and exact Unicode expectations
+separate from platform transports where behavior is shared. Send actual keys
+through the input method and independently observe owned test fields. Pasting
+expected output or setting text directly is not input-path proof. Retain readable
+and machine-readable results, artifact/environment identity, inactive-engine
+controls, bounded cleanup and explicit failures or unavailable observations.
+
+Use the proven automated assertions first. For remaining gaps, provide only
+the affected rows below as a brief manual checklist. Begin in an empty owned
+document or local browser test field with the intended Jong package activated.
+Never use personal documents, credentials or typed-text logs.
 
 | Steps | Expected result |
 | --- | --- |
@@ -355,58 +411,47 @@ test environments. For a task, run the affected scenarios.
 | Change focus, switch input methods, then revisit the field | No duplicate commit or composition shared across fields |
 | Disable password input methods in Fcitx5 and type synthetic text in a password field | No Jong composition or stale preedit |
 
-Record the commit, distro, desktop, Fcitx5, application/toolkit versions, Wayland
-or XWayland backend, steps, and actual results on the PR or bug issue. Do not
-infer XWayland or other distro coverage. Keep package tests separate from engine
-tests. Report only checks actually run in this task.
+Record source/package identity, OS, input framework, application/toolkit versions,
+backend, exact actual Unicode and per-case results. Missing required observations
+are incomplete, not passes. Preedit appearance and other assertions remain manual
+until reliable automation is demonstrated. For each manual request, state setup,
+keys/actions and expected result, then record the maintainer's observation.
+Select task cases and reuse baselines under the change-impact policy above.
 
 ### Package desktop acceptance
 
-The maintainer runs this checklist in disposable x86-64 KDE Plasma Wayland VMs
-for Debian testing and Fedora 45, plus the CachyOS reference desktop or an Arch
-VM. Use a fresh snapshot and repositories supplying Fcitx5 5.1.23 or newer.
-Record the ISO URL/checksum or VM image identity, distro update date, kernel,
-Plasma, Fcitx5, package version/hash, application/toolkit versions and backend.
-Container identities and results are recorded separately by the package runner.
+Use disposable AMD64 Debian testing KDE and Fedora 45 KDE VMs for the affected
+package formats, with fresh snapshots and repositories supplying required
+dependencies. The automated package runner already checks synthetic loading,
+revision upgrades and removal in clean containers; retain those checks.
 
-1. Install the matching PR artifact with the command in
-   [PACKAGING.md](PACKAGING.md#install-upgrade-activate-and-remove). Install
-   `fcitx5-configtool` on Arch/Fedora or `fcitx5-config-qt` on Debian, plus
-   Kate, KWrite and Firefox from that distro. Check that the package manager
-   resolves dependencies without copying libraries or modifying system paths.
-2. Log out/in. Select Fcitx5 in KDE's Virtual Keyboard settings and add Jong
-   Bangla in Fcitx5 Configuration. Expect one Jong entry, and successful
-   activation without a missing-addon error. Record the exact setup changes;
-   agents never perform these changes on the maintainer's desktop.
-3. Run the typing scenarios above in Kate, KWrite and Firefox on Wayland,
-   including focus changes, password fields, input-method switching and
-   synthetic `kh12T`. Record exact actual output and any duplicated commits.
-   Repeat the existing Python GTK and Qt acceptance environments if available;
-   report unavailable applications explicitly. XWayland needs a separate run.
-4. Install the supplied revision-2 test package over revision 1, restart the
-   Fcitx5 session and repeat activation and `kh12T`. Expect the newer package
-   revision, one registration and unchanged behavior. This tests a package
-   revision upgrade, not migration from an earlier public engine release.
-5. Switch to another input method, remove Jong with the documented command,
-   then log out/in. Expect Jong's library and registrations removed, other
-   input methods working, and existing user configuration retained. Restore
-   the VM snapshot when finished.
+1. Record VM/image identity, distro update date, framework version and exact
+   package filename/hash. Verify its published or PR checksum.
+2. Install that one package using
+   [PACKAGING.md](PACKAGING.md#install-upgrade-activate-and-remove). Expect the
+   package manager to resolve dependencies and own Jong's library, registration
+   and license files, without manual library copies or input-setting changes.
+3. Remove it with the documented command. Expect package-owned files removed,
+   unrelated packages/addons intact and existing user configuration retained.
+   Record actual results and restore the snapshot.
 
-Report each environment and step's actual result on the implementation PR.
-Until returned, mark desktop results pending and retain the platform matrix's
-existing support limits. Release publication requires this maintainer evidence.
+No full typing checklist or routine desktop reconfiguration is required in these
+VMs. These results establish installation/removal only. A packaging change that
+affects activation or input routing requires a targeted reference-desktop check
+or investigation of the affected environment, rather than an assumed pass.
 
 ### Release artifact acceptance
 
-First-release artifact acceptance is tracked in
+v0.1.0 is published. Its original artifact-acceptance discussion is retained in
 [#41](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/41).
-Carry forward the [PR #40 desktop reports](https://github.com/shaadahmmed/jong-bangla-keyboard/pull/40)
+Preserve the [PR #40 desktop reports](https://github.com/shaadahmmed/jong-bangla-keyboard/pull/40)
 and the [maintainer's later confirmation](https://github.com/shaadahmmed/jong-bangla-keyboard/pull/40#issuecomment-6711683895)
 with their original source and package hashes. The confirmation's RPM pair is
 unknown. Do not relabel these completed tests as new runs or request repetition
-solely for implementation review. They do not accept newly rebuilt artifacts.
+solely for implementation review. They do not establish new artifact-specific
+passes; apply the evidence-reuse rules above to later work.
 
-Before publication, the maintainer and release PR must close these items:
+For subsequent releases, close these items before publication:
 
 1. Identify the selected CI run and checkout commit, download `release-bundle`
    and the matching `package-logs-{arch,deb,rpm}` artifacts, and run
@@ -414,181 +459,19 @@ Before publication, the maintainer and release PR must close these items:
    hashes and source identity to `build-info.json` and `package-check-*.json`.
    Obtain the revision-2 controls from the matching package logs and verify
    their hashes against those reports. Do not mix runs or source archives.
-2. Associate each selected Arch, Debian testing and Fedora 45 package pair with
-   a maintainer acceptance record. In particular, the known Fedora 44-built
-   RPM pass and the confirmation with unknown pair do not identify a tested
-   Fedora 45-built pair. If identity cannot be established, use the package
-   desktop checklist above on the selected artifacts in the specified VMs.
-3. Record package filenames/hashes, source commit, guest checksum results,
-   image/snapshot identity, update date and application/toolkit/backend versions.
-   Record actual scenario outputs, including focus-loss commit versus clear and
-   the password restriction setting. Complete missing punctuation, escape and
-   navigation cases; run the Python GTK/Qt environments or state availability.
-   Keep unknown details explicit and retain the existing support limits.
+2. Associate selected packages with automated lifecycle results, necessary
+   installation/removal records and reference-desktop behavior evidence. Keep
+   package results distinct from application behavior; no full Debian/Fedora
+   desktop matrix is required. Record which prior cases remain applicable and
+   rerun affected cases when their runtime/build/environment inputs change.
+3. Record actual application/scenario results against the agreed matrix, including
+   manual automation gaps and unavailable cases. Preserve original hashes and
+   unknown historical details; do not transfer an old pass to a new package hash.
+   Keep support claims within the resulting evidence.
 4. After separately reviewed merge and successful post-merge CI, obtain the
    maintainer's release instruction before tagging. Verify the tag-built draft's
    notes, source commit, all assets and checksums again. If the intended package
-   bytes change, record acceptance for the replacement artifacts before
-   publication; a passing container check alone is insufficient. Only the
+   bytes change, verify the replacement identities and rerun affected checks
+   under the impact policy before publication; package checks do not replace
+   reference-desktop behavior evidence. Only the
    maintainer publishes the complete inspected draft.
-
-## Flatpak prototype comparison
-
-This is the maintainer-run test plan for
-[#31](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/31). Build the
-two unsigned local bundles using the [recipe](PACKAGING.md#flatpak-extension-prototype).
-Results are pending until reported on the prototype PR. Native release desktop
-reports do not establish either Flatpak route. Do not change the main desktop
-to run these experiments. Agents do not activate daemons or change input settings.
-
-### Environment and route isolation
-
-Start with a disposable x86-64 Arch KDE Plasma Wayland VM and record its ISO
-URL/checksum or image identity, snapshot, last update date, kernel and Plasma.
-Use separate snapshots for route A (native Fcitx5 plus the published native Jong
-package) and route B (Flatpak Fcitx5 plus this extension). Keep exactly one
-daemon serving the session. Preserve the pre-test snapshot for restoration.
-After a first successful comparison, repeat on Debian testing and Fedora 45
-before claiming those environments. XWayland is a separate test lane.
-
-Install prerequisites in the Arch VM, then install the selected applications:
-
-```sh
-sudo pacman -Syu --needed flatpak fcitx5 fcitx5-configtool fcitx5-gtk fcitx5-qt kate kwrite
-flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-flatpak install --user flathub org.kde.kate org.mozilla.firefox org.gnome.TextEditor
-date -Iseconds
-cat /etc/os-release
-uname -mrv
-plasmashell --version
-printenv XDG_SESSION_TYPE
-pacman -Q fcitx5 fcitx5-configtool fcitx5-gtk fcitx5-qt kate kwrite
-flatpak --version
-flatpak list --user --columns=application,arch,branch,version,active,runtime
-for jong_app in org.kde.kate org.mozilla.firefox org.gnome.TextEditor; do
-  flatpak info --user --show-commit "$jong_app"
-  flatpak info --user --show-runtime "$jong_app"
-done
-```
-
-Expect x86-64, Plasma Wayland and native Fcitx5 5.1.23 or newer. The list's active
-column abbreviates commits; retain the full hashes from `info`. For every runtime
-ref printed above, record its full hash with `flatpak info --show-commit REF`.
-Record any overrides with `flatpak override --user --show APP_ID` and
-`flatpak override --system --show APP_ID` for each app. Record relevant GTK/Qt
-input-module environment variables, including their absence. Use the upstream
-[KDE setup](https://fcitx-im.org/wiki/Using_Fcitx_5_on_Wayland#KDE_Plasma), with no
-globally forced GTK/Qt input module. Missing modules or required per-app setup
-are findings to record, not reasons to add broad sandbox overrides silently.
-
-For route A, verify the downloaded native package against the published
-`SHA256SUMS`, then install that single package via the
-[native instructions](PACKAGING.md#install-upgrade-activate-and-remove).
-The maintainer selects native Fcitx5 in KDE Virtual Keyboard, logs out/in and
-adds Jong in the native configuration tool. Record package filename/hash and
-every setup change. No Flatpak Fcitx5 daemon or Jong extension should be installed
-in this snapshot. Native Fcitx5 must serve both native and sandboxed applications.
-
-For route B, restore the pre-Jong snapshot; leave native host input modules
-installed but disable native Fcitx5 autostart in the VM. Transfer the two exact
-prototype bundles and a trusted checksum manifest from the build environment.
-In the directory holding those files:
-
-```sh
-sha256sum --check Jong-SHA256SUMS
-flatpak install --user flathub org.fcitx.Fcitx5//stable
-flatpak info --user --show-commit org.fcitx.Fcitx5
-flatpak info --user --show-permissions org.fcitx.Fcitx5
-flatpak install --user ./Jong-r1.flatpak
-flatpak info --user --show-commit org.fcitx.Fcitx5.Addon.Jong//stable
-flatpak run --command=sh org.fcitx.Fcitx5 -c \
-  'cat /.flatpak-info; cat /app/addons/Jong/share/jong-bangla/source-info.json; ldd /app/addons/Jong/lib/fcitx5/libjong-bangla.so'
-```
-
-Expect the selected source commit, an `app-extensions` entry identifying Jong,
-all library dependencies resolved, and no toolchain in `/app/addons/Jong`.
-Record the parent/runtime commits; if they differ from the build environment,
-stop and align them or rebuild against the selected parent before acceptance.
-The shell inspection does not start the daemon or establish addon loading.
-
-The parent exports a desktop entry marked `X-KDE-Wayland-VirtualKeyboard=true`.
-The maintainer selects the Flatpak entry in KDE Virtual Keyboard and logs out/in.
-Native and Flatpak entries can have the same visible name: verify the selected
-entry's Exec line names `org.fcitx.Fcitx5`. If it is unavailable, record a blocked
-KDE integration result instead of replacing the compositor-launched daemon with
-an arbitrary terminal launch. Open the parent's configuration tool:
-
-```sh
-flatpak run --command=fcitx5-config-qt org.fcitx.Fcitx5
-flatpak ps --columns=application,pid,instance
-pgrep -a -x fcitx5
-pgrep -a -x fcitx5-bin
-```
-
-Add Jong Bangla, disabling the language filter if needed. Expect one available
-Jong engine and one daemon. Inspect `/proc/PID/maps` for that daemon using
-`rg 'libjong-bangla' /proc/PID/maps` after activating Jong; expect the extension's
-library path. Use only this selected PID, not arbitrary process memory or input
-logs. Record blocked access explicitly. A mounted extension alone is not proof
-the daemon loaded it. First verify an existing known-working input method in
-each application; failures there indicate a broader integration problem.
-
-### Applications and cases
-
-Run the [desktop scenarios](#maintainer-run-desktop-acceptance) in native Kate
-and KWrite as controls, plus Flatpak Kate (Qt), Firefox and GNOME Text Editor
-(GTK). Launch Flatpak apps explicitly with `flatpak run APP_ID` to avoid native
-copies. Record actual backend evidence per app: Firefox `about:support` Window
-Protocol; Qt/GTK application diagnostics where available, corroborated by the
-KWin Debug Console's Wayland/X11 window classification. Report a backend as
-unknown if it cannot be verified; the session variable alone is insufficient.
-
-In every cell test editable `kh12T` = `খ১২ট` (U+0996 U+09E7 U+09E8 U+099F),
-Backspace then Ctrl+Backspace, inactive deletion, Space/Enter, active/inactive
-Escape, Left and Ctrl+F during composition, focus changes and input-method
-switching. Include fresh `.` = `।` (U+0964), fresh period followed by backtick =
-`.` (U+002E), and fresh `R` = `ড়` (U+09DC); clear between probes.
-Expect single commits, normal shortcut delivery and no cross-field preedit.
-Record whether focus loss commits or clears. Disable input methods in password
-fields in the serving daemon's configuration and use synthetic password input;
-expect no Jong composition/stale preedit. Use a local synthetic browser form
-with a password field rather than entering credentials. Report app scenarios
-that are unavailable, not applicable, or blocked individually.
-
-After dependencies are installed, disconnect the VM's network and repeat
-activation and the typing cases. Expect unchanged local typing. This establishes
-offline usability only; it is not a proof of no network calls. Retain the
-[permission assessment](PACKAGING.md#permission-assessment) with the results.
-
-### Upgrade, removal and failure controls
-
-In route B record the extension commit, install `Jong-r2.flatpak` with
-`flatpak install --user ./Jong-r2.flatpak`, then record the commit again. Expect a
-different OSTree commit with unchanged runtime files. Log out/in and repeat
-activation, `kh12T`, focus changes and a shortcut in every app. Expect one engine
-and unchanged behavior. This is a same-code packaging transaction, not an engine
-version upgrade. Also test a second logout/login without reinstalling.
-
-Select another input method, uninstall only the extension with
-`flatpak uninstall --user org.fcitx.Fcitx5.Addon.Jong//stable`, and log out/in.
-Expect its mount and available addon registration gone, alternative input methods
-working, and unrelated extensions/user configuration retained. A saved Jong
-profile entry can remain; it must not load a removed library. Reinstall revision
-1, restart and repeat activation. Restore the VM snapshot afterwards.
-
-In a separate snapshot with no stable Jong installed, export/install a control
-on branch `wrong-branch` using the same `flatpak build-export` and
-`flatpak build-bundle` commands with that final branch argument. The stable
-parent must not mount it or make Jong available. Record the missing-extension
-case before installing any Jong as well. The build's staged missing-library
-control separately checks that a developer/system copy cannot mask a failure.
-
-For each route/app/backend/scenario record pass, fail, blocked or unavailable,
-exact steps and actual Unicode/commit behavior. Attach artifact hashes, source,
-parent/SDK/runtime identities and setup changes. Do not collect real typed text
-or enable daemon key-event logging. Recommend a route only after the agreed
-matrix and lifecycle checks pass, setup and inherited permissions are understood,
-and the extension has a practical benefit over native Jong serving Flatpak apps.
-Keep unsupported distributions, XWayland, IBus, ARM64 and untested app/runtime
-combinations outside any support claim. Maintainer results and separate review
-remain required before treating the prototype as accepted.

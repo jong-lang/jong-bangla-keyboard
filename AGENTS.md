@@ -55,7 +55,8 @@ Ninja, a C++ compiler, and Python. It does not install into the desktop.
 Dependency tools and network requirements are in docs/TESTING.md. CI runs the
 license, networking-ban, vulnerability, and source privacy gates. Finite scans
 complement review; their coverage and limits are in SECURITY.md.
-For docs-only changes, check links, budgets, and consistency. Run benchmarks and
+Select checks by impact in docs/TESTING.md; avoid redundant local runs. For
+docs-only changes, check links, budgets, and consistency. Run benchmarks and
 memory checks for relevant code changes, using the guides below. Report exact
 commands, outcomes, and unavailable checks in a short table. Never claim an old
 result as a new run. Planned checks need an issue link; do not claim they exist.
@@ -77,7 +78,8 @@ result as a new run. Planned checks need an issue link; do not claim they exist.
   Keep `Cargo.toml` minimum Rust requirements consistent; justify and test raises.
 - Make typing local. Add no network access, telemetry, typed-text logging, or
   persistence beyond typing needs. Use synthetic text in diagnostics and tests.
-- Preserve all older tests. Validate exact Unicode, not visual similarity.
+- Preserve regression tests for supported behavior. Remove feature-only tests
+  when the maintainer explicitly retires that feature. Validate exact Unicode.
 - Give the maintainer exact setup, steps, and expected results for necessary
   manual tests. The maintainer runs them. Never change system input settings.
 - Use Conventional Commits. Complete docs and checks, then commit, push, and open
