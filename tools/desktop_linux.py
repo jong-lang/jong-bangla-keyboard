@@ -137,6 +137,46 @@ def wayland_title(log, token):
                for line in content.splitlines())
 
 
+def live_session_processes(session):
+    """Inspect process metadata only; zombies cannot use the temporary profile."""
+    members = []
+    for entry in Path("/proc").iterdir():
+        if not entry.name.isdecimal():
+            continue
+        try:
+            # comm may contain spaces or parentheses; fields after its final ')' are fixed.
+            fields = (entry / "stat").read_bytes().rsplit(b")", 1)[1].split()
+            if int(fields[3]) == session and fields[0] not in (b"Z", b"X"):
+                members.append(int(entry.name))
+        except (FileNotFoundError, ProcessLookupError):
+            continue
+    return members
+
+
+def stop_application(process, timeout=3):
+    """Bound termination of the owned session, independently of leader lifetime."""
+    def stopped(sig):
+        members = live_session_processes(process.pid)
+        for pid in members:
+            try:
+                # Pin identity before checking ownership, so PID reuse cannot signal a stranger.
+                descriptor = os.pidfd_open(pid)
+                try:
+                    if os.getsid(pid) == process.pid:
+                        signal.pidfd_send_signal(descriptor, sig)
+                finally:
+                    os.close(descriptor)
+            except ProcessLookupError:
+                continue
+        return not members
+
+    try:
+        wait_for(lambda: stopped(signal.SIGTERM), "owned application session exit", timeout)
+    except ProofError:
+        wait_for(lambda: stopped(signal.SIGKILL), "owned application session kill", timeout)
+    process.wait(timeout=timeout)
+
+
 class LinuxDesktop:
     def __init__(self):
         self.portal = None
@@ -145,16 +185,40 @@ class LinuxDesktop:
     def remote(*args):
         return command(["fcitx5-remote", "--check", *args])
 
+    @staticmethod
+    def group_selection():
+        # FullInputMethodGroupInfo exposes the default even while Fcitx5 is inactive.
+        bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
+        info = bus.call_sync(
+            "org.fcitx.Fcitx5", "/controller", "org.fcitx.Fcitx.Controller1",
+            "FullInputMethodGroupInfo", GLib.Variant("(s)", ("",)), None,
+            Gio.DBusCallFlags.NONE, 5000, None).unpack()
+        group, selected, _layout, _options, entries = info
+        names = [entry[0] for entry in entries]
+        if not group or not selected or selected not in names or not names:
+            raise ProofError("Could not observe the Fcitx5 group's default input method")
+        return group, selected, names[0]
+
     def snapshot_engine(self):
         engine, state = self.remote("-n"), self.remote()
         if not engine or state not in ("1", "2"):
             raise ProofError("Fcitx5 must already be running with an input method selected")
-        return engine, state
+        group, selected, keyboard = self.group_selection()
+        if engine != (selected if state == "2" else keyboard):
+            raise ProofError("Fcitx5 effective method differs from the restorable group selection")
+        return engine, state, group, selected
 
     def restore_engine(self, previous):
-        engine, state = previous
-        self.remote("-s", engine)
-        self.remote("-o" if state == "2" else "-c")
+        engine, state, group, selected = previous
+        if self.group_selection()[0] != group:
+            raise ProofError("Fcitx5 group changed; refusing to alter another group's selection")
+        try:
+            self.remote("-s", selected)
+        finally:
+            self.remote("-o" if state == "2" else "-c")
+        wait_for(lambda: (self.group_selection()[:2] == (group, selected)
+                          and self.remote("-n") == engine and self.remote() == state),
+                 "Fcitx5 default input method and activation restoration", timeout=3)
 
     def __enter__(self):
         Atspi.init()
@@ -221,15 +285,7 @@ class LinuxDesktop:
                 yield app
             finally:
                 # Never terminate another instance or send application-wide close commands.
-                try:
-                    os.killpg(process.pid, signal.SIGTERM)
-                    try:
-                        process.wait(timeout=3)
-                    except subprocess.TimeoutExpired:
-                        os.killpg(process.pid, signal.SIGKILL)
-                        process.wait(timeout=3)
-                except ProcessLookupError:
-                    process.wait(timeout=3)
+                stop_application(process)
 
     def find_field(self, app):
         desktop = Atspi.get_desktop(0)

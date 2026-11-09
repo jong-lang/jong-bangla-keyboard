@@ -374,6 +374,8 @@ RemoteDesktop portal installed. On Arch the optional test-tool packages are
 `python-gobject at-spi2-core xdg-desktop-portal-kde kwrite firefox`.
 These are system tools, not bundled or linked into Jong. Their distro licenses
 and notices remain applicable; this does not add Cargo dependencies.
+Cleanup also requires readable Linux `/proc` process metadata and Python's
+`os.pidfd_open` / `signal.pidfd_send_signal` support in Python and the kernel.
 
 Install the intended native Jong package and restart the Fcitx5 session first.
 Keep Jong and `Keyboard - English (US)` in the current Fcitx5 group. Do the normal
@@ -393,10 +395,18 @@ This is local desktop control, not a network remote-desktop connection.
 The runner uses owned temporary KWrite configuration and an empty document,
 plus a separate offline Firefox profile and a local test page. It requests
 no screenshots, clipboard access, screen sharing or persistent portal grant.
-It temporarily selects input methods through Fcitx5, then attempts to restore
-the previous selection/state even on failure. It does not rewrite Fcitx5 or
-desktop configuration. Owned test applications and temporary data are removed
-on normal exit, Ctrl+C or termination handling; a forced kill cannot run cleanup.
+It reads the group's default non-keyboard method through Fcitx5's controller,
+then temporarily selects input methods and restores that default, the effective
+method and activation state even after failure. Restoration is observed with a
+bounded wait; an inactive start preserves the method selected on next activation.
+An effective selection that cannot be restored from the group default is rejected
+before desktop control. It does not rewrite Fcitx5 or desktop configuration.
+Cleanup signals only processes in the owned application session, waits for live
+descendants even after the leader exits, and escalates to SIGKILL after three
+seconds. Another three-second wait must observe no live session members before
+cleanup succeeds. Exited zombies do not retain application resources and are
+excluded; the direct child is reaped. Temporary data is removed on normal exit,
+Ctrl+C or termination handling; a forced kill cannot run cleanup.
 
 In each application the proof sends raw evdev `k`, `i`, Space events through
 the portal. The English control must produce `ki `; appending the same keys

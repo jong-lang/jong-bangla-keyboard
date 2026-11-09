@@ -3,7 +3,9 @@
 from contextlib import contextmanager
 import importlib.util
 import json
+import os
 from pathlib import Path
+import signal
 import subprocess
 import sys
 import tempfile
@@ -140,6 +142,26 @@ class OrchestrationTests(unittest.TestCase):
             self.assertEqual(report["proof_status"], "failed")
             self.assertEqual(report["acceptance_status"], "incomplete")
 
+    def test_failed_application_cleanup_invalidates_completed_cases(self):
+        class CleanupFailure(DesktopDouble):
+            @contextmanager
+            def application(self, name):
+                with super().application(name) as app:
+                    yield app
+                if name == "firefox":
+                    raise proof.ProofError("owned application session kill timed out")
+
+        desktop = CleanupFailure()
+        with tempfile.TemporaryDirectory() as folder, patch.object(proof, "identity", return_value={}):
+            output = Path(folder) / "report"
+            self.assertEqual(proof.run(output, lambda: desktop, TOOLS.parent), 1)
+            report = json.loads((output / "report.json").read_text())
+            self.assertEqual(len(report["cases"]), 4)
+            self.assertTrue(all(case["status"] == "pass" for case in report["cases"]))
+            self.assertEqual(report["proof_status"], "failed")
+            self.assertIn("session kill timed out", report["error"])
+            self.assertEqual(desktop.restored, ("original", "1"))
+
     def test_passed_proof_is_not_full_acceptance(self):
         with tempfile.TemporaryDirectory() as folder, patch.object(proof, "identity", return_value={}):
             output = Path(folder) / "report"
@@ -203,6 +225,88 @@ class OrchestrationTests(unittest.TestCase):
 
 
 class BackendTests(unittest.TestCase):
+    def engine_backend(self, state="1", selected="another-im"):
+        desktop = linux.LinuxDesktop()
+        controller = SimpleNamespace(state=state, selected=selected, group="test-group",
+                                     reject_selection=False, reject_state=False)
+
+        def remote(*args):
+            if args == ("-n",):
+                return controller.selected if controller.state == "2" else "keyboard-us"
+            if not args:
+                return controller.state
+            if args[0] == "-s" and not controller.reject_selection:
+                if args[1] == "keyboard-us":
+                    controller.state = "1"
+                else:
+                    controller.selected = args[1]
+                    controller.state = "2"
+            elif args[0] in ("-o", "-c") and not controller.reject_state:
+                controller.state = "2" if args[0] == "-o" else "1"
+            return ""
+
+        desktop.remote = Mock(side_effect=remote)
+        desktop.group_selection = Mock(side_effect=lambda: (
+            controller.group, controller.selected, "keyboard-us"))
+        return desktop, controller
+
+    def test_restore_preserves_third_method_for_inactive_and_active_starts(self):
+        for state in ("1", "2"):
+            with self.subTest(state=state):
+                desktop, controller = self.engine_backend(state)
+                previous = desktop.snapshot_engine()
+                desktop.remote("-s", "keyboard-us")
+                desktop.remote("-s", "jong-bangla")
+                desktop.restore_engine(previous)
+                self.assertEqual(controller.selected, "another-im")
+                self.assertEqual(controller.state, state)
+                self.assertEqual(desktop.snapshot_engine(), previous)
+                desktop.remote("-o")
+                self.assertEqual(desktop.remote("-n"), "another-im")
+
+    def test_unobserved_default_or_state_restoration_fails(self):
+        for rejected in ("reject_selection", "reject_state"):
+            with self.subTest(rejected=rejected):
+                desktop, controller = self.engine_backend()
+                previous = desktop.snapshot_engine()
+                desktop.remote("-s", "jong-bangla")
+                setattr(controller, rejected, True)
+                with patch.object(linux, "wait_for", side_effect=immediate):
+                    with self.assertRaisesRegex(proof.ProofError, "restoration"):
+                        desktop.restore_engine(previous)
+
+    def test_restore_does_not_modify_a_different_group(self):
+        desktop, controller = self.engine_backend()
+        previous = desktop.snapshot_engine()
+        controller.group = "other-group"
+        desktop.remote.reset_mock()
+        with self.assertRaisesRegex(proof.ProofError, "group changed"):
+            desktop.restore_engine(previous)
+        desktop.remote.assert_not_called()
+
+    def test_unrestorable_effective_selection_is_rejected_before_mutation(self):
+        desktop, _controller = self.engine_backend("2")
+        desktop.group_selection.side_effect = lambda: ("test-group", "different-default", "keyboard-us")
+        with self.assertRaisesRegex(proof.ProofError, "restorable"):
+            desktop.snapshot_engine()
+        self.assertEqual(desktop.remote.call_args_list, [unittest.mock.call("-n"),
+                                                        unittest.mock.call()])
+
+    def test_group_selection_reads_default_from_controller_without_activation(self):
+        bus = Mock()
+        bus.call_sync.return_value.unpack.return_value = (
+            "test-group", "another-im", "us", {},
+            [("keyboard-us",), ("jong-bangla",), ("another-im",)])
+        gio = SimpleNamespace(bus_get_sync=Mock(return_value=bus),
+                              BusType=SimpleNamespace(SESSION=1),
+                              DBusCallFlags=SimpleNamespace(NONE=0))
+        with patch.object(linux, "Gio", gio):
+            self.assertEqual(linux.LinuxDesktop.group_selection(),
+                             ("test-group", "another-im", "keyboard-us"))
+        self.assertEqual(bus.call_sync.call_args.args[:4], (
+            "org.fcitx.Fcitx5", "/controller", "org.fcitx.Fcitx.Controller1",
+            "FullInputMethodGroupInfo"))
+
     def focus_app(self, focused=False, active=True):
         field, window = Mock(), Mock()
         field.get_state_set.return_value.contains.return_value = focused
@@ -410,11 +514,11 @@ class BackendTests(unittest.TestCase):
                 with patch.object(linux.subprocess, "Popen", return_value=process) as launch, \
                         patch.object(linux, "wait_for", side_effect=immediate), \
                         patch.object(linux, "wayland_title", return_value=True), \
-                        patch.object(linux.os, "killpg") as terminate:
+                        patch.object(linux, "stop_application") as terminate:
                     with self.assertRaisesRegex(proof.ProofError, "synthetic failure"):
                         with desktop.application(name):
                             raise proof.ProofError("synthetic failure")
-                terminate.assert_called_once_with(1234, linux.signal.SIGTERM)
+                terminate.assert_called_once_with(process)
                 self.assertTrue(launch.call_args.kwargs["start_new_session"])
                 env = launch.call_args.kwargs["env"]
                 for variable in ("XDG_CONFIG_HOME", "XDG_DATA_HOME", "XDG_CACHE_HOME", "XDG_STATE_HOME"):
@@ -422,6 +526,95 @@ class BackendTests(unittest.TestCase):
                 if name == "firefox":
                     self.assertIn("--no-remote", launch.call_args.args[0])
                     self.assertIn("--offline", launch.call_args.args[0])
+
+    def test_application_waits_for_stubborn_child_after_leader_exit(self):
+        launch_process = subprocess.Popen
+        stop = linux.stop_application
+        for separate_group in (False, True):
+            for fail in (False, True):
+                with self.subTest(separate_group=separate_group, fail=fail), \
+                        tempfile.TemporaryDirectory() as folder:
+                    ready = Path(folder) / "ready.json"
+                    child_code = (
+                        "import json, os, signal, sys\n"
+                        "from pathlib import Path\n"
+                        "signal.signal(signal.SIGTERM, signal.SIG_IGN)\n"
+                        + ("os.setpgrp()\n" if separate_group else "")
+                        + "Path(sys.argv[1]).write_text(json.dumps(os.getpid()))\n"
+                        "signal.pause()\n")
+                    parent_code = (
+                        "import signal, subprocess, sys\n"
+                        "subprocess.Popen([sys.executable, '-c', sys.argv[1], sys.argv[2]])\n"
+                        "signal.pause()\n")
+                    processes = []
+                    profiles = []
+                    child_pid = None
+
+                    def launch(*_args, **kwargs):
+                        process = launch_process([sys.executable, "-c", parent_code,
+                                                  child_code, str(ready)], **kwargs)
+                        processes.append(process)
+                        profiles.append(Path(kwargs["env"]["XDG_CONFIG_HOME"]).parent)
+                        proof.wait_for(ready.exists, "synthetic child readiness", timeout=3)
+                        return process
+
+                    desktop = linux.LinuxDesktop()
+                    desktop.find_field = Mock(return_value=Mock())
+                    try:
+                        with patch.object(linux.subprocess, "Popen", side_effect=launch), \
+                                patch.object(linux, "wayland_title", return_value=True), \
+                                patch.object(linux, "stop_application",
+                                             side_effect=lambda process: stop(process, timeout=0.2)):
+                            try:
+                                with desktop.application("firefox") as app:
+                                    child_pid = json.loads(ready.read_text())
+                                    if fail:
+                                        raise proof.ProofError("synthetic application failure")
+                            except proof.ProofError as error:
+                                if not fail or str(error) != "synthetic application failure":
+                                    raise
+                        self.assertEqual(processes[0].returncode, -signal.SIGTERM)
+                        self.assertEqual(linux.live_session_processes(processes[0].pid), [])
+                        self.assertFalse(profiles[0].exists())
+                        stat = Path(f"/proc/{child_pid}/stat")
+                        if stat.exists():
+                            self.assertIn(stat.read_text().rsplit(")", 1)[1].split()[0], ("Z", "X"))
+                    finally:
+                        if ready.exists():
+                            child_pid = json.loads(ready.read_text())
+                        for pid in ([child_pid] if child_pid else []) + [p.pid for p in processes]:
+                            try:
+                                os.kill(pid, signal.SIGKILL)
+                            except ProcessLookupError:
+                                pass
+                        for process in processes:
+                            process.wait(timeout=3)
+
+    def test_unterminated_session_fails_cleanup_after_bounded_escalation(self):
+        process = Mock(pid=1234)
+        with patch.object(linux, "live_session_processes", return_value=[1235]), \
+                patch.object(linux.os, "pidfd_open", return_value=99), \
+                patch.object(linux.os, "getsid", return_value=1234), \
+                patch.object(linux.os, "close"), \
+                patch.object(linux.signal, "pidfd_send_signal") as send, \
+                patch.object(linux, "wait_for", side_effect=immediate):
+            with self.assertRaisesRegex(proof.ProofError, "session kill"):
+                linux.stop_application(process)
+        self.assertEqual([call.args[1] for call in send.call_args_list],
+                         [signal.SIGTERM, signal.SIGKILL])
+        process.wait.assert_not_called()
+
+    def test_cleanup_does_not_signal_a_pid_that_changed_sessions(self):
+        process = Mock(pid=1234)
+        with patch.object(linux, "live_session_processes", side_effect=[[1235], []]), \
+                patch.object(linux.os, "pidfd_open", return_value=99), \
+                patch.object(linux.os, "getsid", return_value=9876), \
+                patch.object(linux.os, "close") as close, \
+                patch.object(linux.signal, "pidfd_send_signal") as send:
+            linux.stop_application(process)
+        send.assert_not_called()
+        close.assert_called_once_with(99)
+        process.wait.assert_called_once()
 
     def test_wrong_unicode_is_retained_as_failed_case_not_pass(self):
         report = {"applications": {}, "cases": []}
