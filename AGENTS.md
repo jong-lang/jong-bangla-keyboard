@@ -77,7 +77,8 @@ result as a new run. Planned checks need an issue link; do not claim they exist.
   Keep `Cargo.toml` minimum Rust requirements consistent; justify and test raises.
 - Make typing local. Add no network access, telemetry, typed-text logging, or
   persistence beyond typing needs. Use synthetic text in diagnostics and tests.
-- Preserve all older tests. Validate exact Unicode, not visual similarity.
+- Preserve regression tests for supported behavior. Remove feature-only tests
+  when the maintainer explicitly retires that feature. Validate exact Unicode.
 - Give the maintainer exact setup, steps, and expected results for necessary
   manual tests. The maintainer runs them. Never change system input settings.
 - Use Conventional Commits. Complete docs and checks, then commit, push, and open

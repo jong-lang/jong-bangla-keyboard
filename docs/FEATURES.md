@@ -33,16 +33,16 @@ autocorrection in the first-release scope.
 
 | Platform | Status |
 | --- | --- |
-| CachyOS, KDE Plasma, Wayland, Fcitx5 | Working; maintainer considers the KDE Plasma implementation complete. Release preparation remains |
+| CachyOS, KDE Plasma, Wayland, Fcitx5 | Working; native v0.1.0 published |
 | Debian testing (forky), KDE Plasma, Wayland, Fcitx5 | Maintainer reports desktop tests and package installation, revision upgrade and removal passed; evidence limits below |
 | Fedora 45, KDE Plasma, Wayland, Fcitx5 | Maintainer reports desktop tests and RPM installation, revision upgrade and removal passed; evidence limits below |
 | Other Linux distributions and desktops with Fcitx5 | Untested; no support claim |
-| Linux with IBus | Planned after the Fcitx5 release |
-| Windows TSF | Planned after IBus |
+| Windows TSF | Next adapter after Fcitx5 |
+| Linux with IBus | Planned after Windows TSF |
 | macOS on Apple silicon or Intel | Out of scope; reconsider only if a viable free path exists |
 
-The first Fcitx5 release targets x86-64 native packages. ARM64 is outside that
-initial scope. Flatpak is a later prototype, not a first-release requirement;
+The published Fcitx5 release targets x86-64 native packages. ARM64 is outside that
+initial scope. Flatpak packaging is out of scope for now;
 see the [release plan](../CONTRIBUTING.md#release-policy-and-checklist).
 
 The reference desktop is a Modern 15 A5M running CachyOS KDE Plasma.

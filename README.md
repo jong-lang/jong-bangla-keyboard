@@ -5,24 +5,29 @@ Avro-compatible behavior as its target. Original project code is MIT licensed.
 
 ## Current status
 
-Working on CachyOS KDE Plasma Wayland through Fcitx5. The maintainer considers
-that desktop implementation complete; release preparation remains. Debian and
+Native Fcitx5 [v0.1.0 is available](https://github.com/shaadahmmed/jong-bangla-keyboard/releases/tag/v0.1.0).
+Working on CachyOS KDE Plasma Wayland. Debian and
 Fedora test reports and their limits are in the [platform matrix](docs/FEATURES.md#platform-matrix).
 Exhaustive Avro parity is unverified.
 
-Release order: Fcitx5, then IBus, then Windows TSF. The first release targets
-x86-64. Native packages come first; Flatpak is a later prototype. macOS is out
+Release order: Fcitx5, then Windows TSF, then IBus. The current release targets
+x86-64 Linux. Flatpak packaging is out of scope for now. macOS is out
 of scope unless a viable free path is established.
 
 ## Build and install
 
-No published packages are available yet. Build from source with Rust, a C++
+Download a native package and checksums from the release above; follow the
+[package guide](docs/PACKAGING.md) for installation and activation. The AUR
+recipe remains supported; AUR publication awaits maintainer account approval
+in [#46](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/46).
+
+Alternatively, build from source with Rust, a C++
 compiler, CMake, Ninja, Fcitx5 development files, and Python installed. Install
 Fcitx5 Configuration for desktop setup. Compiler requirements are declared in
 [Cargo.toml](Cargo.toml) and [CMakeLists.txt](adapters/fcitx5/CMakeLists.txt).
 Offline Cargo builds require dependencies to be available locally.
 
-Version tags prepare unpublished drafts with source, a reproducibility-checked
+Version tags prepare drafts for maintainer publication with source, a reproducibility-checked
 x86-64 Fcitx5 payload, Debian/Fedora/Arch packages, an AUR recipe, build and
 clean-image verification records, and checksums. See
 [package installation and activation](docs/PACKAGING.md). Container verification

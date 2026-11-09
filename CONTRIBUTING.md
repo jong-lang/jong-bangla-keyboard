@@ -58,6 +58,18 @@ using the PR template. Link its issue and include the head commit, validation,
 manual results when applicable, and a handoff for a separate review chat.
 Routine commit, push, and PR creation do not require another approval.
 
+Include cleanup in each task: remove superseded active instructions and code
+made obsolete by that task, then check callers, tracked references and local
+documentation links. Remove tests only when their supported feature is explicitly
+retired; preserve regressions for retained behavior. Git and CHANGELOG.md hold
+history; do not maintain duplicate archives or completed plans in active guides.
+Use existing automated link checks and relevant tool tests to catch broken
+references. Never automate arbitrary source or document deletion. Branch cleanup
+follows the verified post-merge steps below; preserve open PRs, pending publication
+work and unmerged commits. Pruning stale remote-tracking refs is not deletion of
+remote branches. Do not remove ignored build outputs that may contain release
+or test evidence without identifying their owner and retention needs.
+
 ## Review and merge
 
 Review happens in a separate chat. Passing CI and implementation-session
@@ -79,6 +91,11 @@ task's remote and local branches, and update local `main`. If verification fails
 preserve the branches and unrelated work, and track the failure in an issue.
 
 ## Engineering standards
+
+Prioritize correct Unicode and input behavior, privacy and memory safety, then
+reliable supported-platform integration. Use measurements to guide performance
+work. Keep maintenance and release effort proportional to the supported scope;
+add abstractions and platforms only when the current stage needs them.
 
 - Keep functions and modules small and cohesive, with explicit control flow and
   no dead code. Put needed refactors in their own `refactor/` branch and PR.
@@ -125,8 +142,9 @@ Review enforces rules that do not have an automated check.
 
 ## Release policy and checklist
 
-Finish and release Fcitx5 before IBus, then Windows TSF. The first Fcitx5 release
-targets x86-64. Native packages come first; Flatpak is a later prototype.
+Release adapters in this order: Fcitx5, Windows TSF, then IBus. Native Fcitx5
+v0.1.0 is published for x86-64 Linux; continue maintaining it as Windows work
+begins. Flatpak packaging is out of scope for now; its prototype is removed.
 ARM64 is outside the initial scope. Keep macOS out of scope unless a viable
 free path is established.
 
@@ -191,13 +209,14 @@ environment and known-issue notes. Generated candidates cannot pass validation
 until placeholders are replaced. Tag automation extracts the reviewed entry
 from `CHANGELOG.md`; it does not append GitHub-generated notes.
 
-Planned delivery:
+Current delivery:
 
 | Work | Issue |
 | --- | --- |
-| Native packages and lifecycle checks | Implemented in [#30](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/30); [desktop acceptance](docs/TESTING.md#package-desktop-acceptance) remains a release gate |
-| First native Fcitx5 release preparation and intended-artifact acceptance | [#41](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/41); preserve prior desktop reports and complete the [artifact handoff](docs/TESTING.md#release-artifact-acceptance) before publication |
-| Flatpak Fcitx5 add-on prototype after the native release | [#31](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/31) |
+| Native Fcitx5 release | [v0.1.0 published](https://github.com/shaadahmmed/jong-bangla-keyboard/releases/tag/v0.1.0); preserve the recorded desktop coverage limits |
+| AUR publication | [#46](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/46); supported recipe, publication awaits maintainer account approval |
+| Desktop acceptance automation | [#47](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/47); ongoing, not a full acceptance claim |
+| Windows TSF, then IBus | Adapter sequence; [current platform scope](docs/FEATURES.md#platform-matrix) |
 
 For each release:
 
@@ -237,23 +256,6 @@ other failed/missing jobs, expired artifacts and existing releases; it never
 moves a tag, rebuilds accepted packages, overwrites a draft or publishes.
 The failed original run remains failed; retain both run links as release evidence.
 
-For the v0.1.0 installation-download failure tracked in
-[#43](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/43), after merge:
-
-```sh
-gh workflow run recover-release.yml --ref main \
-  -f tag=v0.1.0 -f source_run_id=42466621401
-```
-
-After success, inspect every downloaded draft asset and compare it byte for byte
-with the accepted source-run bundle under the ordinary draft inspection gate.
-Maintainer artifact acceptance and publication requirements still apply.
-
 When TSF lands, add a Windows installer and Windows acceptance checks. Initially
-the installer is unsigned; document the SmartScreen warning. Revisit IBus
-Flatpak feasibility in its adapter stage. Do not promise untested artifacts.
-
-The Flatpak route needs a separate extension for the Flatpak Fcitx5 daemon;
-upstream still requires native host input modules. Its parent sandbox grants
-network permission. Preserve the no-network-call policy and review inherited
-permissions before shipping. Findings and primary sources are recorded in #31.
+the installer is unsigned; document the SmartScreen warning. Do not promise
+untested artifacts.
