@@ -117,8 +117,23 @@ def prove(desktop, report):
         desktop.restore_engine(previous)
 
 
+def failure_chain(error):
+    """Retain the original failure if a later cleanup operation also raises."""
+    messages = []
+    seen = set()
+    while error is not None and id(error) not in seen:
+        seen.add(id(error))
+        messages.append(str(error) or type(error).__name__)
+        error = error.__cause__ if error.__cause__ is not None else error.__context__
+    return list(reversed(messages))
+
+
 def run(output, desktop_factory, root):
-    output.mkdir(parents=True, exist_ok=False)
+    try:
+        output.mkdir(parents=True, exist_ok=False)
+    except FileExistsError as error:
+        raise ProofError(f"Output already exists: {output}. Use a new --output directory; "
+                         "existing reports were left untouched.") from error
     report = {"schema": 1, "proof_status": "incomplete", "acceptance_status": "incomplete",
               "cases": [], "applications": {},
               "unverified": ["preedit content/rendering", "editing and shortcuts",
@@ -131,7 +146,8 @@ def run(output, desktop_factory, root):
         prove(desktop_factory(), report)
     except (Exception, KeyboardInterrupt) as error:
         report["proof_status"] = "failed"
-        error_message = str(error) or "Interrupted"
+        report["error_chain"] = failure_chain(error)
+        error_message = " -> ".join(report["error_chain"])
         report["error"] = error_message
     finally:
         (output / "report.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n")

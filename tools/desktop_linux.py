@@ -66,10 +66,10 @@ class KeyboardPortal:
                 loop.run()
             if not response:
                 self.call(path, "org.freedesktop.portal.Request", "Close", "()", ())
-                raise ProofError("Desktop control request timed out")
+                raise ProofError(f"{method}: desktop control request timed out")
             code, data = response[0]
             if code != 0:
-                raise ProofError("Desktop control was cancelled or denied")
+                raise ProofError(f"{method}: desktop control was cancelled or denied")
             return data
         finally:
             self.bus.signal_unsubscribe(subscription)

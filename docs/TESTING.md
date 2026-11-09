@@ -386,7 +386,8 @@ python3 tools/check-desktop.py --run --output target/desktop-proof-001
 ```
 
 The first command checks local prerequisites without contacting a desktop
-session. The second requires a new output directory. Approve the portal's
+session. The second requires a new output directory; use a different numbered
+directory after an earlier attempt instead of overwriting its reports. Approve the portal's
 temporary keyboard-control request, then leave the keyboard and mouse idle.
 This is local desktop control, not a network remote-desktop connection.
 The runner uses owned temporary KWrite configuration and an empty document,
@@ -417,6 +418,8 @@ package hash separately. Source checkout identity is not installed-engine identi
 Missing APIs, denied control, ambiguous fields, unverified backends, wrong focus,
 timeouts, incorrect Unicode or failed restoration prevent a proof pass. Failures
 after initialization retain a report; a prerequisite failure can stop earlier.
+Reports retain the original error and later cleanup errors in chronological
+`error_chain` order, so a closed portal session cannot hide a setup failure.
 Preedit content/rendering, editing, shortcuts, focus-transition behavior,
 password restrictions and package lifecycle are explicitly unverified. Continue
 their existing acceptance steps. Report the first actual run before using this

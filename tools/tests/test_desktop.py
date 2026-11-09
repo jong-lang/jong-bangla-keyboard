@@ -147,7 +147,7 @@ class OrchestrationTests(unittest.TestCase):
             report = json.loads((output / "report.json").read_text())
             self.assertEqual(report["proof_status"], "pass")
             self.assertEqual(report["acceptance_status"], "incomplete")
-            with self.assertRaises(FileExistsError):
+            with self.assertRaisesRegex(proof.ProofError, "existing reports were left untouched"):
                 proof.run(output, DesktopDouble, TOOLS.parent)
             self.assertEqual(json.loads((output / "report.json").read_text()), report)
 
@@ -159,6 +159,30 @@ class OrchestrationTests(unittest.TestCase):
             report = json.loads((output / "report.json").read_text())
             self.assertEqual(report["cases"], [])
             self.assertEqual(report["proof_status"], "failed")
+
+    def test_original_portal_failure_survives_cleanup_failure(self):
+        def broken_proof(*_):
+            try:
+                raise proof.ProofError("Start: desktop control was denied")
+            finally:
+                raise proof.ProofError("Session.Close: object no longer exists")
+        with tempfile.TemporaryDirectory() as folder, \
+                patch.object(proof, "identity", return_value={}), \
+                patch.object(proof, "prove", side_effect=broken_proof):
+            output = Path(folder) / "report"
+            self.assertEqual(proof.run(output, DesktopDouble, TOOLS.parent), 1)
+            report = json.loads((output / "report.json").read_text())
+            self.assertEqual(report["error_chain"], ["Start: desktop control was denied",
+                                                    "Session.Close: object no longer exists"])
+            self.assertIn("Start: desktop control was denied", (output / "summary.txt").read_text())
+            self.assertEqual(report["cases"], [])
+
+    def test_explicit_cause_and_cyclic_context_are_bounded(self):
+        primary = proof.ProofError("primary")
+        wrapper = proof.ProofError("wrapper")
+        wrapper.__cause__ = primary
+        primary.__context__ = wrapper
+        self.assertEqual(proof.failure_chain(wrapper), ["primary", "wrapper"])
 
     def test_cli_requires_explicit_run_and_output(self):
         result = subprocess.run([sys.executable, TOOLS / "check-desktop.py", "--run"],
