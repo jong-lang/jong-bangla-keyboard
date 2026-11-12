@@ -1,10 +1,12 @@
 # Jong Bangla
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/logo/logo-tagline-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="assets/logo/logo-tagline-light.svg">
-  <img src="assets/logo/logo-tagline-light.svg" alt="Jong Bangla Keyboard. A modern Bangla keyboard, built with Rust." width="540">
-</picture>
+<div align="center" style="padding: 24px 0;">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/logo/logo-tagline-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="assets/logo/logo-tagline-light.svg">
+    <img src="assets/logo/logo-tagline-light.svg" alt="Jong Bangla Keyboard. A modern Bangla keyboard, built with Rust." width="540">
+  </picture>
+</div>
 
 A Bangla phonetic keyboard with an independently implemented Rust engine and
 Avro-compatible behavior as its target. Original project code is MIT licensed.
