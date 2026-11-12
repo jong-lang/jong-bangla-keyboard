@@ -79,8 +79,9 @@ The full-color app icon retains its pale tile in either appearance.
 Fcitx5 Classic UI's **Prefer Text Icon** can replace artwork with a label;
 Kimpanel and other status consumers may render icons differently. Staged lookup
 checks establish resolution, not desktop recoloring. Record appearance using
-the [focused acceptance steps](TESTING.md#branding-acceptance); desktop results
-for these new icons are pending and do not extend the platform support matrix.
+the [focused acceptance steps](TESTING.md#branding-acceptance). Keep reported
+observations and their environment limits in the implementation PR; these
+checks do not extend the platform support matrix.
 
 ## Recipes and verification
 
