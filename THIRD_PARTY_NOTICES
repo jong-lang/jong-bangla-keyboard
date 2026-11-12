@@ -1,5 +1,13 @@
 # Third-party notices
 
+## Original Jong artwork
+
+The README logos and Linux/Windows icon artwork under assets/ were supplied by
+the maintainer, who confirmed ownership and approved distribution under the
+project's MIT license for issue #53. The installed palette-aware status SVG
+is derived from that artwork without changing its geometry. These assets are
+original project material, not third-party reference code.
+
 ## Rust standard library in native binaries
 
 The Fcitx5 binary statically links the build toolchain's Rust standard library.

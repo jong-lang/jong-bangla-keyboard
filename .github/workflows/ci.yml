@@ -34,7 +34,7 @@ jobs:
           # Rust's standard-library license texts must survive the base image's
           # documentation exclusion so the binary archive can redistribute them.
           sed -i '/^NoExtract.*usr\/share\/doc/d' /etc/pacman.conf
-          pacman -Syyuu --noconfirm --needed git rust cmake ninja fcitx5 python
+          pacman -Syyuu --noconfirm --needed git rust cmake ninja fcitx5 hicolor-icon-theme python
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
@@ -203,13 +203,13 @@ jobs:
     steps:
       # Arch supplies the documented Fcitx5 headers; older Ubuntu packages do not.
       - name: Prepare Arch build environment
-        run: pacman -Syu --noconfirm --needed git rust cmake ninja fcitx5 python actionlint shellcheck
+        run: pacman -Syu --noconfirm --needed git rust cmake ninja fcitx5 hicolor-icon-theme python actionlint shellcheck
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Record environment
         run: |
-          pacman -Q rust fcitx5 gcc cmake ninja python actionlint shellcheck | tee -a "$GITHUB_STEP_SUMMARY"
+          pacman -Q rust fcitx5 hicolor-icon-theme gcc cmake ninja python actionlint shellcheck | tee -a "$GITHUB_STEP_SUMMARY"
           rustc --version
           cargo --version
       - name: Check workflows

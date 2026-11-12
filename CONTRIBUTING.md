@@ -179,7 +179,7 @@ maintainer publishes drafts; the tag workflow never publishes.
 
 The native CI job also runs on PRs. It exports the checked-out commit, builds
 twice in separate source/build directories with offline locked Cargo, normalizes
-source paths and archive metadata, and compares all three staged files byte for
+source paths and archive metadata, and compares all twelve staged files byte for
 byte. Both builds run CTest and staged discovery/removal checks. A mismatch
 fails before checksums or a release draft are prepared. This establishes repeat
 builds in that environment, not reproducibility across arbitrary toolchains.

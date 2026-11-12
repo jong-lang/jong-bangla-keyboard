@@ -5,6 +5,7 @@ import io
 from pathlib import Path
 import tarfile
 import tempfile
+import sys
 import unittest
 from unittest.mock import patch
 
@@ -15,7 +16,8 @@ TOOLS = Path(__file__).resolve().parents[1]
 def module(name):
     spec = importlib.util.spec_from_file_location(name.replace("-", "_"), TOOLS / f"{name}.py")
     result = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(result)
+    with patch.object(sys, "path", [str(TOOLS), *sys.path]):
+        spec.loader.exec_module(result)
     return result
 
 

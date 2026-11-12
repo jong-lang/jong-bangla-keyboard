@@ -11,14 +11,17 @@ import sys
 import tarfile
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from tools.package_bundle import package_assets, package_names
+from tools.icon_payload import icon_files
 
 
 TOOLS = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location("build_release", TOOLS / "build-release.py")
 builder = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(builder)
+with patch.object(sys, "path", [str(TOOLS), *sys.path]):
+    spec.loader.exec_module(builder)
 
 
 class ArchiveTests(unittest.TestCase):
@@ -62,22 +65,44 @@ class ArchiveTests(unittest.TestCase):
         for payload in ({"addon": second}, {"other": first}):
             with self.assertRaisesRegex(ValueError, "builds differ"):
                 builder.compare({"addon": first}, payload)
-        with self.assertRaisesRegex(ValueError, "exactly the three"):
+        with self.assertRaisesRegex(ValueError, "exactly the twelve"):
             builder.staged_files(self.root)
 
     def test_staged_payload_requires_exact_paths_and_rejects_extra_files_and_links(self):
         stage = self.root / "stage"
-        for name in ("usr/lib/fcitx5/libjong-bangla.so", "usr/share/fcitx5/addon/jong-bangla.conf",
-                     "usr/share/fcitx5/inputmethod/jong-bangla.conf"):
+        names = {"usr/lib/fcitx5/libjong-bangla.so", "usr/share/fcitx5/addon/jong-bangla.conf",
+                 "usr/share/fcitx5/inputmethod/jong-bangla.conf"}
+        names.update(path.as_posix() for path in icon_files("usr/share"))
+        for name in names:
             path = stage / name
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_bytes(b"synthetic payload")
-        self.assertEqual(len(builder.staged_files(stage)), 3)
+        self.assertEqual(len(builder.staged_files(stage)), 12)
+        # Every icon is required, not merely allowed when present.
+        for path in icon_files(stage / "usr/share"):
+            content = path.read_bytes()
+            path.unlink()
+            with self.subTest(missing=path.name), self.assertRaises(ValueError):
+                builder.staged_files(stage)
+            path.write_bytes(content)
         extra = stage / "unexpected"
         extra.write_bytes(b"extra")
         with self.assertRaises(ValueError):
             builder.staged_files(stage)
         extra.unlink()
+        icon = stage / "usr/share/icons/hicolor/scalable/apps/jong-bangla.svg"
+        icon.unlink()
+        icon.symlink_to(stage / "usr/share/fcitx5/addon/jong-bangla.conf")
+        with self.assertRaises(ValueError):
+            builder.staged_files(stage)
+        icon.unlink()
+        icon.write_bytes(b"synthetic payload")
+        icon.unlink()
+        os.mkfifo(icon)
+        with self.assertRaises(ValueError):
+            builder.staged_files(stage)
+        icon.unlink()
+        icon.write_bytes(b"synthetic payload")
         library = stage / "usr/lib/fcitx5/libjong-bangla.so"
         library.unlink()
         library.symlink_to(stage / "usr/share/fcitx5/addon/jong-bangla.conf")

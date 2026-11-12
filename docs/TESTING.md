@@ -53,7 +53,7 @@ this selection policy does not alter required GitHub checks.
 The full script also checks formatting and Clippy with warnings denied, builds
 release libraries and API documentation, and runs a conversion smoke check.
 It requires Rust, CMake, Ninja, a C++ compiler, Fcitx5 development files, and
-Python. Compiler requirements live in the manifests and CMake. Offline Cargo
+Python and `hicolor-icon-theme`. Compiler requirements live in the manifests and CMake. Offline Cargo
 commands require dependencies to be available locally.
 
 The ordinary CTest lifecycle test is not a sanitizer run. Synthetic tests do
@@ -429,8 +429,8 @@ revision upgrades and removal in clean containers; retain those checks.
    package filename/hash. Verify its published or PR checksum.
 2. Install that one package using
    [PACKAGING.md](PACKAGING.md#install-upgrade-activate-and-remove). Expect the
-   package manager to resolve dependencies and own Jong's library, registration
-   and license files, without manual library copies or input-setting changes.
+   package manager to resolve dependencies and own Jong's library, registration,
+   icon and license files, without manual library copies or input-setting changes.
 3. Remove it with the documented command. Expect package-owned files removed,
    unrelated packages/addons intact and existing user configuration retained.
    Record actual results and restore the snapshot.
@@ -439,6 +439,37 @@ No full typing checklist or routine desktop reconfiguration is required in these
 VMs. These results establish installation/removal only. A packaging change that
 affects activation or input routing requires a targeted reference-desktop check
 or investigation of the affected environment, rather than an assumed pass.
+
+### Branding acceptance
+
+For icon payload changes, use the reference CachyOS KDE Plasma Wayland desktop
+and the affected Debian testing/Fedora 45 KDE package VMs. No full typing matrix
+is needed. The maintainer installs/removes packages and changes appearance.
+
+1. Record `git rev-parse HEAD`, selected package filename and `sha256sum FILE`,
+   OS/Plasma/Fcitx5 versions, icon theme, display scaling and status consumer
+   (Classic UI StatusNotifierItem or Kimpanel). Verify the package checksum.
+2. Install that package using [the package guide](PACKAGING.md#install-upgrade-activate-and-remove)
+   and restart the Fcitx5 session. In Fcitx5 Configuration, find Jong Bangla:
+   expect the full-color Jong tile rather than a missing/generic icon.
+3. On the reference desktop, activate Jong in an empty owned KWrite document.
+   For Classic UI, disable **Prefer Text Icon** for this inspection, recording
+   its previous value. Expect the monochrome keyboard/Bangla mark in the status
+   surface, recognizable at the normal panel size without clipping.
+4. Switch KDE to Breeze Light and Breeze Dark appearance in turn, recording
+   the actual icon theme and panel background. Expect contrasting dark/pale
+   monochrome ink when the consumer supports palette-aware SVGs. Record actual
+   color, legibility, whether a session restart was needed and any unsupported
+   switching. Do not count successful file lookup as an appearance pass.
+5. Inspect the branch README on GitHub in light and dark appearance. Expect the
+   corresponding logo, readable tagline and useful alternative text. On the
+   package VMs verify the configuration icon, then remove the selected package:
+   expect all nine Jong icons removed and unrelated icons/profile retained.
+   Restore changed settings and VM snapshots after inspection.
+
+The [appearance guide](PACKAGING.md#installed-icons-and-appearance) explains the
+fixed variants and consumer limits. Record observations with the exact commit
+and package hashes in the implementation PR; missing observations stay pending.
 
 ### Release artifact acceptance
 
