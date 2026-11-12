@@ -5,13 +5,76 @@ version and date. Release preparation follows [CONTRIBUTING.md](CONTRIBUTING.md#
 
 ## Unreleased
 
+## 0.2.0 - 2026-11-13
+
 ### Highlights
 
 - Add theme-aware README branding and Linux app/status icons, including a
   palette-aware monochrome status SVG for compatible KDE icon consumers.
+- Native packages now install nine icons and require the distribution's
+  `hicolor-icon-theme` data for standard icon lookup.
+
+### Fixes
+
+- Make release policy-tool downloads resilient to transport failures while
+  retaining pinned checksum verification. Add a checked recovery path for a
+  tagged release blocked only by policy-tool installation.
+
+### Breaking changes
+
+- No changes to phonetic conversion, composition, key handling or the Rust API
+  relative to v0.1.0.
 - Remove the Flatpak packaging prototype and its build and comparison guides.
   Adapter delivery now proceeds from Fcitx5 to Windows TSF, then IBus. Native
   packages and the AUR recipe remain supported.
+
+### Installation and upgrade
+
+- Requires x86-64 Linux and Fcitx5 5.1.23 or newer. Follow the
+  [native package guide](docs/PACKAGING.md#install-upgrade-activate-and-remove)
+  to verify checksums and install or upgrade the matching Arch, Debian testing
+  or Fedora 45 package. Restart the Fcitx5 session after upgrading from v0.1.0
+  so the addon and icons reload. Packages retain user configuration and do not
+  change input-method settings.
+- Package managers resolve the new icon-theme dependency. The Arch binary
+  payload is specific to its recorded build environment; use the matching
+  native package on Debian or Fedora. Older Debian/Ubuntu releases remain
+  unverified. AUR publication still awaits maintainer account approval in
+  [#46](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/46).
+
+### Tested environments
+
+- [Branding PR #54](https://github.com/shaadahmmed/jong-bangla-keyboard/pull/54)
+  records maintainer-reported passes on CachyOS KDE Plasma Wayland for the
+  configuration icon and active status appearance in KWrite with Breeze Light
+  and Breeze Dark, plus README light/dark appearance. Debian KDE and Fedora KDE
+  VM reports cover package installation, configuration icons and removal.
+- Those reports use revision-1 packages from source
+  `fc54887bf6b715bcd29c984463b70e45a5d0fa00`; their exact hashes are recorded in
+  PR #54. Detailed environment versions, status consumer, scaling and restart
+  observations were not supplied. These are earlier artifact-specific reports,
+  not new desktop runs against v0.2.0 packages.
+- The earlier typing evidence retains its original identities and limits in
+  [the platform matrix](docs/FEATURES.md#platform-matrix). This release changes
+  branding and packaging, with no conversion or composition changes. Container
+  lifecycle and icon-lookup checks do not establish desktop application support.
+
+### Known issues
+
+- Status recoloring depends on the KDE icon theme and consumer. Consumers
+  without palette support use dark ink, which may lack contrast on dark panels;
+  Classic UI's Prefer Text Icon can replace the artwork with a label. See the
+  [appearance guide](docs/PACKAGING.md#installed-icons-and-appearance).
+- Brave and LibreOffice Writer are reference-desktop acceptance targets without
+  recorded passes. Other distributions/desktops, XWayland and ARM64 remain
+  unverified; Windows TSF and IBus are future adapters. The finite phonetic audit
+  does not establish parity for every input.
+- This entry prepares v0.2.0. Separate review, merge authorization, successful
+  release validation, selected-artifact acceptance and draft inspection remain
+  required by the [release policy](CONTRIBUTING.md#release-policy-and-checklist).
+  Tagging requires a later maintainer release instruction; publication remains
+  a maintainer action. Preparation is tracked in
+  [#55](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/55).
 
 ## 0.1.0 - 2026-11-08
 

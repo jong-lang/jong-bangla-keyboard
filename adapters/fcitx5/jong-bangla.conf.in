@@ -1,7 +1,7 @@
 [Addon]
 Name=Jong Bangla feasibility addon
 Category=InputMethod
-Version=0.1.0
+Version=0.2.0
 Library=@JONG_ADDON_LIBRARY@
 Type=SharedLibrary
 OnDemand=True
