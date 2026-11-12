@@ -2,14 +2,14 @@ Source: jong-bangla
 Section: utils
 Priority: optional
 Maintainer: Jong Bangla maintainers <shaadahmmed@users.noreply.github.com>
-Build-Depends: debhelper-compat (= 13), cmake (>= 3.25), ninja-build, g++, cargo | rustup, rustc (>= 1.99.1) | rustup, libfcitx5core-dev (>= 5.1.23), pkg-config, python3
+Build-Depends: debhelper-compat (= 13), cmake (>= 3.25), ninja-build, g++, cargo | rustup, rustc (>= 1.99.1) | rustup, libfcitx5core-dev (>= 5.1.23), hicolor-icon-theme, pkg-config, python3
 Standards-Version: 4.7.2
 Homepage: https://github.com/shaadahmmed/jong-bangla-keyboard
 Rules-Requires-Root: no
 
 Package: jong-bangla
 Architecture: amd64
-Depends: ${shlibs:Depends}, ${misc:Depends}, fcitx5 (>= 5.1.23)
+Depends: ${shlibs:Depends}, ${misc:Depends}, fcitx5 (>= 5.1.23), hicolor-icon-theme
 Description: Bangla phonetic input method for Fcitx5
  Independent Rust composition engine with an Fcitx5 adapter.
  Activation is an explicit desktop configuration step.

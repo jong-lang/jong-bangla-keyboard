@@ -7,6 +7,8 @@ version and date. Release preparation follows [CONTRIBUTING.md](CONTRIBUTING.md#
 
 ### Highlights
 
+- Add theme-aware README branding and Linux app/status icons, including a
+  palette-aware monochrome status SVG for compatible KDE icon consumers.
 - Remove the Flatpak packaging prototype and its build and comparison guides.
   Adapter delivery now proceeds from Fcitx5 to Windows TSF, then IBus. Native
   packages and the AUR recipe remain supported.

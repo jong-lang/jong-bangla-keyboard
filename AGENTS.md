@@ -51,7 +51,7 @@ wc -l AGENTS.md README.md
 
 The build script includes Rust checks, release builds, API docs, native tests,
 and staged installation checks. It requires Fcitx5 development files, CMake,
-Ninja, a C++ compiler, and Python. It does not install into the desktop.
+Ninja, a C++ compiler, Python, and `hicolor-icon-theme`. It does not install into the desktop.
 Dependency tools and network requirements are in docs/TESTING.md. CI runs the
 license, networking-ban, vulnerability, and source privacy gates. Finite scans
 complement review; their coverage and limits are in SECURITY.md.

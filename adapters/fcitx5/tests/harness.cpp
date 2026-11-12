@@ -6,6 +6,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <tuple>
 #include <vector>
 
 #include <fcitx-config/rawconfig.h>
@@ -16,6 +17,7 @@
 #include <fcitx/addonmanager.h>
 #include <fcitx/event.h>
 #include <fcitx/globalconfig.h>
+#include <fcitx/icontheme.h>
 #include <fcitx/inputcontext.h>
 #include <fcitx/inputcontextmanager.h>
 #include <fcitx/inputmethodengine.h>
@@ -33,6 +35,37 @@ namespace {
 void require(bool condition, const std::string &message) {
   if (!condition) {
     throw std::runtime_error(message);
+  }
+}
+
+// Use the framework's real lookup with only the requested data directory.
+// Exact path assertions also reject fallback to a host/user icon or dash
+// prefix.
+void test_icon_lookup(const std::filesystem::path &data) {
+  StandardPaths paths("fcitx5", {{"datadir", {data}}},
+                      StandardPathsOptions(StandardPathsOption::SkipUserPath) |
+                          StandardPathsOption::SkipSystemPath);
+  const IconTheme theme("hicolor", paths);
+  const std::vector<std::tuple<const char *, int, const char *, const char *>>
+      icons = {
+          {"jong-bangla", 64, ".svg", "scalable/apps/jong-bangla.svg"},
+          {"jong-bangla", 128, ".png", "128x128/apps/jong-bangla.png"},
+          {"jong-bangla", 256, ".png", "256x256/apps/jong-bangla.png"},
+          {"jong-bangla", 512, ".png", "512x512/apps/jong-bangla.png"},
+          {"jong-symbolic", 24, ".svg", "scalable/status/jong-symbolic.svg"},
+          {"fcitx-jong-bangla-light", 24, ".svg",
+           "scalable/status/fcitx-jong-bangla-light.svg"},
+          {"fcitx-jong-bangla-dark", 24, ".svg",
+           "scalable/status/fcitx-jong-bangla-dark.svg"},
+          {"fcitx-jong-bangla-light", 24, ".png",
+           "24x24/status/fcitx-jong-bangla-light.png"},
+          {"fcitx-jong-bangla-dark", 24, ".png",
+           "24x24/status/fcitx-jong-bangla-dark.png"},
+  };
+  for (const auto &[name, size, extension, relative] : icons) {
+    const auto found = theme.findIconPath(name, size, 1, {extension});
+    require(found == data / "icons/hicolor" / relative,
+            std::string("resolve exact installed icon: ") + relative);
   }
 }
 
@@ -708,6 +741,11 @@ void test_preedit_click(Instance &instance) {
 
 int main(int argc, char **argv) {
   try {
+    if (argc == 3 && std::string(argv[1]) == "--icons") {
+      test_icon_lookup(std::filesystem::absolute(argv[2]));
+      std::cout << "PASS: all nine installed icons resolve by theme name\n";
+      return 0;
+    }
     Sandbox sandbox(argc, argv);
     char program[] = "jong-fcitx5-harness";
     char disable[] = "--disable=all";
@@ -723,6 +761,9 @@ int main(int argc, char **argv) {
     disableHotkeys(instance);
     require(instance.inputMethodManager().entry("jong-bangla") != nullptr,
             "discover local metadata");
+    require(instance.inputMethodManager().entry("jong-bangla")->icon() ==
+                "jong-bangla",
+            "configuration entry uses the app icon");
     require(instance.addonManager().addon("jong-bangla", true) != nullptr,
             "load Jong addon from configured library path");
     InputMethodGroup group("Jong synthetic");
@@ -733,6 +774,11 @@ int main(int argc, char **argv) {
     instance.inputMethodManager().addEmptyGroup(group.name());
     instance.inputMethodManager().setGroup(group);
     instance.inputMethodManager().setCurrentGroup(group.name());
+    {
+      Context ic(instance);
+      require(instance.inputMethodIcon(&ic) == "jong-symbolic",
+              "active status uses the monochrome icon");
+    }
     require(
         instance.inputMethodManager().currentGroup().inputMethodList().size() ==
             2,

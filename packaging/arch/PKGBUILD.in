@@ -7,7 +7,7 @@ arch=('x86_64')
 url='https://github.com/shaadahmmed/jong-bangla-keyboard'
 license=('MIT' 'BSD-2-Clause' 'Unicode-3.0')
 options=('!debug')
-depends=('fcitx5>=5.1.23' 'gcc-libs' 'glibc')
+depends=('fcitx5>=5.1.23' 'gcc-libs' 'glibc' 'hicolor-icon-theme')
 makedepends=('rust>=1:1.99.1' 'cmake>=3.25' 'ninja' 'python')
 source=('source.tar.gz::@SOURCE_URL@')
 sha256sums=('@SHA256@')

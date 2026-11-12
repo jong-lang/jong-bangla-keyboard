@@ -15,6 +15,8 @@ import tarfile
 import tempfile
 import tomllib
 
+from icon_payload import icon_files
+
 
 def run(args, **kwargs):
     return subprocess.run([str(arg) for arg in args], check=True, **kwargs)
@@ -42,11 +44,13 @@ def archive(destination, files, prefix, epoch):
 
 def staged_files(stage):
     files = {path.relative_to(stage).as_posix(): path for path in stage.rglob("*")
-             if not path.is_dir()}
+             if not path.is_dir() or path.is_symlink()}
     expected = {"usr/lib/fcitx5/libjong-bangla.so", "usr/share/fcitx5/addon/jong-bangla.conf",
                 "usr/share/fcitx5/inputmethod/jong-bangla.conf"}
-    if set(files) != expected or any(path.is_symlink() for path in files.values()):
-        raise ValueError("release stage must contain exactly the three expected Fcitx5 files")
+    expected.update(path.as_posix() for path in icon_files("usr/share"))
+    if set(files) != expected or any(not path.is_file() or path.is_symlink()
+                                    for path in files.values()):
+        raise ValueError("release stage must contain exactly the twelve expected Fcitx5 and icon files")
     return files
 
 

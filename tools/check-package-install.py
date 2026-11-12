@@ -9,6 +9,8 @@ from pathlib import Path
 import subprocess
 import sys
 
+from icon_payload import icon_files
+
 
 LAYOUT = {
     "deb": ("/usr/lib/x86_64-linux-gnu/fcitx5", "/usr/share/doc/jong-bangla/LICENSE"),
@@ -34,6 +36,7 @@ def check(kind, first, second):
     data = Path("/usr/share/fcitx5")
     required = {library, data / "addon/jong-bangla.conf", data / "inputmethod/jong-bangla.conf",
                 Path(license_file), Path("/usr/share/doc/jong-bangla/PACKAGING.md")}
+    required.update(icon_files("/usr/share"))
     notices = Path(license_file).with_name("THIRD_PARTY_NOTICES")
     if kind == "deb":
         notices = Path("/usr/share/doc/jong-bangla/THIRD_PARTY_NOTICES")
@@ -42,10 +45,12 @@ def check(kind, first, second):
     required.update({stdlib / "COPYRIGHT-library.html", stdlib / "rustc-version.txt",
                      *(stdlib / "licenses" / name for name in (
                          "MIT.txt", "Apache-2.0.txt", "BSD-2-Clause.txt", "Unicode-3.0.txt"))})
-    # Preserve both an unrelated addon and a synthetic user's existing profile.
+    # Preserve an unrelated addon/icon and a synthetic user's existing profile.
     sentinel = Path(addon) / "jong-unrelated.keep"
     profile = Path.home() / ".config/fcitx5/profile"
-    for path in (sentinel, profile):
+    icon_sentinel = Path("/usr/share/icons/hicolor/scalable/status/jong-unrelated.keep")
+    sentinels = (sentinel, profile, icon_sentinel)
+    for path in sentinels:
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text("synthetic unrelated data\n")
     harness = ["/opt/jong-package-test/harness", "--installed", data, addon]
@@ -64,15 +69,18 @@ def check(kind, first, second):
             raise ValueError("addon registration must be relocatable")
         if "Addon=jong-bangla\n" not in (data / "inputmethod/jong-bangla.conf").read_text():
             raise ValueError("input method must reference the Jong addon")
+        if "Icon=jong-bangla\n" not in (data / "inputmethod/jong-bangla.conf").read_text():
+            raise ValueError("input method must reference the installed app icon")
         linking = run(["ldd", "-r", library])
         if "not found" in linking or "undefined symbol" in linking:
             raise ValueError("installed addon has unresolved runtime dependencies")
         run(harness)
+        run([harness[0], "--icons", "/usr/share"])
         version_query = {"deb": ["dpkg-query", "-W", "-f=${Version}", "jong-bangla"],
                          "rpm": ["rpm", "-q", "--qf", "%{VERSION}-%{RELEASE}", "jong-bangla"],
                          "arch": ["pacman", "-Q", "jong-bangla"]}[kind]
         installed_versions.append(run(version_query).strip())
-        if any(p.read_text() != "synthetic unrelated data\n" for p in (sentinel, profile)):
+        if any(p.read_text() != "synthetic unrelated data\n" for p in sentinels):
             raise ValueError("installation/upgrade changed unrelated files or the user profile")
     if installed_versions[0] == installed_versions[1]:
         raise ValueError("upgrade control must install a distinct newer package revision")
@@ -90,9 +98,10 @@ def check(kind, first, second):
     run(remove)
     if any(p.exists() for p in required):
         raise ValueError("removal left package-owned runtime files")
-    if any(p.read_text() != "synthetic unrelated data\n" for p in (sentinel, profile)):
+    if any(p.read_text() != "synthetic unrelated data\n" for p in sentinels):
         raise ValueError("removal changed unrelated files or the user profile")
     run(harness, success=False)
+    run([harness[0], "--icons", "/usr/share"], success=False)
     manager = {"deb": ["dpkg-query", "-W"], "rpm": ["rpm", "-qa"], "arch": ["pacman", "-Q"]}[kind]
     return {"format": kind, "install_upgrade_remove": True, "installed_versions": installed_versions,
             "missing_library_rejected": True, "unrelated_files_preserved": True,

@@ -182,6 +182,11 @@ public:
   }
 
 private:
+  std::string subModeIconImpl(const fcitx::InputMethodEntry &,
+                              fcitx::InputContext &) override {
+    return "jong-symbolic";
+  }
+
   bool permitted(const fcitx::InputContext &ic) const {
     const auto flags = ic.capabilityFlags();
     return !flags.test(fcitx::CapabilityFlag::Disable) &&

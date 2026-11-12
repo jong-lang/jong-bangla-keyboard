@@ -70,9 +70,38 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/install-data/jong-bangla.conf"
     DESTINATION "${FCITX_INSTALL_PKGDATADIR}/addon")
 install(FILES jong-bangla-inputmethod.conf
     DESTINATION "${FCITX_INSTALL_PKGDATADIR}/inputmethod" RENAME jong-bangla.conf)
+
+# hicolor is the standard fallback theme; never install a private index.theme.
+set(JONG_ICONDIR "${FCITX_INSTALL_DATADIR}/icons/hicolor")
+install(FILES "${JONG_ROOT}/assets/app-icon/app-icon-light.svg"
+    DESTINATION "${JONG_ICONDIR}/scalable/apps" RENAME jong-bangla.svg)
+foreach(size 128 256 512)
+    install(FILES "${JONG_ROOT}/assets/app-icon/app-icon-light-${size}px.png"
+        DESTINATION "${JONG_ICONDIR}/${size}x${size}/apps" RENAME jong-bangla.png)
+endforeach()
+foreach(appearance light dark)
+    install(FILES "${JONG_ROOT}/assets/tray-icon/icon-tray-linux-${appearance}.svg"
+        DESTINATION "${JONG_ICONDIR}/scalable/status"
+        RENAME "fcitx-jong-bangla-${appearance}.svg")
+    install(FILES "${JONG_ROOT}/assets/tray-icon/icon-tray-linux-${appearance}-24px.png"
+        DESTINATION "${JONG_ICONDIR}/24x24/status"
+        RENAME "fcitx-jong-bangla-${appearance}.png")
+endforeach()
+# Retain the supplied artwork; derive KDE's palette-aware status variant.
+# Consumers without palette support render the dark-ink fallback as supplied.
+file(READ "${JONG_ROOT}/assets/tray-icon/icon-tray-linux-light.svg" JONG_SYMBOLIC)
+string(REPLACE "<style>" "<style id=\"current-color-scheme\">" JONG_SYMBOLIC "${JONG_SYMBOLIC}")
+string(REPLACE ".cls-1{fill:#24282b}" ".ColorScheme-Text{color:#24282b}" JONG_SYMBOLIC "${JONG_SYMBOLIC}")
+string(REPLACE "class=\"cls-1\"" "class=\"ColorScheme-Text\" fill=\"currentColor\"" JONG_SYMBOLIC "${JONG_SYMBOLIC}")
+file(CONFIGURE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/install-data/jong-symbolic.svg"
+    CONTENT "${JONG_SYMBOLIC}" @ONLY)
+set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS
+    "${JONG_ROOT}/assets/tray-icon/icon-tray-linux-light.svg")
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/install-data/jong-symbolic.svg"
+    DESTINATION "${JONG_ICONDIR}/scalable/status")
 # The stage checker reads resolved paths rather than assuming a distro layout.
 file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/install-layout.txt"
-    "${FCITX_INSTALL_ADDONDIR}\n${FCITX_INSTALL_PKGDATADIR}\n")
+    "${FCITX_INSTALL_ADDONDIR}\n${FCITX_INSTALL_PKGDATADIR}\n${FCITX_INSTALL_DATADIR}\n")
 
 enable_testing()
 add_executable(jong-fcitx5-harness tests/harness.cpp)
