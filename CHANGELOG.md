@@ -40,11 +40,11 @@ version and date. Release preparation follows [CONTRIBUTING.md](CONTRIBUTING.md#
   payload is specific to its recorded build environment; use the matching
   native package on Debian or Fedora. Older Debian/Ubuntu releases remain
   unverified. AUR publication still awaits maintainer account approval in
-  [#46](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/46).
+  [#46](https://github.com/jong-lang/jong-bangla-keyboard/issues/46).
 
 ### Tested environments
 
-- [Branding PR #54](https://github.com/shaadahmmed/jong-bangla-keyboard/pull/54)
+- [Branding PR #54](https://github.com/jong-lang/jong-bangla-keyboard/pull/54)
   records maintainer-reported passes on CachyOS KDE Plasma Wayland for the
   configuration icon and active status appearance in KWrite with Breeze Light
   and Breeze Dark, plus README light/dark appearance. Debian KDE and Fedora KDE
@@ -74,7 +74,7 @@ version and date. Release preparation follows [CONTRIBUTING.md](CONTRIBUTING.md#
   required by the [release policy](CONTRIBUTING.md#release-policy-and-checklist).
   Tagging requires a later maintainer release instruction; publication remains
   a maintainer action. Preparation is tracked in
-  [#55](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/55).
+  [#55](https://github.com/jong-lang/jong-bangla-keyboard/issues/55).
 
 ## 0.1.0 - 2026-11-08
 
@@ -118,14 +118,14 @@ version and date. Release preparation follows [CONTRIBUTING.md](CONTRIBUTING.md#
 - Recorded maintainer desktop passes cover CachyOS KDE Plasma Wayland on the
   Modern 15 A5M in Kate, KWrite and Firefox, plus earlier Python GTK and Qt test
   environments. They do not establish XWayland coverage.
-- [Packaging PR #40](https://github.com/shaadahmmed/jong-bangla-keyboard/pull/40)
+- [Packaging PR #40](https://github.com/jong-lang/jong-bangla-keyboard/pull/40)
   records 2026-11-07 installation, typing, revision upgrade and removal passes
   on CachyOS, Debian testing/forky and Fedora 45 KDE Plasma Wayland using
   packages from source `63d08a633e8c98f293206126053675890ddc8e83`.
   The RPMs were built on Fedora 44 and tested on Fedora 45. Debian/Fedora
   reports are aggregate results with incomplete application/backend details.
 - On 2026-11-08 the maintainer
-  [reaffirmed the completed passes](https://github.com/shaadahmmed/jong-bangla-keyboard/pull/40#issuecomment-6711683895),
+  [reaffirmed the completed passes](https://github.com/jong-lang/jong-bangla-keyboard/pull/40#issuecomment-6711683895),
   but could not identify the RPM pair. This adds no new artifact-specific pass.
 - Separate container checks establish synthetic loading and package lifecycle
   results, not interactive desktop support. See the
@@ -138,14 +138,14 @@ version and date. Release preparation follows [CONTRIBUTING.md](CONTRIBUTING.md#
   is established only for the finite [audited corpus](docs/TESTING.md#reference-coverage-audit);
   unsupported Unicode case preservation deliberately differs from the reference.
 - Acceptance of the intended release artifacts remains open in
-  [#41](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/41), especially
+  [#41](https://github.com/jong-lang/jong-bangla-keyboard/issues/41), especially
   Fedora 45-built RPMs and subsequently rebuilt packages. Earlier desktop
   reports must not be attributed to new package hashes. Package-specific Python
   GTK/Qt results or availability, broader punctuation/escape/navigation cases,
   and missing environment details remain to be recorded.
 - Other distributions/desktops, XWayland and ARM64 are unverified. IBus and
   Windows TSF are later adapters; macOS is out of scope. Flatpak follows the
-  native release in [#31](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/31).
+  native release in [#31](https://github.com/jong-lang/jong-bangla-keyboard/issues/31).
 - This entry prepares the release; it does not announce publication. Separate
   review, explicit merge and release instructions, successful CI, artifact
   acceptance and complete draft inspection remain required under the

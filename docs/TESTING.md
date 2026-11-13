@@ -26,7 +26,7 @@ integration paths need a baseline; unchanged paths do not need repeated full
 desktop matrices. Unknown impact calls for broader checks.
 
 CI currently runs its full configured jobs on PRs. Change-aware scheduling is
-planned in [#51](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/51);
+planned in [#51](https://github.com/jong-lang/jong-bangla-keyboard/issues/51);
 this selection policy does not alter required GitHub checks.
 
 ## Automated layers
@@ -131,7 +131,7 @@ and rejects conflicting expectations for repeated input.
 
 ### Reference coverage audit
 
-The [#26](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/26) audit
+The [#26](https://github.com/jong-lang/jong-bangla-keyboard/issues/26) audit
 checked 522,973 parity rows (493,369 distinct inputs) across 304 TSV files,
 including 40 new independently authored interaction cases. Repeated rows agree.
 The separate policy fixture has 60 cases: 51 deliberate differences and nine
@@ -380,11 +380,11 @@ only for environments actually tested. Revisit the assumption after a relevant
 framework/backend change or a distribution-specific integration failure.
 
 Linux runner expansion is tracked in
-[#47](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/47).
-[PR #48](https://github.com/shaadahmmed/jong-bangla-keyboard/pull/48) provides an
+[#47](https://github.com/jong-lang/jong-bangla-keyboard/issues/47).
+[PR #48](https://github.com/jong-lang/jong-bangla-keyboard/pull/48) provides an
 open KWrite/Firefox committed-text proof, not full acceptance or Brave/Writer
 coverage. Windows automation is planned in
-[#52](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/52), after TSF
+[#52](https://github.com/jong-lang/jong-bangla-keyboard/issues/52), after TSF
 exists; no Windows driver or coverage is claimed now.
 
 Runners should keep named, maintainable scenarios and exact Unicode expectations
@@ -474,9 +474,9 @@ and package hashes in the implementation PR; missing observations stay pending.
 ### Release artifact acceptance
 
 v0.1.0 is published. Its original artifact-acceptance discussion is retained in
-[#41](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/41).
-Preserve the [PR #40 desktop reports](https://github.com/shaadahmmed/jong-bangla-keyboard/pull/40)
-and the [maintainer's later confirmation](https://github.com/shaadahmmed/jong-bangla-keyboard/pull/40#issuecomment-6711683895)
+[#41](https://github.com/jong-lang/jong-bangla-keyboard/issues/41).
+Preserve the [PR #40 desktop reports](https://github.com/jong-lang/jong-bangla-keyboard/pull/40)
+and the [maintainer's later confirmation](https://github.com/jong-lang/jong-bangla-keyboard/pull/40#issuecomment-6711683895)
 with their original source and package hashes. The confirmation's RPM pair is
 unknown. Do not relabel these completed tests as new runs or request repetition
 solely for implementation review. They do not establish new artifact-specific

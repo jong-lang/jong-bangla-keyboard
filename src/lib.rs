@@ -9,8 +9,8 @@
 //! See the repository's [coverage overview] and [behavior notes] for supported
 //! rules, compatibility evidence, and limitations.
 //!
-//! [coverage overview]: https://github.com/shaadahmmed/jong-bangla-keyboard#current-status
-//! [behavior notes]: https://github.com/shaadahmmed/jong-bangla-keyboard/blob/main/docs/FEATURES.md#typing-behavior
+//! [coverage overview]: https://github.com/jong-lang/jong-bangla-keyboard#current-status
+//! [behavior notes]: https://github.com/jong-lang/jong-bangla-keyboard/blob/main/docs/FEATURES.md#typing-behavior
 //!
 //! ```
 //! use jong_bangla_core::transliterate;

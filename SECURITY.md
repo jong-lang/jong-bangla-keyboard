@@ -64,7 +64,7 @@ linting complement review without changing the runtime architecture.
 
 ## Report a vulnerability
 
-Use [GitHub private vulnerability reporting](https://github.com/shaadahmmed/jong-bangla-keyboard/security/advisories/new).
+Use [GitHub private vulnerability reporting](https://github.com/jong-lang/jong-bangla-keyboard/security/advisories/new).
 Include the affected revision or release, environment, impact, and a minimal
 synthetic reproduction. Keep vulnerability details out of public issues while
 the report is being investigated. Discuss disclosure with the maintainer in

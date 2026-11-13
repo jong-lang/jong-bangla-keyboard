@@ -57,7 +57,7 @@ environments, XWayland, or individual application backends. The Fedora 45 report
 used Fedora 44-built RPMs. Fedora 45 is the native RPM packaging target.
 
 No user-visible bugs are currently known to the maintainer. Track new bugs
-in [GitHub Issues](https://github.com/shaadahmmed/jong-bangla-keyboard/issues).
+in [GitHub Issues](https://github.com/jong-lang/jong-bangla-keyboard/issues).
 Engineering follow-ups are separate from user-visible bug reports.
 
 The [testing policy](TESTING.md#maintainer-run-desktop-acceptance) uses CachyOS

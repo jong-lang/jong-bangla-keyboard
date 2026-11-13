@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Jong Bangla maintainers <shaadahmmed@users.noreply.github.com>
 Build-Depends: debhelper-compat (= 13), cmake (>= 3.25), ninja-build, g++, cargo | rustup, rustc (>= 1.99.1) | rustup, libfcitx5core-dev (>= 5.1.23), hicolor-icon-theme, pkg-config, python3
 Standards-Version: 4.7.2
-Homepage: https://github.com/shaadahmmed/jong-bangla-keyboard
+Homepage: https://github.com/jong-lang/jong-bangla-keyboard
 Rules-Requires-Root: no
 
 Package: jong-bangla
