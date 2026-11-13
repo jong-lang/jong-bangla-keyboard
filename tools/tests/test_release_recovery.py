@@ -41,6 +41,23 @@ class ReleaseRecovery(unittest.TestCase):
     def test_only_installation_failure_with_complete_original_evidence_is_eligible(self):
         self.assertEqual(self.validate(), 456)
 
+    def test_selective_release_requires_every_workload_and_failed_aggregate(self):
+        self.jobs = [{"name": name, "status": "completed", "conclusion": "success"}
+                     for name in recovery.SELECTIVE_JOBS]
+        gate = {"name": recovery.GATE, "status": "completed", "conclusion": "failure"}
+        self.jobs.extend((self.policy, gate,
+                          {"name": recovery.DRAFT, "status": "completed", "conclusion": "skipped"}))
+        self.assertEqual(self.validate(), 456)
+        for job in self.jobs:
+            original = job["conclusion"]
+            for conclusion in ("failure", "cancelled", "skipped", "success", None):
+                if conclusion == original:
+                    continue
+                job["conclusion"] = conclusion
+                with self.subTest(job=job["name"], conclusion=conclusion), self.assertRaises(ValueError):
+                    self.validate()
+            job["conclusion"] = original
+
     def test_wrong_repository_tag_commit_workflow_event_or_incomplete_run_rejected(self):
         for key, value in (
             ("repository", {"full_name": "foreign/jong"}),
