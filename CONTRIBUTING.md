@@ -34,7 +34,7 @@ Implement the change and relevant regression tests. Use
 Prefer maintainer-run scripts with independently verified assertions. Ask for
 manual testing only for remaining automation gaps, with brief exact steps.
 Do not repeat every application on each KDE distribution. CI scheduling changes
-are tracked in [#51](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/51);
+are tracked in [#51](https://github.com/jong-lang/jong-bangla-keyboard/issues/51);
 existing required checks remain in force until that work is delivered.
 
 Use the exact commands in AGENTS.md and the task-specific testing guide. Report
@@ -134,7 +134,7 @@ Review enforces rules that do not have an automated check.
 | Dependency licenses, networking/telemetry crate bans, and dependency sources | Implemented by `deny.toml` and cargo-deny in the CI policy job |
 | Known dependency vulnerabilities | Implemented by cargo-audit with warnings denied in the CI policy job |
 | Known source networking, logging, persistence, and core boundary violations | Implemented by `tools/check-privacy.py`; [coverage and limits](SECURITY.md#enforcement) require complementary review |
-| No explicit panics or fallible unwraps in the FFI input path | Implemented by validated action decoding and exhaustive dispatch, with action/scalar regressions; [#25](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/25). Panic containment remains defensive; review enforces this policy |
+| No explicit panics or fallible unwraps in the FFI input path | Implemented by validated action decoding and exhaustive dispatch, with action/scalar regressions; [#25](https://github.com/jong-lang/jong-bangla-keyboard/issues/25). Panic containment remains defensive; review enforces this policy |
 | Compatibility coverage audit and useful property tests | Implemented: [finite corpus, selected-rule inventory, and limits](docs/TESTING.md#reference-coverage-audit); external reference checks run manually |
 | Reproducible Rust/native memory-check recipes | Implemented: [native ASan/UBSan, allocator LSan, release Memcheck and exceptional-retention controls](docs/TESTING.md#memory-checks) in CI; Rust instructions are not sanitizer-instrumented |
 | Committed performance baseline and CI smoke benchmark | [Collector, evidence and limits](docs/PERFORMANCE.md); CI has no timing thresholds |
@@ -212,11 +212,11 @@ Current delivery:
 
 | Work | Issue |
 | --- | --- |
-| Native Fcitx5 release | [v0.1.0 published](https://github.com/shaadahmmed/jong-bangla-keyboard/releases/tag/v0.1.0); preserve the recorded desktop coverage limits |
-| AUR publication | [#46](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/46); supported recipe, publication awaits maintainer account approval |
-| Desktop acceptance automation | [#47](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/47); ongoing, not a full acceptance claim |
-| Change-aware CI scheduling | [#51](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/51); planned |
-| Windows TSF acceptance automation | [#52](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/52); implement during the TSF stage |
+| Native Fcitx5 release | [v0.1.0 published](https://github.com/jong-lang/jong-bangla-keyboard/releases/tag/v0.1.0); preserve the recorded desktop coverage limits |
+| AUR publication | [#46](https://github.com/jong-lang/jong-bangla-keyboard/issues/46); supported recipe, publication awaits maintainer account approval |
+| Desktop acceptance automation | [#47](https://github.com/jong-lang/jong-bangla-keyboard/issues/47); ongoing, not a full acceptance claim |
+| Change-aware CI scheduling | [#51](https://github.com/jong-lang/jong-bangla-keyboard/issues/51); planned |
+| Windows TSF acceptance automation | [#52](https://github.com/jong-lang/jong-bangla-keyboard/issues/52); implement during the TSF stage |
 | Windows TSF, then IBus | Adapter sequence; [current platform scope](docs/FEATURES.md#platform-matrix) |
 
 For each release:

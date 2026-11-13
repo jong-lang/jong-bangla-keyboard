@@ -4,7 +4,7 @@ pkgver=@VERSION@
 pkgrel=@REVISION@
 pkgdesc='Bangla phonetic input method for Fcitx5'
 arch=('x86_64')
-url='https://github.com/shaadahmmed/jong-bangla-keyboard'
+url='https://github.com/jong-lang/jong-bangla-keyboard'
 license=('MIT' 'BSD-2-Clause' 'Unicode-3.0')
 options=('!debug')
 depends=('fcitx5>=5.1.23' 'gcc-libs' 'glibc' 'hicolor-icon-theme')

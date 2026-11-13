@@ -9,7 +9,7 @@ Desktop coverage remains in [FEATURES.md](FEATURES.md#platform-matrix).
 ## Install, upgrade, activate and remove
 
 Download the matching package and `SHA256SUMS` from the
-[published release](https://github.com/shaadahmmed/jong-bangla-keyboard/releases/tag/v0.1.0). Verify the
+[published release](https://github.com/jong-lang/jong-bangla-keyboard/releases/tag/v0.1.0). Verify the
 download against its entry with `sha256sum --check --ignore-missing SHA256SUMS`.
 Checksums detect corruption; obtain the manifest from the trusted release too.
 
@@ -133,7 +133,7 @@ separate maintainer action. Release artifacts also include an AUR recipe archive
 generated from `PKGBUILD.in`, pinned to that release's source URL and SHA-256.
 It builds offline after source download and does not fetch Cargo dependencies.
 The recipe remains supported. Publication to AUR awaits maintainer account
-approval and is tracked in [#46](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/46).
+approval and is tracked in [#46](https://github.com/jong-lang/jong-bangla-keyboard/issues/46).
 
 When updating the committed recipe, set its version, source root, immutable
 commit URL and verified archive hash together using the template. Download and

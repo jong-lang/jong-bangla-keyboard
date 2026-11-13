@@ -73,7 +73,7 @@ def build(kind, archive, destination, revision):
         epoch = int(os.environ["SOURCE_DATE_EPOCH"])
         env = dict(os.environ, SOURCE_DATE_EPOCH=str(epoch), CARGO_INCREMENTAL="0")
         values = {"VERSION": pkgver, "REVISION": pkgrel, "SOURCE_DIR": root.name,
-                  "SOURCE_URL": f"https://github.com/shaadahmmed/jong-bangla-keyboard/releases/download/v{version}/jong-bangla-{version}.tar.gz",
+                  "SOURCE_URL": f"https://github.com/jong-lang/jong-bangla-keyboard/releases/download/v{version}/jong-bangla-{version}.tar.gz",
                   "SHA256": hashlib.sha256(archive.read_bytes()).hexdigest()}
         if kind == "deb":
             # Debhelper isolates HOME. Preserve an explicitly configured rustup

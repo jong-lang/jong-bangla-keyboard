@@ -1,6 +1,6 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: Jong Bangla
-Source: https://github.com/shaadahmmed/jong-bangla-keyboard
+Source: https://github.com/jong-lang/jong-bangla-keyboard
 
 Files: *
 Copyright: 2026 jong-bangla-board contributors

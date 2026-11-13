@@ -13,7 +13,7 @@ Avro-compatible behavior as its target. Original project code is MIT licensed.
 
 ## Current status
 
-Native Fcitx5 [v0.1.0 is available](https://github.com/shaadahmmed/jong-bangla-keyboard/releases/tag/v0.1.0).
+Native Fcitx5 [v0.1.0 is available](https://github.com/jong-lang/jong-bangla-keyboard/releases/tag/v0.1.0).
 Working on CachyOS KDE Plasma Wayland. Debian and
 Fedora test reports and their limits are in the [platform matrix](docs/FEATURES.md#platform-matrix).
 Exhaustive Avro parity is unverified.
@@ -27,7 +27,7 @@ of scope unless a viable free path is established.
 Download a native package and checksums from the release above; follow the
 [package guide](docs/PACKAGING.md) for installation and activation. The AUR
 recipe remains supported; AUR publication awaits maintainer account approval
-in [#46](https://github.com/shaadahmmed/jong-bangla-keyboard/issues/46).
+in [#46](https://github.com/jong-lang/jong-bangla-keyboard/issues/46).
 
 Alternatively, build from source with Rust, a C++
 compiler, CMake, Ninja, Fcitx5 development files, `hicolor-icon-theme`, and Python. Install

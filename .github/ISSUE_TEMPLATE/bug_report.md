@@ -24,4 +24,4 @@ and Wayland or XWayland. Include package source if installation is affected.
 ## Workaround
 
 State a known workaround, or none known. Link related issues if relevant.
-Report vulnerabilities through [private reporting](https://github.com/shaadahmmed/jong-bangla-keyboard/security/advisories/new).
+Report vulnerabilities through [private reporting](https://github.com/jong-lang/jong-bangla-keyboard/security/advisories/new).
