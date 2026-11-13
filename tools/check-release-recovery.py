@@ -19,6 +19,13 @@ SUCCESSFUL_JOBS = {
 }
 POLICY = "Release checks / Dependency and privacy policy"
 DRAFT = "Prepare complete release draft"
+GATE = "Release checks / Rust and Fcitx5"
+SELECTIVE_JOBS = (SUCCESSFUL_JOBS - {GATE}) | {
+    "Release checks / Select validation by change impact",
+    "Release checks / Selected tooling regressions",
+    "Release checks / Workflow and shell validation",
+    "Release checks / Rust and Fcitx5 validation",
+}
 POLICY_CHECKS = {
     "Check policy tools and deliberate violations",
     "Check all workspace dependency licenses, bans and sources",
@@ -34,12 +41,17 @@ def validate_run(run, jobs, artifacts, repository, tag, commit):
             or run["head_sha"] != commit or run["status"] != "completed"
             or run["conclusion"] != "failure"):
         raise ValueError("source run must be the failed tagged release in this repository")
-    expected = SUCCESSFUL_JOBS | {POLICY, DRAFT}
+    names = {job["name"] for job in jobs}
+    selective = "Release checks / Select validation by change impact" in names
+    successful = SELECTIVE_JOBS if selective else SUCCESSFUL_JOBS
+    expected = successful | {POLICY, DRAFT} | ({GATE} if selective else set())
     if len(jobs) != len(expected) or {job["name"] for job in jobs} != expected:
         raise ValueError("source run has missing, duplicate or unexpected jobs")
     for job in jobs:
-        conclusion = "success" if job["name"] in SUCCESSFUL_JOBS else (
-            "failure" if job["name"] == POLICY else "skipped")
+        # The current aggregate also fails on the policy installation failure.
+        # Every other selected release workload must have succeeded separately.
+        conclusion = "success" if job["name"] in successful else (
+            "failure" if job["name"] == POLICY or selective and job["name"] == GATE else "skipped")
         if job["status"] != "completed" or job["conclusion"] != conclusion:
             raise ValueError(f"ineligible source job: {job['name']}")
         if job["name"] == POLICY:

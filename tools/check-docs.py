@@ -32,6 +32,12 @@ def main():
     for name in filter(None, names):
         source = Path(name)
         content = source.read_text(encoding="utf-8")
+        budget = {"AGENTS.md": 120, "README.md": 80}.get(name)
+        if budget and len(content.splitlines()) > budget:
+            sys.exit(f"FAIL: {name}: exceeds {budget}-line budget")
+        if name == "CLAUDE.md" and (len(content.splitlines()) != 1
+                                   or re.findall(r"\[[^\]]+\]\(([^)]+)\)", content) != ["AGENTS.md"]):
+            sys.exit("FAIL: CLAUDE.md must contain only a link to AGENTS.md")
         if len(re.findall(r"^```", content, re.M)) % 2:
             sys.exit(f"FAIL: {name}: unbalanced code fences")
         files += 1

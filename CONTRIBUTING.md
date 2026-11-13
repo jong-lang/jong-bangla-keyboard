@@ -33,9 +33,9 @@ Implement the change and relevant regression tests. Use
 [agreed application matrix](docs/TESTING.md#maintainer-run-desktop-acceptance).
 Prefer maintainer-run scripts with independently verified assertions. Ask for
 manual testing only for remaining automation gaps, with brief exact steps.
-Do not repeat every application on each KDE distribution. CI scheduling changes
-are tracked in [#51](https://github.com/jong-lang/jong-bangla-keyboard/issues/51);
-existing required checks remain in force until that work is delivered.
+Do not repeat every application on each KDE distribution. CI selects validation
+by [change impact](docs/TESTING.md#ci-scheduling), with full validation on main
+and releases. Existing required status names remain in force.
 
 Use the exact commands in AGENTS.md and the task-specific testing guide. Report
 actual commands and outcomes in a short table. Identify skipped or unavailable
@@ -177,7 +177,8 @@ native package jobs build and test against their distribution libraries; see
 package names use each manager's version syntax. Only the
 maintainer publishes drafts; the tag workflow never publishes.
 
-The native CI job also runs on PRs. It exports the checked-out commit, builds
+The native release CI job runs on affected PRs and all main/release runs.
+It exports the checked-out commit, builds
 twice in separate source/build directories with offline locked Cargo, normalizes
 source paths and archive metadata, and compares all twelve staged files byte for
 byte. Both builds run CTest and staged discovery/removal checks. A mismatch
@@ -215,7 +216,7 @@ Current delivery:
 | Native Fcitx5 release | [v0.1.0 published](https://github.com/jong-lang/jong-bangla-keyboard/releases/tag/v0.1.0); preserve the recorded desktop coverage limits |
 | AUR publication | [#46](https://github.com/jong-lang/jong-bangla-keyboard/issues/46); supported recipe, publication awaits maintainer account approval |
 | Desktop acceptance automation | [#47](https://github.com/jong-lang/jong-bangla-keyboard/issues/47); ongoing, not a full acceptance claim |
-| Change-aware CI scheduling | [#51](https://github.com/jong-lang/jong-bangla-keyboard/issues/51); planned |
+| Change-aware CI scheduling | [Selection, required gates and limits](docs/TESTING.md#ci-scheduling) |
 | Windows TSF acceptance automation | [#52](https://github.com/jong-lang/jong-bangla-keyboard/issues/52); implement during the TSF stage |
 | Windows TSF, then IBus | Adapter sequence; [current platform scope](docs/FEATURES.md#platform-matrix) |
 
@@ -255,6 +256,8 @@ the original tagged draft tool verifies and uploads the original bundle.
 Only the draft job has write permission. Recovery rejects actual policy failures,
 other failed/missing jobs, expired artifacts and existing releases; it never
 moves a tag, rebuilds accepted packages, overwrites a draft or publishes.
+Recovery accepts the historical job inventory and the current inventory with its
+failed aggregate, only when every non-policy workload passed independently.
 The failed original run remains failed; retain both run links as release evidence.
 
 When TSF lands, add a Windows installer and Windows acceptance checks. Initially

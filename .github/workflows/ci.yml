@@ -14,8 +14,53 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  impact:
+    name: Select validation by change impact
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      plan: ${{ steps.select.outputs.plan }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - id: select
+        run: python3 tools/ci-impact.py plan
+
+  tools:
+    name: Selected tooling regressions
+    needs: impact
+    if: fromJSON(needs.impact.outputs.plan).tools
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - run: python3 tools/ci-impact.py test
+        env:
+          CI_PLAN: ${{ needs.impact.outputs.plan }}
+
+  lint:
+    name: Workflow and shell validation
+    needs: impact
+    if: fromJSON(needs.impact.outputs.plan).lint
+    runs-on: ubuntu-24.04
+    container: archlinux:base-devel
+    timeout-minutes: 10
+    steps:
+      - run: pacman -Syu --noconfirm --needed git actionlint shellcheck
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - run: actionlint
+      - run: shellcheck tools/check-build.sh
+
   release-native:
     name: Reproducible x86-64 release payload
+    needs: impact
+    if: fromJSON(needs.impact.outputs.plan).release_native
     runs-on: ubuntu-24.04
     container: archlinux@sha256:624bdc7fc6615155d67bc34cf7146c0c9fd0e3c92943977da63a630e4ca49c30
     timeout-minutes: 25
@@ -53,13 +98,14 @@ jobs:
 
   packages:
     name: Native package lifecycle (${{ matrix.format }})
-    needs: release-native
+    needs: [impact, release-native]
+    if: fromJSON(needs.impact.outputs.plan).formats[0] != null
     runs-on: ubuntu-24.04
     timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
-        format: [deb, rpm, arch]
+        format: ${{ fromJSON(needs.impact.outputs.plan).formats }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -104,7 +150,8 @@ jobs:
 
   release-bundle:
     name: Assemble verified release artifacts
-    needs: [release-native, packages]
+    needs: [impact, release-native, packages]
+    if: fromJSON(needs.impact.outputs.plan).bundle
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
@@ -129,6 +176,8 @@ jobs:
 
   policy:
     name: Dependency and privacy policy
+    needs: impact
+    if: fromJSON(needs.impact.outputs.plan).policy
     runs-on: ubuntu-24.04
     container: archlinux:base-devel
     timeout-minutes: 15
@@ -169,7 +218,6 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - run: python3 tools/check-docs.py
-      - run: python3 -m unittest discover -s tools/tests -v
       - name: Check committed whitespace and release preparation
         shell: bash
         env:
@@ -192,8 +240,10 @@ jobs:
           fi
           python3 tools/check-release.py --base "$base"
 
-  build:
-    name: Rust and Fcitx5
+  native:
+    name: Rust and Fcitx5 validation
+    needs: impact
+    if: fromJSON(needs.impact.outputs.plan).native
     runs-on: ubuntu-24.04
     container: archlinux:base-devel
     timeout-minutes: 25
@@ -203,22 +253,19 @@ jobs:
     steps:
       # Arch supplies the documented Fcitx5 headers; older Ubuntu packages do not.
       - name: Prepare Arch build environment
-        run: pacman -Syu --noconfirm --needed git rust cmake ninja fcitx5 hicolor-icon-theme python actionlint shellcheck
+        run: pacman -Syu --noconfirm --needed git rust cmake ninja fcitx5 hicolor-icon-theme python
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Record environment
         run: |
-          pacman -Q rust fcitx5 hicolor-icon-theme gcc cmake ninja python actionlint shellcheck | tee -a "$GITHUB_STEP_SUMMARY"
+          pacman -Q rust fcitx5 hicolor-icon-theme gcc cmake ninja python | tee -a "$GITHUB_STEP_SUMMARY"
           rustc --version
           cargo --version
-      - name: Check workflows
-        run: |
-          actionlint
-          shellcheck tools/check-build.sh
       - name: Check Rust workspace and Fcitx5 adapter
         run: bash tools/check-build.sh
       - name: Smoke benchmark without timing thresholds
+        if: fromJSON(needs.impact.outputs.plan).performance
         env:
           # Checkout ownership differs from the container user. Trust only this
           # known workspace for Git subprocesses in the collector, not globally.
@@ -227,6 +274,7 @@ jobs:
           GIT_CONFIG_VALUE_0: ${{ github.workspace }}
         run: python3 tools/measure-baseline.py smoke --output target/perf-smoke
       - name: Retain smoke observations
+        if: fromJSON(needs.impact.outputs.plan).performance
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: performance-smoke
@@ -249,6 +297,8 @@ jobs:
 
   memory:
     name: Native sanitizers and release Memcheck
+    needs: impact
+    if: fromJSON(needs.impact.outputs.plan).memory
     runs-on: ubuntu-24.04
     container: archlinux:base-devel
     timeout-minutes: 20
@@ -295,3 +345,21 @@ jobs:
           path: target/memory-*/memory-logs-*/
           if-no-files-found: warn
           retention-days: 14
+
+  build:
+    # Keep the ruleset's required status name. A skipped required workload fails
+    # this gate, including skips caused by failed upstream artifact producers.
+    name: Rust and Fcitx5
+    if: always()
+    needs: [impact, docs, tools, lint, native, policy, memory, release-native, packages, release-bundle]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Require every applicable check to pass
+        env:
+          CI_PLAN: ${{ needs.impact.outputs.plan }}
+          CI_NEEDS: ${{ toJSON(needs) }}
+        run: python3 tools/ci-impact.py gate

@@ -25,9 +25,50 @@ runtime payload, toolchain, framework, backend or test assertions change. New
 integration paths need a baseline; unchanged paths do not need repeated full
 desktop matrices. Unknown impact calls for broader checks.
 
-CI currently runs its full configured jobs on PRs. Change-aware scheduling is
-planned in [#51](https://github.com/jong-lang/jong-bangla-keyboard/issues/51);
-this selection policy does not alter required GitHub checks.
+### CI scheduling
+
+[The selector](../tools/ci-impact.py) reads the complete local Git diff from the
+PR merge base to its head, including deleted paths and both sides of renames.
+It does not use the GitHub changed-file API or its file-count limits. Missing
+history, invalid event data, empty diffs and unknown paths select the full suite.
+Main pushes and reusable release calls always select the full suite.
+
+| PR input | Selected CI work beyond always-run documentation checks |
+| --- | --- |
+| Known Markdown guides, documentation evidence and templates | None |
+| Core or adapter runtime payload | Rust/native, policy, memory, benchmark smoke, reproducible payload and all package formats |
+| Rust tests, fixtures or examples | Rust/native; measurement example also selects benchmark smoke |
+| Native harnesses | Rust/native, memory and benchmark smoke |
+| One distribution's package recipe | Reproducible payload, that format's lifecycle and related tool regressions |
+| Installed assets | Rust/native, reproducible payload, all formats and asset/package regressions |
+| Dependency/privacy policy or policy installer | Policy checks and related regressions |
+| Known build, release, memory or measurement helpers | Affected workload and related regressions, as listed in the selector |
+| Workflows, CI selector/tests, Cargo manifests/lockfile, CMake, build script, toolchain or unknown inputs | Full suite, including workflow/shell lint |
+
+Combined inputs select the union. All-format runs also assemble and verify the
+release bundle; single-format PRs retain their verified payload and package
+reports separately. Documentation checks validate local links, anchors, fences,
+shell example syntax, line budgets, whitespace and release-note/version
+consistency. External URLs and shell example execution remain outside coverage.
+Tool regressions run once in the selected tool job, except dependency/privacy
+and memory regressions, which run with their real tools in their respective jobs.
+The full tool suite remains available through the command below.
+
+The active repository ruleset was inspected for
+[#51](https://github.com/jong-lang/jong-bangla-keyboard/issues/51). Both required
+status names remain: `Documentation and release tooling` and `Rust and Fcitx5`.
+The latter is an always-run aggregate over every validation job. Applicable
+work must succeed; only explicitly non-applicable jobs may be skipped. Failed,
+cancelled, unexpectedly skipped or missing dependencies fail the aggregate.
+The selection summary records paths and reasons; the gate summary records job
+results, including failures. Benchmark smoke is a conditional step in the
+Rust/native job, so its failure fails that job. No timing threshold is claimed.
+
+Run scheduling and aggregation regressions with:
+
+```sh
+python3 -m unittest discover -s tools/tests -p test_ci_impact.py -v
+```
 
 ## Automated layers
 
@@ -41,7 +82,7 @@ this selection policy does not alter required GitHub checks.
 | Staged installation | `python3 tools/check-install.py target/ci-fcitx5` | Yes; does not configure a desktop |
 | Native package lifecycle | [Container commands and coverage](PACKAGING.md#recipes-and-verification) | Yes; separate Arch, Debian testing and Fedora 45 runtime images |
 | Documentation links | `python3 tools/check-docs.py` | Yes |
-| Tool regression tests | `python3 -m unittest discover -s tools/tests -v` | Yes; real cargo-deny cases run in the policy job |
+| Tool regression tests | `python3 -m unittest discover -s tools/tests -v` | Selected on PRs, full on main/releases; detector-dependent cases run in policy/memory jobs |
 | Synthetic benchmark smoke | `python3 tools/measure-baseline.py smoke --output target/perf-smoke` | Yes; protocol/workload checks only, no timing thresholds; [full local baseline](PERFORMANCE.md) |
 | Source privacy tripwires | `python3 tools/check-privacy.py` | Yes, also included in the full build and exported-source run |
 | Rust dependency licenses, bans, and sources | `cargo deny --workspace --all-features --locked check bans licenses sources` | Yes, separate policy job |
@@ -88,7 +129,7 @@ these tools or fetch advisories. The source scan and its Python regression
 tests need only Python; the dependency regression tests additionally require
 Cargo and cargo-deny on `PATH`. They use temporary offline path crates without
 building or downloading the real banned packages. Without cargo-deny, that
-module reports skips locally and in the documentation job; the policy CI job
+module reports skips locally; the selected policy CI job
 requires the tool and runs every dependency regression case.
 
 The regressions accept a permissive private graph and reject renamed/direct,
