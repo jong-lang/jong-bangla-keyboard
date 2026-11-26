@@ -3,6 +3,16 @@
 Run commands from the repository root. Start with [AGENTS.md](../AGENTS.md) for
 the check list. Use synthetic input, never real typing or credentials.
 
+## Required behavior
+
+| Risk | Smallest check that can observe it |
+| --- | --- |
+| Wrong Bangla, broken context, or lost editing state | Rust exact Unicode fixtures and composition tests for overlaps, boundaries, editing and reset |
+| Lost or duplicate text, swallowed shortcuts, or text in the wrong field | Real addon in the isolated Fcitx5 dispatcher. Assert ordered preedit, commits, key delivery, and separate input contexts |
+| Unsafe native ownership or leaks | FFI lifecycle, panic policy, and native memory tools with positive detector controls |
+| Addon missing, uninstall damage, or unstable release bytes | Staged discovery, real package-manager lifecycle, and two independent release builds |
+| Desktop frontend behavior | Maintainer observes an actual application, including visible preedit, focus changes and password fields |
+
 ## Select checks by impact
 
 Choose local validation before running it. Run a check once for the relevant
@@ -35,7 +45,7 @@ Main pushes and reusable release calls always select the full suite.
 
 | PR input | Selected CI work beyond always-run documentation checks |
 | --- | --- |
-| Known Markdown guides, documentation evidence and templates | None |
+| Known Markdown guides, documentation evidence, templates and the generated Graphify graph | None |
 | Core or adapter runtime payload | Rust/native, policy, memory, benchmark smoke, reproducible payload and all package formats |
 | Rust tests, fixtures or examples | Rust/native; measurement example also selects benchmark smoke |
 | Native harnesses | Rust/native, memory and benchmark smoke |
@@ -74,17 +84,19 @@ python3 -m unittest discover -s tools/tests -p test_ci_impact.py -v
 
 | Layer | Command | Current CI coverage |
 | --- | --- | --- |
-| Full Rust and Fcitx5 checks | `bash tools/check-build.sh` | Yes, in an Arch container and from an exported source tree |
+| Full Rust and Fcitx5 checks | `bash tools/check-build.sh` | Yes, once in a rolling Arch container |
+| Build without Git metadata | Configure and build with CMake, then run `tools/check-install.py` against the build | Yes, from an exported source tree |
+| Minimum Rust version | `cargo +VERSION test --offline --locked --workspace` | The minimum is read from both manifests. Runs with full validation, including manifest and toolchain PRs |
 | Rust unit tests | `cargo test --offline --locked --workspace --lib` | Included in the full workspace test run |
 | Core integration and fixtures | `cargo test --offline --locked -p jong-bangla-core --tests` | Included in the full workspace test run |
 | Documentation examples | `cargo test --offline --locked --workspace --doc` | Included in the full workspace test run |
-| Synthetic Fcitx5 and FFI lifecycle | `ctest --test-dir target/ci-fcitx5 --output-on-failure` | Yes, after the full script builds this directory |
+| Synthetic Fcitx5 and FFI lifecycle | `ctest --test-dir target/ci-fcitx5 --no-tests=error --output-on-failure` | Yes, after the full script builds this directory |
 | Staged installation | `python3 tools/check-install.py target/ci-fcitx5` | Yes; does not configure a desktop |
 | Native package lifecycle | [Container commands and coverage](PACKAGING.md#recipes-and-verification) | Yes; separate Arch, Debian testing and Fedora 45 runtime images |
 | Documentation links | `python3 tools/check-docs.py` | Yes |
 | Tool regression tests | `python3 -m unittest discover -s tools/tests -v` | Selected on PRs, full on main/releases; detector-dependent cases run in policy/memory jobs |
 | Synthetic benchmark smoke | `python3 tools/measure-baseline.py smoke --output target/perf-smoke` | Yes; protocol/workload checks only, no timing thresholds; [full local baseline](PERFORMANCE.md) |
-| Source privacy tripwires | `python3 tools/check-privacy.py` | Yes, also included in the full build and exported-source run |
+| Source privacy tripwires | `python3 tools/check-privacy.py` | Yes, exercised directly by the full build and the policy job |
 | Rust dependency licenses, bans, and sources | `cargo deny --workspace --all-features --locked check bans licenses sources` | Yes, separate policy job |
 | RustSec vulnerabilities and advisory warnings | `cargo audit --file Cargo.lock --deny warnings` | Yes, separate policy job with current advisory data |
 | Native ASan/UBSan and allocator LSan | `python3 tools/check-memory.py target/memory-sanitizers` | Yes, separate Clang build; see recipes below |
@@ -166,9 +178,9 @@ Keep deliberate differences in `unicode-case-policy.tsv`, with separate engine
 and reference expectations. Do not count them as parity cases or silently
 replace expected output to make tests pass. Add regressions for corrected
 behavior and property tests only for useful invariants, such as determinism and
-reset behavior. All fixture files are discovered by the reference checker; it
-also requires each parity fixture to be included by the Rust regression suite
-and rejects conflicting expectations for repeated input.
+reset behavior. The Rust suite discovers all parity TSV files and identifies
+failures by file and line. The independent reference checker also discovers the
+fixtures and rejects conflicting expectations for repeated input.
 
 ### Reference coverage audit
 
@@ -422,9 +434,9 @@ framework/backend change or a distribution-specific integration failure.
 
 Linux runner expansion is tracked in
 [#47](https://github.com/jong-lang/jong-bangla-keyboard/issues/47).
-[PR #48](https://github.com/jong-lang/jong-bangla-keyboard/pull/48) provides an
-open KWrite/Firefox committed-text proof, not full acceptance or Brave/Writer
-coverage. Windows automation is planned in
+The KWrite/Firefox proof in [PR #48](https://github.com/jong-lang/jong-bangla-keyboard/pull/48)
+closed without merging. KWrite and Firefox are the first targets for automated
+committed-text assertions. Windows automation is planned in
 [#52](https://github.com/jong-lang/jong-bangla-keyboard/issues/52), after TSF
 exists; no Windows driver or coverage is claimed now.
 
@@ -445,12 +457,14 @@ Never use personal documents, credentials or typed-text logs.
 | Type `kh12T` | Editable preedit shows `খ১২ট` |
 | Press Backspace, then Ctrl+Backspace | One raw character is removed, then the active buffer clears without committing |
 | Use deletion keys with no active input | The application handles deletion normally |
-| Type a word, then Space or Enter | Bangla commits once; the application handles the boundary once |
+| Type `kh12T`, then Space in a single-line field | The field contains exactly `খ১২ট` plus one space. With Jong inactive, the control is `kh12T` plus one space |
+| Type `kh12T`, then Enter in a fresh multiline field | The field contains exactly `খ১২ট` plus one line break |
 | Type punctuation, escapes, digits, and mixed case from a changed fixture | Exact expected output remains editable until a boundary |
 | Press Escape with and without active input | Commit and consume while active; otherwise pass Escape through |
 | Use application shortcuts and navigation during composition | Pending text finalizes correctly; application actions are not swallowed |
-| Change focus, switch input methods, then revisit the field | No duplicate commit or composition shared across fields |
-| Disable password input methods in Fcitx5 and type synthetic text in a password field | No Jong composition or stale preedit |
+| Type `ki` in field A, move focus directly to empty field B, and type `i` then Space | A receives `কি` once. B receives `ই` plus one space. Returning to A shows an empty preedit |
+| Type `ki`, switch to the ordinary keyboard, then switch back and type `i` | `কি` commits once on switch away. Jong starts a fresh `ই` preedit on return |
+| Disable password input methods in Fcitx5, then focus an owned password field and send synthetic keys | No Jong preedit or transformation in the restricted field. The prior field receives no duplicate commit. Returning to an ordinary field starts a fresh composition |
 
 Record source/package identity, OS, input framework, application/toolkit versions,
 backend, exact actual Unicode and per-case results. Missing required observations
@@ -514,7 +528,7 @@ and package hashes in the implementation PR; missing observations stay pending.
 
 ### Release artifact acceptance
 
-v0.1.0 is published. Its original artifact-acceptance discussion is retained in
+The v0.1.0 artifact-acceptance discussion is retained in
 [#41](https://github.com/jong-lang/jong-bangla-keyboard/issues/41).
 Preserve the [PR #40 desktop reports](https://github.com/jong-lang/jong-bangla-keyboard/pull/40)
 and the [maintainer's later confirmation](https://github.com/jong-lang/jong-bangla-keyboard/pull/40#issuecomment-6711683895)
@@ -536,6 +550,10 @@ For subsequent releases, close these items before publication:
    package results distinct from application behavior; no full Debian/Fedora
    desktop matrix is required. Record which prior cases remain applicable and
    rerun affected cases when their runtime/build/environment inputs change.
+   On a disposable VM for an affected package format, install the previous
+   published package and upgrade to the candidate. Verify the candidate version,
+   preserved profile, successful activation and removal. The CI revision pair
+   exercises package replacement with identical code.
 3. Record actual application/scenario results against the agreed matrix, including
    manual automation gaps and unavailable cases. Preserve original hashes and
    unknown historical details; do not transfer an old pass to a new package hash.

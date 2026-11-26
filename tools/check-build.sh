@@ -14,5 +14,5 @@ cmake -S adapters/fcitx5 -B target/ci-fcitx5 -G Ninja \
     -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr \
     -DFCITX_INSTALL_USE_FCITX_SYS_PATHS=ON
 cmake --build target/ci-fcitx5
-ctest --test-dir target/ci-fcitx5 --output-on-failure
+ctest --test-dir target/ci-fcitx5 --no-tests=error --output-on-failure
 python3 tools/check-install.py target/ci-fcitx5

@@ -330,6 +330,26 @@ void test_editing(Instance &instance) {
           "fresh word after Escape commit");
 }
 
+void test_mixed_word(Instance &instance) {
+  for (const auto sym : {FcitxKey_space, FcitxKey_Return}) {
+    Context ic(instance);
+    ic.type("kh12");
+    const Key shiftedT(FcitxKey_T, KeyState::Shift);
+    require(ic.send(shiftedT), "shifted T is consumed as phonetic text");
+    require(ic.inputPanel().clientPreedit().toString() == "খ১২ট",
+            "digraph, Bangla digits and shifted consonant compose together");
+    ic.clear();
+    require(ic.send(Key(FcitxKey_BackSpace)), "active Backspace is consumed");
+    ic.expect({"preedit:খ১২"});
+    require(ic.send(shiftedT), "deleted raw key can be retyped");
+    ic.clear();
+    const Key boundary(sym);
+    require(!ic.send(boundary), "application receives the boundary");
+    ic.expect({"preedit:", "commit:খ১২ট", "key"});
+    ic.unchanged(boundary);
+  }
+}
+
 void test_invisible(Instance &instance) {
   for (const auto sym :
        {FcitxKey_space, FcitxKey_Return, FcitxKey_Left, FcitxKey_Escape}) {
@@ -786,6 +806,7 @@ int main(int argc, char **argv) {
     const std::vector<std::pair<const char *, void (*)(Instance &)>> suites = {
         {"boundaries", test_boundaries},
         {"editing", test_editing},
+        {"mixed word editing and commit", test_mixed_word},
         {"invisible input", test_invisible},
         {"releases and modifiers", test_releases_modifiers},
         {"resolved text", test_resolved_text},

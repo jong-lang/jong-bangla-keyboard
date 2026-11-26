@@ -12,7 +12,7 @@ import unittest
 
 
 FORMATS = ("deb", "rpm", "arch")
-CHECKS = ("native", "policy", "memory", "performance", "release_native", "bundle", "lint")
+CHECKS = ("native", "minimum_rust", "policy", "memory", "performance", "release_native", "bundle", "lint")
 # Related regressions run together when helpers share packaging/release inputs.
 RELEASE_TESTS = {"test_release_tools.py", "test_release_artifacts.py", "test_release_recovery.py"}
 PACKAGE_TESTS = {"test_packages.py", "test_icons.py", "test_release_artifacts.py"}
@@ -134,6 +134,8 @@ def plan(paths=(), full_reason=None):
                 selected.update(("policy", "release_native"))
                 formats.update(FORMATS)
                 reasons.append(f"Redistribution input: {path}")
+            elif path == "graphify-out/graph.json":
+                reasons.append(f"Generated knowledge graph: {path}")
             elif (path in ("AGENTS.md", "README.md", "CLAUDE.md", "CONTRIBUTING.md",
                            "CODE_OF_CONDUCT.md", "CHANGELOG.md")
                   or path.startswith("docs/") and Path(path).suffix in (".md", ".json", ".csv")
@@ -188,7 +190,8 @@ def event_plan(event_name, event):
 def gate(selection, needs):
     """Only explicitly non-applicable jobs may be skipped; all others must pass."""
     expected = {"impact": True, "docs": True, "tools": selection["tools"],
-                "native": selection["native"], "policy": selection["policy"],
+                "native": selection["native"], "minimum-rust": selection["minimum_rust"],
+                "policy": selection["policy"],
                 "memory": selection["memory"], "release-native": selection["release_native"],
                 "packages": bool(selection["formats"]), "release-bundle": selection["bundle"],
                 "lint": selection["lint"]}

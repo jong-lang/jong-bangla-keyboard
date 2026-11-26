@@ -79,7 +79,19 @@ jobs:
           # Rust's standard-library license texts must survive the base image's
           # documentation exclusion so the binary archive can redistribute them.
           sed -i '/^NoExtract.*usr\/share\/doc/d' /etc/pacman.conf
-          pacman -Syyuu --noconfirm --needed git rust cmake ninja fcitx5 hicolor-icon-theme python
+          dependencies=(git rust cmake ninja fcitx5 hicolor-icon-theme python)
+          # The archive sometimes stalls on metadata or an individual package.
+          # Retry acquisition against the same snapshot before installing.
+          for attempt in 1 2 3; do
+            if timeout 150s pacman -Syyuuw --noconfirm --needed --disable-download-timeout "${dependencies[@]}"; then
+              break
+            fi
+            if [[ "$attempt" == 3 ]]; then
+              exit 1
+            fi
+            sleep "$((attempt * 5))"
+          done
+          pacman -Suu --noconfirm --needed "${dependencies[@]}"
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
@@ -293,7 +305,36 @@ jobs:
             echo 'Exported source must be outside a Git checkout.' >&2
             exit 1
           fi
-          bash tools/check-build.sh
+          cmake -S adapters/fcitx5 -B "$export_dir/build" -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr \
+            -DFCITX_INSTALL_USE_FCITX_SYS_PATHS=ON
+          cmake --build "$export_dir/build"
+          python3 tools/check-install.py "$export_dir/build"
+
+  minimum-rust:
+    name: Workspace tests on minimum Rust
+    needs: impact
+    if: fromJSON(needs.impact.outputs.plan).minimum_rust
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Test with the consistent manifest minimum
+        run: |
+          minimum="$(python3 - <<'PY_MINIMUM'
+          import tomllib
+
+          with open("Cargo.toml", "rb") as core, open("adapters/fcitx5/ffi/Cargo.toml", "rb") as ffi:
+              minimum = tomllib.load(core)["package"]["rust-version"]
+              if tomllib.load(ffi)["package"]["rust-version"] != minimum:
+                  raise SystemExit("workspace crates declare different Rust versions")
+              print(minimum)
+          PY_MINIMUM
+          )"
+          rustup toolchain install "$minimum" --profile minimal
+          cargo "+$minimum" test --offline --locked --workspace
 
   memory:
     name: Native sanitizers and release Memcheck
@@ -351,7 +392,7 @@ jobs:
     # this gate, including skips caused by failed upstream artifact producers.
     name: Rust and Fcitx5
     if: always()
-    needs: [impact, docs, tools, lint, native, policy, memory, release-native, packages, release-bundle]
+    needs: [impact, docs, tools, lint, native, minimum-rust, policy, memory, release-native, packages, release-bundle]
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:

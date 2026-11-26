@@ -33,7 +33,7 @@ autocorrection in the first-release scope.
 
 | Platform | Status |
 | --- | --- |
-| CachyOS, KDE Plasma, Wayland, Fcitx5 | Working; native v0.1.0 published |
+| CachyOS, KDE Plasma, Wayland, Fcitx5 | Working; [native releases](https://github.com/jong-lang/jong-bangla-keyboard/releases/latest) |
 | Debian testing (forky), KDE Plasma, Wayland, Fcitx5 | Maintainer reports desktop tests and package installation, revision upgrade and removal passed; evidence limits below |
 | Fedora 45, KDE Plasma, Wayland, Fcitx5 | Maintainer reports desktop tests and RPM installation, revision upgrade and removal passed; evidence limits below |
 | Other Linux distributions and desktops with Fcitx5 | Untested; no support claim |
