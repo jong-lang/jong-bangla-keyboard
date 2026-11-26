@@ -1,6 +1,6 @@
 # Native Fcitx5 packages
 
-The first release targets x86-64 Linux with Fcitx5 5.1.23 or newer. Packages
+Native packages target x86-64 Linux with Fcitx5 5.1.23 or newer. Packages
 are built separately against each distribution's libraries and paths. The
 Arch binary payload is specific to its recorded build environment. Do not
 copy it into Debian or Fedora. Older framework versions are not supported.
@@ -9,7 +9,7 @@ Desktop coverage remains in [FEATURES.md](FEATURES.md#platform-matrix).
 ## Install, upgrade, activate and remove
 
 Download the matching package and `SHA256SUMS` from the
-[published release](https://github.com/jong-lang/jong-bangla-keyboard/releases/tag/v0.1.0). Verify the
+[published release](https://github.com/jong-lang/jong-bangla-keyboard/releases/latest). Verify the
 download against its entry with `sha256sum --check --ignore-missing SHA256SUMS`.
 Checksums detect corruption; obtain the manifest from the trusted release too.
 
@@ -47,7 +47,7 @@ standard-library notices and license texts beside the project license.
 
 ## Installed icons and appearance
 
-Builds after v0.1.0 install nine icons beneath the framework's data directory
+Current packages install nine icons beneath the framework's data directory
 (normally `/usr/share`), alongside the addon and two registration files:
 
 | Directory under `icons/hicolor/` | Files |

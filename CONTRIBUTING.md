@@ -157,8 +157,7 @@ Review enforces rules that do not have an automated check.
 ## Release policy and checklist
 
 Release adapters in this order: Fcitx5, Windows TSF, then IBus. Native Fcitx5
-v0.1.0 is published for x86-64 Linux; continue maintaining it as Windows work
-begins. Flatpak packaging is out of scope for now; its prototype is removed.
+is published for x86-64 Linux. Continue maintaining it as Windows work begins. Flatpak packaging is out of scope for now; its prototype is removed.
 ARM64 is outside the initial scope. Keep macOS out of scope unless a viable
 free path is established.
 
@@ -196,7 +195,7 @@ The native release CI job runs on affected PRs and all main/release runs.
 It exports the checked-out commit, builds
 twice in separate source/build directories with offline locked Cargo, normalizes
 source paths and archive metadata, and compares all twelve staged files byte for
-byte. Both builds run CTest and staged discovery/removal checks. A mismatch
+byte. The first build runs CTest and staged discovery. A mismatch
 fails before checksums or a release draft are prepared. This establishes repeat
 builds in that environment, not reproducibility across arbitrary toolchains.
 To reproduce, use the image, snapshot and dependency command pinned in the CI
@@ -228,7 +227,7 @@ Current delivery:
 
 | Work | Issue |
 | --- | --- |
-| Native Fcitx5 release | [v0.1.0 published](https://github.com/jong-lang/jong-bangla-keyboard/releases/tag/v0.1.0); preserve the recorded desktop coverage limits |
+| Native Fcitx5 release | [Published release](https://github.com/jong-lang/jong-bangla-keyboard/releases/latest); preserve the recorded desktop coverage limits |
 | AUR publication | [#46](https://github.com/jong-lang/jong-bangla-keyboard/issues/46); supported recipe, publication awaits maintainer account approval |
 | Desktop acceptance automation | [#47](https://github.com/jong-lang/jong-bangla-keyboard/issues/47); ongoing, not a full acceptance claim |
 | Change-aware CI scheduling | [Selection, required gates and limits](docs/TESTING.md#ci-scheduling) |

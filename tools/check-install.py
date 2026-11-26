@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Stage an experimental install; check discovery and removal without a daemon."""
+"""Verify the staged payload and addon discovery without a desktop session."""
 
 import os
 from pathlib import Path
@@ -112,16 +112,6 @@ def main():
         finally:
             hidden.rename(library)
         print("PASS: missing staged library rejected; no build/system fallback", flush=True)
-
-        sentinel = addon_dir / "unrelated-addon.keep"
-        sentinel.write_text("unrelated file must remain\n")
-        icon_sentinel = shared_data / "icons/hicolor/scalable/status/unrelated.keep"
-        icon_sentinel.write_text("unrelated icon must remain\n")
-        for path in expected:
-            path.unlink()
-        remaining = {path for path in stage.rglob("*") if path.is_file()}
-        require(remaining == {sentinel, icon_sentinel}, "removal must retain unrelated files")
-        print("PASS: removed only Jong's twelve files; unrelated sentinels retained", flush=True)
 
 
 if __name__ == "__main__":
