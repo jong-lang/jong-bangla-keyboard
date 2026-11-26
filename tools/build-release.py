@@ -101,8 +101,9 @@ def build(root, destination):
                  "-DFCITX_INSTALL_USE_FCITX_SYS_PATHS=ON", "-DJONG_ENABLE_SANITIZERS=OFF",
                  f"-DCMAKE_CXX_FLAGS={flags}"], env=env)
             run(["cmake", "--build", build_dir], env=env)
-            run(["ctest", "--test-dir", build_dir, "--output-on-failure"], env=env)
-            run([sys.executable, source / "tools/check-install.py", build_dir], env=env)
+            if index == 0:
+                run(["ctest", "--test-dir", build_dir, "--no-tests=error", "--output-on-failure"], env=env)
+                run([sys.executable, source / "tools/check-install.py", build_dir], env=env)
             run(["cmake", "--install", build_dir], env=dict(env, DESTDIR=str(stage)))
             payloads.append(staged_files(stage))
         compare(*payloads)

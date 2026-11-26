@@ -1,23 +1,27 @@
+use std::ffi::OsStr;
+use std::fs;
+use std::path::Path;
+
 use jong_bangla_core::transliterate;
 
 #[test]
-fn reph_basic_spellings_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/reph-basic.tsv"));
-}
-
-#[test]
-fn reph_conjuncts_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/reph-conjuncts.tsv"));
-}
-
-#[test]
-fn reph_contextual_spellings_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/reph-contextual.tsv"));
-}
-
-#[test]
-fn reph_controls_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/reph-controls.tsv"));
+fn parity_fixtures_match_exact_unicode() {
+    let directory = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures");
+    let mut fixtures: Vec<_> = fs::read_dir(directory)
+        .expect("read parity fixture directory")
+        .map(|entry| entry.expect("read parity fixture entry").path())
+        .filter(|path| {
+            path.extension() == Some(OsStr::new("tsv"))
+                && path.file_name() != Some(OsStr::new("unicode-case-policy.tsv"))
+        })
+        .collect();
+    assert!(!fixtures.is_empty(), "no parity fixtures were discovered");
+    fixtures.sort();
+    for path in fixtures {
+        let fixture = fs::read_to_string(&path)
+            .unwrap_or_else(|error| panic!("read {}: {error}", path.display()));
+        check_fixture(&path, &fixture);
+    }
 }
 
 #[test]
@@ -63,31 +67,6 @@ fn reph_handles_long_mixed_input() {
 }
 
 #[test]
-fn four_following_r_q_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/following-r-q.tsv"));
-}
-
-#[test]
-fn four_following_r_z_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/following-r-z.tsv"));
-}
-
-#[test]
-fn four_following_r_retroflex_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/following-r-r-retroflex.tsv"));
-}
-
-#[test]
-fn four_following_r_rh_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/following-r-rh-retroflex.tsv"));
-}
-
-#[test]
-fn four_following_r_controls_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/following-r-four-controls.tsv"));
-}
-
-#[test]
 fn four_following_r_respects_utf8_and_control_boundaries() {
     for (raw, base) in [("q", "ক"), ("z", "য"), ("R", "ড়"), ("Rh", "ঢ়")] {
         for boundary in ['\0', '\n', '\r', '\t', '🙂', 'ক', 'é', '\u{301}'] {
@@ -127,21 +106,6 @@ fn four_following_r_handles_long_mixed_input() {
     let input = "qry1zrry2Rrri3RHrr4Rgr5q`ry6Rhr🙂a7";
     let expected = "ক্র্য১যরর\u{200D}্য২ড়ৃ৩ঢ়্রর৪ড়্গ্র৫কর\u{200D}্য৬ঢ়্র🙂আ৭";
     assert_eq!(transliterate(&input.repeat(1024)), expected.repeat(1024));
-}
-
-#[test]
-fn final_escape_t_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/final-escape-t.tsv"));
-}
-
-#[test]
-fn final_escape_consumption_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/final-escape-consumption.tsv"));
-}
-
-#[test]
-fn final_escape_controls_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/final-escape-controls.tsv"));
 }
 
 #[test]
@@ -255,101 +219,6 @@ fn vowel_escapes_handle_long_repeated_mixed_input() {
 }
 
 #[test]
-fn vowel_escape_a_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/vowel-escape-a.tsv"));
-}
-
-#[test]
-fn vowel_escape_i_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/vowel-escape-i.tsv"));
-}
-
-#[test]
-fn vowel_escape_i_long_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/vowel-escape-i-long.tsv"));
-}
-
-#[test]
-fn vowel_escape_u_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/vowel-escape-u.tsv"));
-}
-
-#[test]
-fn vowel_escape_u_long_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/vowel-escape-u-long.tsv"));
-}
-
-#[test]
-fn vowel_escape_e_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/vowel-escape-e.tsv"));
-}
-
-#[test]
-fn vowel_escape_ee_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/vowel-escape-ee.tsv"));
-}
-
-#[test]
-fn vowel_escape_o_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/vowel-escape-o.tsv"));
-}
-
-#[test]
-fn vowel_escape_o_upper_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/vowel-escape-o-upper.tsv"));
-}
-
-#[test]
-fn vowel_escape_oo_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/vowel-escape-oo.tsv"));
-}
-
-#[test]
-fn vowel_escape_oi_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/vowel-escape-oi.tsv"));
-}
-
-#[test]
-fn vowel_escape_ou_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/vowel-escape-ou.tsv"));
-}
-
-#[test]
-fn vowel_escape_rri_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/vowel-escape-rri.tsv"));
-}
-
-#[test]
-fn vowel_escape_a_upper_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/vowel-escape-a-upper.tsv"));
-}
-
-#[test]
-fn vowel_escape_e_upper_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/vowel-escape-e-upper.tsv"));
-}
-
-#[test]
-fn vowel_escape_ee_lower_upper_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/vowel-escape-ee-lower-upper.tsv"));
-}
-
-#[test]
-fn vowel_escape_ee_upper_lower_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/vowel-escape-ee-upper-lower.tsv"));
-}
-
-#[test]
-fn vowel_escape_ee_upper_pair_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/vowel-escape-ee-upper-pair.tsv"));
-}
-
-#[test]
-fn vowel_escape_controls_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/vowel-escape-controls.tsv"));
-}
-
-#[test]
 fn symbols_keep_consumed_keys_and_separate_calls_distinct() {
     for (raw, parts) in [
         ("..", &[("।", "।")][..]),
@@ -407,131 +276,6 @@ fn symbols_handle_long_repeated_mixed_input() {
 }
 
 #[test]
-fn symbols_period_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/symbols-period.tsv"));
-}
-
-#[test]
-fn symbols_double_period_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/symbols-double-period.tsv"));
-}
-
-#[test]
-fn symbols_ellipsis_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/symbols-ellipsis.tsv"));
-}
-
-#[test]
-fn symbols_escaped_period_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/symbols-escaped-period.tsv"));
-}
-
-#[test]
-fn symbols_colon_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/symbols-colon.tsv"));
-}
-
-#[test]
-fn symbols_escaped_colon_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/symbols-escaped-colon.tsv"));
-}
-
-#[test]
-fn symbols_caret_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/symbols-caret.tsv"));
-}
-
-#[test]
-fn symbols_escaped_caret_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/symbols-escaped-caret.tsv"));
-}
-
-#[test]
-fn symbols_double_comma_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/symbols-double-comma.tsv"));
-}
-
-#[test]
-fn symbols_dollar_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/symbols-dollar.tsv"));
-}
-
-#[test]
-fn symbols_backtick_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/symbols-backtick.tsv"));
-}
-
-#[test]
-fn symbols_controls_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/symbols-controls.tsv"));
-}
-
-#[test]
-fn explicit_gj_controls_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/explicit-gj-controls.tsv"));
-}
-
-#[test]
-fn explicit_gj_g_basic_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/explicit-gj-g-basic.tsv"));
-}
-
-#[test]
-fn explicit_gj_g_lower_upper_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/explicit-gj-g-lower-upper.tsv"));
-}
-
-#[test]
-fn explicit_gj_g_n_retroflex_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/explicit-gj-g-n-retroflex.tsv"));
-}
-
-#[test]
-fn explicit_gj_g_upper_lower_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/explicit-gj-g-upper-lower.tsv"));
-}
-
-#[test]
-fn explicit_gj_g_upper_pair_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/explicit-gj-g-upper-pair.tsv"));
-}
-
-#[test]
-fn explicit_gj_gdh_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/explicit-gj-gdh.tsv"));
-}
-
-#[test]
-fn explicit_gj_gh_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/explicit-gj-gh.tsv"));
-}
-
-#[test]
-fn explicit_gj_ghn_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/explicit-gj-ghn.tsv"));
-}
-
-#[test]
-fn explicit_gj_gl_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/explicit-gj-gl.tsv"));
-}
-
-#[test]
-fn explicit_gj_gm_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/explicit-gj-gm.tsv"));
-}
-
-#[test]
-fn explicit_gj_gn_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/explicit-gj-gn.tsv"));
-}
-
-#[test]
-fn explicit_gj_j_basic_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/explicit-gj-j-basic.tsv"));
-}
-
-#[test]
 fn explicit_gj_resets_at_every_split_and_between_calls() {
     for (raw, parts) in [
         ("Ghn", &[("গ", "হ্ন"), ("ঘ", "ন")][..]),
@@ -567,86 +311,6 @@ fn explicit_gj_resets_at_every_split_and_between_calls() {
     assert_eq!(raw, "G J Jh jh GN Ng NG nG ShNG Gg gG Gdh GHn cNG jNG 🙂 ");
     assert_eq!(transliterate("G"), "গ");
     assert_eq!(transliterate("J"), "জ");
-}
-
-#[test]
-fn case_alias_a_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/case-alias-a.tsv"));
-}
-
-#[test]
-fn case_alias_b_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/case-alias-b.tsv"));
-}
-
-#[test]
-fn case_alias_c_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/case-alias-c.tsv"));
-}
-
-#[test]
-fn case_alias_e_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/case-alias-e.tsv"));
-}
-
-#[test]
-fn case_alias_f_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/case-alias-f.tsv"));
-}
-
-#[test]
-fn case_alias_h_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/case-alias-h.tsv"));
-}
-
-#[test]
-fn case_alias_k_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/case-alias-k.tsv"));
-}
-
-#[test]
-fn case_alias_l_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/case-alias-l.tsv"));
-}
-
-#[test]
-fn case_alias_m_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/case-alias-m.tsv"));
-}
-
-#[test]
-fn case_alias_mixed_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/case-alias-mixed.tsv"));
-}
-
-#[test]
-fn case_alias_p_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/case-alias-p.tsv"));
-}
-
-#[test]
-fn case_alias_q_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/case-alias-q.tsv"));
-}
-
-#[test]
-fn case_alias_resolved_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/case-alias-resolved.tsv"));
-}
-
-#[test]
-fn case_alias_v_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/case-alias-v.tsv"));
-}
-
-#[test]
-fn case_alias_w_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/case-alias-w.tsv"));
-}
-
-#[test]
-fn case_alias_x_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/case-alias-x.tsv"));
 }
 
 const CASE_ALIAS_SPLITS: [(&str, usize, &str, &str); 25] = [
@@ -843,210 +507,6 @@ fn conjunct_completion_consumed_and_fresh_keys_keep_their_priorities() {
 }
 
 #[test]
-fn conjunct_completion_bd_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-completion-bd.tsv"));
-}
-
-#[test]
-fn conjunct_completion_bdh_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-completion-bdh.tsv"));
-}
-
-#[test]
-fn conjunct_completion_bj_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-completion-bj.tsv"));
-}
-
-#[test]
-fn conjunct_completion_c_following_r_matches_exact_unicode() {
-    check_fixture(include_str!(
-        "fixtures/conjunct-completion-c-following-r.tsv"
-    ));
-}
-
-#[test]
-fn conjunct_completion_c_nya_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-completion-c-nya.tsv"));
-}
-
-#[test]
-fn conjunct_completion_cc_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-completion-cc.tsv"));
-}
-
-#[test]
-fn conjunct_completion_cch_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-completion-cch.tsv"));
-}
-
-#[test]
-fn conjunct_completion_ch_following_r_matches_exact_unicode() {
-    check_fixture(include_str!(
-        "fixtures/conjunct-completion-ch-following-r.tsv"
-    ));
-}
-
-#[test]
-fn conjunct_completion_controls_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-completion-controls.tsv"));
-}
-
-#[test]
-fn conjunct_completion_gdh_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-completion-gdh.tsv"));
-}
-
-#[test]
-fn conjunct_completion_j_following_r_matches_exact_unicode() {
-    check_fixture(include_str!(
-        "fixtures/conjunct-completion-j-following-r.tsv"
-    ));
-}
-
-#[test]
-fn conjunct_completion_j_nya_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-completion-j-nya.tsv"));
-}
-
-#[test]
-fn conjunct_completion_jh_following_r_matches_exact_unicode() {
-    check_fixture(include_str!(
-        "fixtures/conjunct-completion-jh-following-r.tsv"
-    ));
-}
-
-#[test]
-fn conjunct_completion_jj_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-completion-jj.tsv"));
-}
-
-#[test]
-fn conjunct_completion_jjh_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-completion-jjh.tsv"));
-}
-
-#[test]
-fn conjunct_completion_mth_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-completion-mth.tsv"));
-}
-
-#[test]
-fn conjunct_completion_nc_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-completion-nc.tsv"));
-}
-
-#[test]
-fn conjunct_completion_nch_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-completion-nch.tsv"));
-}
-
-#[test]
-fn conjunct_completion_nj_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-completion-nj.tsv"));
-}
-
-#[test]
-fn conjunct_completion_njh_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-completion-njh.tsv"));
-}
-
-#[test]
-fn conjunct_completion_nya_c_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-completion-nya-c.tsv"));
-}
-
-#[test]
-fn conjunct_completion_nya_ch_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-completion-nya-ch.tsv"));
-}
-
-#[test]
-fn conjunct_completion_nya_j_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-completion-nya-j.tsv"));
-}
-
-#[test]
-fn conjunct_completion_nya_jh_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-completion-nya-jh.tsv"));
-}
-
-#[test]
-fn conjunct_completion_p_retroflex_t_matches_exact_unicode() {
-    check_fixture(include_str!(
-        "fixtures/conjunct-completion-p-retroflex-t.tsv"
-    ));
-}
-
-#[test]
-fn conjunct_completion_pt_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-completion-pt.tsv"));
-}
-
-#[test]
-fn conjunct_completion_s_uppercase_c_matches_exact_unicode() {
-    check_fixture(include_str!(
-        "fixtures/conjunct-completion-s-uppercase-c.tsv"
-    ));
-}
-
-#[test]
-fn conjunct_completion_s_uppercase_ch_matches_exact_unicode() {
-    check_fixture(include_str!(
-        "fixtures/conjunct-completion-s-uppercase-ch.tsv"
-    ));
-}
-
-#[test]
-fn conjunct_completion_sh_c_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-completion-sh-c.tsv"));
-}
-
-#[test]
-fn conjunct_completion_sh_ch_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-completion-sh-ch.tsv"));
-}
-
-#[test]
-fn s_stops_sth_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-sth.tsv"));
-}
-
-#[test]
-fn s_stops_st_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-st.tsv"));
-}
-
-#[test]
-fn s_stops_s_t_retroflex_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-s-t-retroflex.tsv"));
-}
-
-#[test]
-fn s_stops_sh_th_retroflex_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-sh-th-retroflex.tsv"));
-}
-
-#[test]
-fn s_stops_sh_t_retroflex_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-sh-t-retroflex.tsv"));
-}
-
-#[test]
-fn s_stops_sh_lowercase_t_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-sh-lowercase-t.tsv"));
-}
-
-#[test]
-fn s_stops_s_uppercase_t_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-s-uppercase-t.tsv"));
-}
-
-#[test]
-fn s_stops_case_controls_and_consumed_keys_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/s-stop-controls.tsv"));
-}
-
-#[test]
 fn s_stops_longer_exceptions_and_priorities_match() {
     for (raw, expected) in [
         ("st sth sT ShT ShTh sht St", "স্ত স্থ স্ট ষ্ট ষ্ঠ শ্ত শ্ত"),
@@ -1119,31 +579,6 @@ fn s_stops_resets_at_every_split_boundary_and_between_calls() {
 }
 
 #[test]
-fn ns_ps_ns_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-ns.tsv"));
-}
-
-#[test]
-fn ns_ps_nsh_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-nsh.tsv"));
-}
-
-#[test]
-fn ns_ps_ps_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-ps.tsv"));
-}
-
-#[test]
-fn ns_ps_psh_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-psh.tsv"));
-}
-
-#[test]
-fn ns_ps_case_controls_and_consumed_keys_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/ns-ps-controls.tsv"));
-}
-
-#[test]
 fn ns_ps_longer_exceptions_and_priorities_match() {
     for (raw, expected) in [
         ("nsk nsl nsm nsp nsn", "ন্সক ন্সল ন্সম ন্সপ ন্সন"),
@@ -1212,41 +647,6 @@ fn ns_ps_resets_at_every_split_boundary_and_between_calls() {
 }
 
 #[test]
-fn repeat_n_bb_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-bb.tsv"));
-}
-
-#[test]
-fn repeat_n_pp_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-pp.tsv"));
-}
-
-#[test]
-fn repeat_n_pn_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-pn.tsv"));
-}
-
-#[test]
-fn repeat_n_sn_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-sn.tsv"));
-}
-
-#[test]
-fn repeat_n_sh_lowercase_n_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-sh-lowercase-n.tsv"));
-}
-
-#[test]
-fn repeat_n_s_uppercase_n_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-s-uppercase-n.tsv"));
-}
-
-#[test]
-fn repeat_n_case_controls_and_consumed_keys_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/repeat-n-controls.tsv"));
-}
-
-#[test]
 fn repeat_n_resets_at_every_split_boundary_and_between_calls() {
     for (raw, bangla, parts) in [
         ("bb", "ব্ব", vec![("ব", "ব")]),
@@ -1288,46 +688,6 @@ fn repeat_n_resets_at_every_split_boundary_and_between_calls() {
         assert_eq!(transliterate("y"), "ইয়");
     }
     assert_eq!(transliterate(&"bb pp pn sn shn Sn bbh pph bbl ppl bbhl pphl pnk snk shnk Snk pnnk snnk shnnk Snnk ksn kshn spn Shpn abbas dhappa shopno snan sneho proshno proSno 🙂 ".repeat(64)), "ব্ব প্প প্ন স্ন শ্ন শ্ন ব্বহ প্পহ ব্বল প্পল ব্বহ্ল প্পহ্ল প্নক স্নক শ্নক শ্নক প্নঙ্ক স্নঙ্ক শ্নঙ্ক শ্নঙ্ক ক্সন কশন স্পন ষ্পন আব্বাস ধাপ্পা শপ্ন স্নান স্নেহ প্রশ্ন প্রশ্ন 🙂 ".repeat(64));
-}
-
-#[test]
-fn s_labial_sph_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-sph.tsv"));
-}
-
-#[test]
-fn s_labial_spl_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-spl.tsv"));
-}
-
-#[test]
-fn s_labial_sp_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-sp.tsv"));
-}
-
-#[test]
-fn s_labial_sf_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-sf.tsv"));
-}
-
-#[test]
-fn s_labial_sh_ph_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-sh-ph.tsv"));
-}
-
-#[test]
-fn s_labial_sh_p_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-sh-p.tsv"));
-}
-
-#[test]
-fn s_labial_sh_f_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-sh-f.tsv"));
-}
-
-#[test]
-fn s_labial_nonconjunct_and_available_l_controls_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/s-labial-controls.tsv"));
 }
 
 #[test]
@@ -1373,61 +733,6 @@ fn s_labial_resets_at_every_split_boundary_and_between_calls() {
         assert_eq!(transliterate("y"), "ইয়");
     }
     assert_eq!(transliterate(&"sp sph sf spl Shp Shph Shf spll sphll sfll Shpll Shphll Shfll splg sphlg Shplg splm sphlm ksp kspl kShp NgkShp sphulingo sfUron puShpo niShphol niShfol 🙂 ".repeat(64)), "স্প স্ফ স্ফ স্প্ল ষ্প ষ্ফ ষ্ফ স্প্লল স্ফল্ল স্ফল্ল ষ্পল্ল ষ্ফল্ল ষ্ফল্ল স্প্লগ স্ফল্গ ষ্পল্গ স্প্লম স্ফল্ম ক্সপ ক্সপ্ল ক্ষপ ঙ্ক্ষপ স্ফুলিঙ্গ স্ফূরন পুষ্প নিষ্ফল নিষ্ফল 🙂 ".repeat(64));
-}
-
-#[test]
-fn l_prefix_lgh_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-lgh.tsv"));
-}
-
-#[test]
-fn l_prefix_lg_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-lg.tsv"));
-}
-
-#[test]
-fn l_prefix_lbh_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-lbh.tsv"));
-}
-
-#[test]
-fn l_prefix_lb_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-lb.tsv"));
-}
-
-#[test]
-fn l_prefix_lv_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-lv.tsv"));
-}
-
-#[test]
-fn l_prefix_lph_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-lph.tsv"));
-}
-
-#[test]
-fn l_prefix_lp_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-lp.tsv"));
-}
-
-#[test]
-fn l_prefix_l_t_retroflex_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-l-t-retroflex.tsv"));
-}
-
-#[test]
-fn l_prefix_l_d_retroflex_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-l-d-retroflex.tsv"));
-}
-
-#[test]
-fn l_prefix_ldh_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-ldh.tsv"));
-}
-
-#[test]
-fn l_prefix_nonconjunct_controls_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/l-prefix-controls.tsv"));
 }
 
 #[test]
@@ -1484,66 +789,6 @@ fn l_prefix_uppercase_g_stays_separate_from_lowercase_conjunct() {
 }
 
 #[test]
-fn m_labial_mbh_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-mbh.tsv"));
-}
-
-#[test]
-fn m_labial_mb_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-mb.tsv"));
-}
-
-#[test]
-fn m_labial_mv_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-mv.tsv"));
-}
-
-#[test]
-fn m_labial_mph_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-mph.tsv"));
-}
-
-#[test]
-fn m_labial_mpl_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-mpl.tsv"));
-}
-
-#[test]
-fn m_labial_mp_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-mp.tsv"));
-}
-
-#[test]
-fn m_labial_mf_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-mf.tsv"));
-}
-
-#[test]
-fn m_labial_lm_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-lm.tsv"));
-}
-
-#[test]
-fn m_labial_sm_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-sm.tsv"));
-}
-
-#[test]
-fn m_labial_sh_lowercase_m_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-sh-lowercase-m.tsv"));
-}
-
-#[test]
-fn m_labial_s_uppercase_m_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-s-uppercase-m.tsv"));
-}
-
-#[test]
-fn m_labial_nonconjunct_controls_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/m-labial-controls.tsv"));
-}
-
-#[test]
 fn m_labial_resets_at_every_split_boundary_and_between_calls() {
     for (raw, bangla, parts) in [
         ("mbh", "ম্ভ", vec![("ম", "ভ"), ("ম্ব", "হ")]),
@@ -1590,81 +835,6 @@ fn m_labial_resets_at_every_split_boundary_and_between_calls() {
         assert_eq!(transliterate("y"), "ইয়");
     }
     assert_eq!(transliterate(&"mb mbh mv mp mph mf mpl lm sm shm Sm mbl mbhl mvl mphl mfl mplk mpll mplTm smp shmpl Ngmb kkhmp sklm kshm mbbl mppl 🙂 ".repeat(64)), "ম্ব ম্ভ ম্ভ ম্প ম্ফ ম্ফ মপ্ল ল্ম স্ম শ্ম শ্ম ম্বল ম্ভল ম্ভল ম্ফল ম্ফল মপ্লক মপ্লল মপ্লট্ম স্মপ শ্মপ্ল ঙ্মব ক্ষ্মপ স্ক্লম কশম ম্বব্ল ম্পপ্ল 🙂 ".repeat(64));
-}
-
-#[test]
-fn l_batch_gl_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-gl.tsv"));
-}
-
-#[test]
-fn l_batch_ll_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-ll.tsv"));
-}
-
-#[test]
-fn l_batch_bl_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-bl.tsv"));
-}
-
-#[test]
-fn l_batch_pl_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-pl.tsv"));
-}
-
-#[test]
-fn l_batch_sl_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-sl.tsv"));
-}
-
-#[test]
-fn l_batch_sh_lowercase_l_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-sh-lowercase-l.tsv"));
-}
-
-#[test]
-fn l_batch_bhl_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-bhl.tsv"));
-}
-
-#[test]
-fn l_batch_phl_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-phl.tsv"));
-}
-
-#[test]
-fn l_batch_vl_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-vl.tsv"));
-}
-
-#[test]
-fn l_batch_fl_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-fl.tsv"));
-}
-
-#[test]
-fn l_batch_s_uppercase_l_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-s-uppercase-l.tsv"));
-}
-
-#[test]
-fn l_batch_basic_p_following_r_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/p-following-r.tsv"));
-}
-
-#[test]
-fn l_batch_basic_ph_following_r_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/ph-following-r.tsv"));
-}
-
-#[test]
-fn l_batch_basic_f_following_r_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/f-following-r.tsv"));
-}
-
-#[test]
-fn l_batch_nonconjunct_controls_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/l-ending-controls.tsv"));
 }
 
 #[test]
@@ -1723,76 +893,6 @@ fn l_batch_resets_at_every_split_boundary_and_between_calls() {
 }
 
 #[test]
-fn consuming_k_nkh_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-nkh.tsv"));
-}
-
-#[test]
-fn consuming_k_nk_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-nk.tsv"));
-}
-
-#[test]
-fn consuming_k_lkh_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-lkh.tsv"));
-}
-
-#[test]
-fn consuming_k_lk_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-lk.tsv"));
-}
-
-#[test]
-fn consuming_k_skl_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-skl.tsv"));
-}
-
-#[test]
-fn consuming_k_skh_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-skh.tsv"));
-}
-
-#[test]
-fn consuming_k_sk_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-sk.tsv"));
-}
-
-#[test]
-fn consuming_k_sh_k_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-sh-k.tsv"));
-}
-
-#[test]
-fn consuming_k_ksh_priority_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-ksh-priority.tsv"));
-}
-
-#[test]
-fn consuming_k_ks_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-ks.tsv"));
-}
-
-#[test]
-fn consuming_k_basic_s_following_r_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/s-following-r.tsv"));
-}
-
-#[test]
-fn consuming_k_basic_sh_following_r_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/sh-lowercase-following-r.tsv"));
-}
-
-#[test]
-fn consuming_k_basic_s_uppercase_following_r_matches_exact_unicode() {
-    check_fixture(include_str!("fixtures/s-uppercase-following-r.tsv"));
-}
-
-#[test]
-fn consuming_k_case_controls_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/consuming-k-controls.tsv"));
-}
-
-#[test]
 fn consuming_k_resets_at_every_split_boundary_and_between_calls() {
     for (raw, bangla, parts) in [
         ("nkh", "ঙ্খ", vec![("ন", "খ"), ("ঙ্ক", "হ")]),
@@ -1844,26 +944,6 @@ fn consuming_k_resets_at_every_split_boundary_and_between_calls() {
         transliterate(&"nk nkh lk lkh sk skl skh Shk ks ksh sr shr Sr nktm lktm sktm Shktm skkl nkkh lkkh skkh Shkkh kshm 🙂 ".repeat(64)),
         "ঙ্ক ঙ্খ ল্ক লখ স্ক স্ক্ল স্খ ষ্ক ক্স কশ স্র শ্র শ্র ঙ্কত্ম ল্কত্ম স্কত্ম ষ্কত্ম স্কক্ল ঙ্কখ ল্কখ স্কখ ষ্কখ কশম 🙂 ".repeat(64)
     );
-}
-
-#[test]
-fn k_batch_kt_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-kt.tsv"));
-}
-
-#[test]
-fn k_batch_k_retroflex_t_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-k-t-retroflex.tsv"));
-}
-
-#[test]
-fn k_batch_kl_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-kl.tsv"));
-}
-
-#[test]
-fn k_batch_nonconjunct_controls_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/k-family-controls.tsv"));
 }
 
 #[test]
@@ -1951,36 +1031,6 @@ fn t_batch_resets_at_every_split_boundary_and_between_calls() {
 }
 
 #[test]
-fn t_batch_tth_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-tth.tsv"));
-}
-
-#[test]
-fn t_batch_tt_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-tt.tsv"));
-}
-
-#[test]
-fn t_batch_tn_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-tn.tsv"));
-}
-
-#[test]
-fn t_batch_tm_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-tm.tsv"));
-}
-
-#[test]
-fn t_batch_t_retroflex_pair_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-t-retroflex-pair.tsv"));
-}
-
-#[test]
-fn t_batch_t_retroflex_m_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-t-retroflex-m.tsv"));
-}
-
-#[test]
 fn nasal_stops_reset_at_every_split_boundary_and_between_calls() {
     for (raw, bangla, parts) in [
         ("nd", "ন্দ", vec![("ন", "দ")]),
@@ -2044,89 +1094,6 @@ fn nasal_stops_reset_at_every_split_boundary_and_between_calls() {
         ),
         "ন্দ ন্ধ ন্ড ণ্ড ণ্ঢ ন্ত ন্থ ন্ট ণ্ট ন্ঠ ণ্ঠ ন্দধ ন্ধন ন্ডহ ন্নত্র ক্ষ্ণঠ্র 🙂 ".repeat(64)
     );
-}
-
-#[test]
-fn nasal_stops_conjunct_ndh_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-ndh.tsv"));
-}
-
-#[test]
-fn nasal_stops_conjunct_nd_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-nd.tsv"));
-}
-
-#[test]
-fn nasal_stops_conjunct_n_d_retroflex_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-n-d-retroflex.tsv"));
-}
-
-#[test]
-fn nasal_stops_conjunct_n_retroflex_dh_retroflex_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!(
-        "fixtures/conjunct-n-retroflex-dh-retroflex.tsv"
-    ));
-}
-
-#[test]
-fn nasal_stops_conjunct_n_retroflex_d_retroflex_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!(
-        "fixtures/conjunct-n-retroflex-d-retroflex.tsv"
-    ));
-}
-
-#[test]
-fn nasal_stops_conjunct_nth_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-nth.tsv"));
-}
-
-#[test]
-fn nasal_stops_conjunct_nt_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-nt.tsv"));
-}
-
-#[test]
-fn nasal_stops_conjunct_n_th_retroflex_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-n-th-retroflex.tsv"));
-}
-
-#[test]
-fn nasal_stops_conjunct_n_t_retroflex_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-n-t-retroflex.tsv"));
-}
-
-#[test]
-fn nasal_stops_conjunct_n_retroflex_th_retroflex_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!(
-        "fixtures/conjunct-n-retroflex-th-retroflex.tsv"
-    ));
-}
-
-#[test]
-fn nasal_stops_conjunct_n_retroflex_t_retroflex_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!(
-        "fixtures/conjunct-n-retroflex-t-retroflex.tsv"
-    ));
-}
-
-#[test]
-fn nasal_stops_t_following_r_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/t-following-r.tsv"));
-}
-
-#[test]
-fn nasal_stops_th_following_r_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/th-following-r.tsv"));
-}
-
-#[test]
-fn nasal_stops_t_retroflex_following_r_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/t-retroflex-following-r.tsv"));
-}
-
-#[test]
-fn nasal_stops_th_retroflex_following_r_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/th-retroflex-following-r.tsv"));
 }
 
 #[test]
@@ -2196,81 +1163,6 @@ fn d_batch_resets_at_boundaries_and_between_calls() {
         ),
         "দ্দ দ্ধ ধ্ন ধ্ম দ্ম দ্ভ দ্ভ ড্ড দ্র ধ্র ড্র ঢ্র ব্র ভ্র ভ্র দ্দঘ্র দ্দধ্র দ্দভ্র ড্ডঢ্র 🙂 ".repeat(64)
     );
-}
-
-#[test]
-fn d_batch_conjunct_ddh_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-ddh.tsv"));
-}
-
-#[test]
-fn d_batch_conjunct_dd_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-dd.tsv"));
-}
-
-#[test]
-fn d_batch_conjunct_dhn_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-dhn.tsv"));
-}
-
-#[test]
-fn d_batch_conjunct_dhm_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-dhm.tsv"));
-}
-
-#[test]
-fn d_batch_conjunct_dm_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-dm.tsv"));
-}
-
-#[test]
-fn d_batch_conjunct_dbh_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-dbh.tsv"));
-}
-
-#[test]
-fn d_batch_conjunct_dv_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-dv.tsv"));
-}
-
-#[test]
-fn d_batch_conjunct_d_retroflex_pair_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-d-retroflex-pair.tsv"));
-}
-
-#[test]
-fn d_batch_d_following_r_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/d-following-r.tsv"));
-}
-
-#[test]
-fn d_batch_dh_following_r_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/dh-following-r.tsv"));
-}
-
-#[test]
-fn d_batch_d_retroflex_following_r_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/d-retroflex-following-r.tsv"));
-}
-
-#[test]
-fn d_batch_dh_retroflex_following_r_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/dh-retroflex-following-r.tsv"));
-}
-
-#[test]
-fn d_batch_b_following_r_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/b-following-r.tsv"));
-}
-
-#[test]
-fn d_batch_bh_following_r_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/bh-following-r.tsv"));
-}
-
-#[test]
-fn d_batch_v_following_r_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/v-following-r.tsv"));
 }
 
 #[test]
@@ -2348,76 +1240,6 @@ fn nasal_h_batch_resets_at_boundaries_and_between_calls() {
 }
 
 #[test]
-fn nasal_h_conjunct_ngh_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-ngh.tsv"));
-}
-
-#[test]
-fn nasal_h_conjunct_n_lower_pair_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-n-lower-pair.tsv"));
-}
-
-#[test]
-fn nasal_h_conjunct_n_mixed_pair_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-n-mixed-pair.tsv"));
-}
-
-#[test]
-fn nasal_h_conjunct_mn_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-mn.tsv"));
-}
-
-#[test]
-fn nasal_h_conjunct_hm_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-hm.tsv"));
-}
-
-#[test]
-fn nasal_h_conjunct_hl_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-hl.tsv"));
-}
-
-#[test]
-fn nasal_h_conjunct_nm_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-nm.tsv"));
-}
-
-#[test]
-fn nasal_h_conjunct_n_retroflex_m_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-n-retroflex-m.tsv"));
-}
-
-#[test]
-fn nasal_h_conjunct_mm_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-mm.tsv"));
-}
-
-#[test]
-fn nasal_h_conjunct_ml_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-ml.tsv"));
-}
-
-#[test]
-fn nasal_h_conjunct_ng_m_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-ng-m.tsv"));
-}
-
-#[test]
-fn nasal_h_conjunct_gm_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-gm.tsv"));
-}
-
-#[test]
-fn nasal_h_m_following_r_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/m-following-r.tsv"));
-}
-
-#[test]
-fn nasal_h_l_following_r_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/l-following-r.tsv"));
-}
-
-#[test]
 fn g_nasal_batch_resets_at_boundaries_and_between_calls() {
     for (raw, bangla, first, tail) in [
         ("gg", "জ্ঞ", "গ", "গ"),
@@ -2461,81 +1283,6 @@ fn g_nasal_batch_resets_at_boundaries_and_between_calls() {
 }
 
 #[test]
-fn conjunct_gg_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-gg.tsv"));
-}
-
-#[test]
-fn conjunct_g_n_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-g-n.tsv"));
-}
-
-#[test]
-fn conjunct_nn_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-nn.tsv"));
-}
-
-#[test]
-fn conjunct_h_n_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-h-n.tsv"));
-}
-
-#[test]
-fn conjunct_gn_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-gn.tsv"));
-}
-
-#[test]
-fn conjunct_ghn_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-ghn.tsv"));
-}
-
-#[test]
-fn conjunct_hn_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-hn.tsv"));
-}
-
-#[test]
-fn conjunct_dg_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-dg.tsv"));
-}
-
-#[test]
-fn conjunct_dgh_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-dgh.tsv"));
-}
-
-#[test]
-fn conjunct_r_g_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-r-g.tsv"));
-}
-
-#[test]
-fn h_following_r_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/h-following-r.tsv"));
-}
-
-#[test]
-fn n_following_r_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/n-following-r.tsv"));
-}
-
-#[test]
-fn n_retroflex_following_r_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/n-retroflex-following-r.tsv"));
-}
-
-#[test]
-fn ngg_conjunct_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-ngg.tsv"));
-}
-
-#[test]
-fn nggh_conjunct_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-nggh.tsv"));
-}
-
-#[test]
 fn ngg_nggh_context_resets_at_boundaries_and_between_calls() {
     for (raw, bangla, last) in [("Ngg", "ঙ্গ", "গ"), ("Nggh", "ঙ্ঘ", "ঘ")] {
         for boundary in [' ', '\n', '\r', '\t', '\0', '🙂', 'ঙ', '\u{301}'] {
@@ -2565,31 +1312,6 @@ fn ngg_nggh_context_resets_at_boundaries_and_between_calls() {
         transliterate(&"Ngg Nggh Nggr Ngghr Nggrri Ngghry 🙂 ".repeat(64)),
         "ঙ্গ ঙ্ঘ ঙ্গ্র ঙ্ঘ্র ঙ্গৃ ঙ্ঘ্র্য 🙂 ".repeat(64)
     );
-}
-
-#[test]
-fn g_following_r_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/g-following-r.tsv"));
-}
-
-#[test]
-fn gh_following_r_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/gh-following-r.tsv"));
-}
-
-#[test]
-fn k_following_r_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/k-following-r.tsv"));
-}
-
-#[test]
-fn kh_following_r_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/kh-following-r.tsv"));
-}
-
-#[test]
-fn sh_following_r_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/sh-following-r.tsv"));
 }
 
 #[test]
@@ -2623,241 +1345,6 @@ fn basic_following_r_resets_at_boundaries_and_between_calls() {
         assert_eq!(transliterate("a"), "আ");
         assert_eq!(transliterate("r"), "র");
     }
-}
-
-#[test]
-fn authored_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/reference.tsv"));
-}
-
-#[test]
-fn vowel_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/vowels.tsv"));
-}
-
-#[test]
-fn u_vowel_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/vowels-u.tsv"));
-}
-
-#[test]
-fn long_i_vowel_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/vowels-i-long.tsv"));
-}
-
-#[test]
-fn e_vowel_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/vowels-e.tsv"));
-}
-
-#[test]
-fn o_vowel_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/vowels-o.tsv"));
-}
-
-#[test]
-fn oi_ou_vowel_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/vowels-oi-ou.tsv"));
-}
-
-#[test]
-fn rri_vowel_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/vowels-rri.tsv"));
-}
-
-#[test]
-fn r_consonant_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/consonants-r.tsv"));
-}
-
-#[test]
-fn p_ph_f_consonant_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/consonants-p-ph-f.tsv"));
-}
-
-#[test]
-fn c_ch_j_jh_consonant_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/consonants-c-ch-j-jh.tsv"));
-}
-
-#[test]
-fn d_dh_consonant_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/consonants-d-dh.tsv"));
-}
-
-#[test]
-fn l_h_consonant_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/consonants-l-h.tsv"));
-}
-
-#[test]
-fn s_sh_consonant_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/consonants-s-sh.tsv"));
-}
-
-#[test]
-fn retroflex_r_consonant_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/consonants-r-retroflex.tsv"));
-}
-
-#[test]
-fn z_consonant_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/consonant-z.tsv"));
-}
-
-#[test]
-fn ng_ng_consonant_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/consonants-ng-nj.tsv"));
-}
-
-#[test]
-fn lowercase_ng_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/sign-ng.tsv"));
-}
-
-#[test]
-fn nasal_rri_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/nasal-rri.tsv"));
-}
-
-#[test]
-fn uppercase_y_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/consonant-y-uppercase.tsv"));
-}
-
-#[test]
-fn lowercase_y_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/consonant-y-lowercase.tsv"));
-}
-
-#[test]
-fn uppercase_z_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/consonant-z-uppercase.tsv"));
-}
-
-#[test]
-fn ya_following_r_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/ya-following-r.tsv"));
-}
-
-#[test]
-fn uppercase_y_following_r_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/uppercase-y-following-r.tsv"));
-}
-
-#[test]
-fn lowercase_q_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/consonant-q.tsv"));
-}
-
-#[test]
-fn lowercase_v_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/consonant-v.tsv"));
-}
-
-#[test]
-fn lowercase_w_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/consonant-w.tsv"));
-}
-
-#[test]
-fn w_following_r_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/w-following-r.tsv"));
-}
-
-#[test]
-fn lowercase_x_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/consonant-x.tsv"));
-}
-
-#[test]
-fn x_following_r_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/x-following-r.tsv"));
-}
-
-#[test]
-fn ngx_conjunct_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-ngx.tsv"));
-}
-
-#[test]
-fn ngk_conjunct_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-ngk.tsv"));
-}
-
-#[test]
-fn ngkh_conjunct_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-ngkh.tsv"));
-}
-
-#[test]
-fn ngkx_conjunct_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-ngkx.tsv"));
-}
-
-#[test]
-fn ngkkh_conjunct_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-ngkkh.tsv"));
-}
-
-#[test]
-fn ngksh_conjunct_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-ngksh.tsv"));
-}
-
-#[test]
-fn kkh_conjunct_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-kkh.tsv"));
-}
-
-#[test]
-fn ksh_conjunct_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-ksh.tsv"));
-}
-
-#[test]
-fn kkhn_conjunct_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-kkhn.tsv"));
-}
-
-#[test]
-fn kshn_conjunct_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-kshn.tsv"));
-}
-
-#[test]
-fn kxn_conjunct_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-kxn.tsv"));
-}
-
-#[test]
-fn kkhm_conjunct_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-kkhm.tsv"));
-}
-
-#[test]
-fn kshm_conjunct_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-kshm.tsv"));
-}
-
-#[test]
-fn kxm_conjunct_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-kxm.tsv"));
-}
-
-#[test]
-fn kk_conjunct_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-kk.tsv"));
-}
-
-#[test]
-fn shn_conjunct_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-shn.tsv"));
-}
-
-#[test]
-fn shm_conjunct_reference_cases_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/conjunct-shm.tsv"));
 }
 
 #[test]
@@ -2962,25 +1449,34 @@ fn n_conjunct_context_resets_at_boundaries_and_between_calls() {
     }
 }
 
-fn check_fixture(fixture: &str) {
+fn check_fixture(path: &Path, fixture: &str) {
+    let name = path.display();
     let mut count = 0;
-    for line in fixture.lines() {
+    for (index, line) in fixture.lines().enumerate() {
+        let row = index + 1;
         if line.starts_with('#') {
             continue;
         }
         let columns: Vec<_> = line.split('\t').collect();
-        assert_eq!(columns.len(), 3, "invalid fixture: {line:?}");
+        assert_eq!(columns.len(), 3, "{name}:{row}: invalid fixture: {line:?}");
         let [input, expected, points] = [columns[0], columns[1], columns[2]];
-        assert_eq!(transliterate(input), expected, "input: {input:?}");
+        assert_eq!(
+            transliterate(input),
+            expected,
+            "{name}:{row}: input {input:?}"
+        );
         let actual_points = expected
             .chars()
             .map(|ch| format!("U+{:04X}", ch as u32))
             .collect::<Vec<_>>()
             .join(" ");
-        assert_eq!(actual_points, points, "fixture code points: {input:?}");
+        assert_eq!(
+            actual_points, points,
+            "{name}:{row}: fixture code points for {input:?}"
+        );
         count += 1;
     }
-    assert!(count > 0, "fixture must contain cases");
+    assert!(count > 0, "{name}: fixture must contain cases");
 }
 
 #[test]
@@ -3553,9 +2049,4 @@ fn grouped_rule_examples_match_exact_output() {
         transliterate("mb mbh mv mp mph mf mpl lm sm shm Sm mbl mplk smp"),
         "ম্ব ম্ভ ম্ভ ম্প ম্ফ ম্ফ মপ্ল ল্ম স্ম শ্ম শ্ম ম্বল মপ্লক স্মপ"
     );
-}
-
-#[test]
-fn audit_interactions_match_exact_unicode() {
-    check_fixture(include_str!("fixtures/audit-interactions.tsv"));
 }

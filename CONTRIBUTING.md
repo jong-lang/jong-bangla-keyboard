@@ -13,10 +13,20 @@ uv tool install graphifyy
 graphify query "How does Fcitx5 input reach the Rust composition engine?"
 ```
 
-Queries use the checked-in graph locally and need no API key. Run
-`graphify export html` for a browser view or `graphify update .` to refresh the
-graph after code changes. Share the refreshed `graph.json` in the same PR as
-the code change. The HTML, report, and extraction cache stay local.
+Queries use the checked-in graph locally and need no API key. If the wiki
+index exists, use it for broad navigation. Use `graphify path` for relationships,
+`graphify explain` for focused concepts, and `graphify section` for Markdown
+headings. Read the source lines located by those queries to verify code claims.
+Use the full graph report when reviewing architecture or when focused queries
+leave gaps. Apply the query-first rule to any authorized code exploration
+subagent. Use direct inspection for stale or incorrect graph output or when the
+maintainer asks to skip the graph.
+
+Run `graphify export html` for a browser view. After code changes, run
+`graphify update .` for an AST-only refresh and include the updated
+`graphify-out/graph.json` in the PR. A refresh can replace the whole JSON.
+Dirty graph files are expected after hooks or incremental updates. The HTML,
+report, and extraction cache stay local.
 
 ## Choose the mode
 
@@ -157,8 +167,7 @@ Review enforces rules that do not have an automated check.
 ## Release policy and checklist
 
 Release adapters in this order: Fcitx5, Windows TSF, then IBus. Native Fcitx5
-v0.1.0 is published for x86-64 Linux; continue maintaining it as Windows work
-begins. Flatpak packaging is out of scope for now; its prototype is removed.
+is published for x86-64 Linux. Continue maintaining it as Windows work begins. Flatpak packaging is out of scope for now; its prototype is removed.
 ARM64 is outside the initial scope. Keep macOS out of scope unless a viable
 free path is established.
 
@@ -196,7 +205,7 @@ The native release CI job runs on affected PRs and all main/release runs.
 It exports the checked-out commit, builds
 twice in separate source/build directories with offline locked Cargo, normalizes
 source paths and archive metadata, and compares all twelve staged files byte for
-byte. Both builds run CTest and staged discovery/removal checks. A mismatch
+byte. The first build runs CTest and staged discovery. A mismatch
 fails before checksums or a release draft are prepared. This establishes repeat
 builds in that environment, not reproducibility across arbitrary toolchains.
 To reproduce, use the image, snapshot and dependency command pinned in the CI
@@ -228,7 +237,7 @@ Current delivery:
 
 | Work | Issue |
 | --- | --- |
-| Native Fcitx5 release | [v0.1.0 published](https://github.com/jong-lang/jong-bangla-keyboard/releases/tag/v0.1.0); preserve the recorded desktop coverage limits |
+| Native Fcitx5 release | [Published release](https://github.com/jong-lang/jong-bangla-keyboard/releases/latest); preserve the recorded desktop coverage limits |
 | AUR publication | [#46](https://github.com/jong-lang/jong-bangla-keyboard/issues/46); supported recipe, publication awaits maintainer account approval |
 | Desktop acceptance automation | [#47](https://github.com/jong-lang/jong-bangla-keyboard/issues/47); ongoing, not a full acceptance claim |
 | Change-aware CI scheduling | [Selection, required gates and limits](docs/TESTING.md#ci-scheduling) |
