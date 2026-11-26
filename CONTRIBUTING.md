@@ -3,6 +3,21 @@
 Start with [AGENTS.md](AGENTS.md). It is the entry point for commands, repository
 layout, conventions, and instructions on which document to read for a task.
 
+## Explore the code with Graphify
+
+Each checkout includes `graphify-out/graph.json`. Install Graphify once with
+[uv](https://docs.astral.sh/uv/), then query the shared graph from the repository root:
+
+```sh
+uv tool install graphifyy
+graphify query "How does Fcitx5 input reach the Rust composition engine?"
+```
+
+Queries use the checked-in graph locally and need no API key. Run
+`graphify export html` for a browser view or `graphify update .` to refresh the
+graph after code changes. Share the refreshed `graph.json` in the same PR as
+the code change. The HTML, report, and extraction cache stay local.
+
 ## Choose the mode
 
 Check the current branch and working tree before editing. Preserve unrelated work.
