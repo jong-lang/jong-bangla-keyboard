@@ -15,3 +15,20 @@
    fun:*4test7console17run_tests_console
    fun:*4test16test_main_static
 }
+
+# Rust 1.100.0 adds Thread::new_current and dispatches through test_main_env_args.
+{
+   rust-libtest-main-thread-context-1.100
+   Memcheck:Leak
+   match-leak-kinds: possible
+   fun:malloc
+   fun:*3std6thread6thread*6Thread3new
+   fun:*3std6thread6thread*6Thread11new_current
+   fun:*3std6thread7current12init_current
+   fun:*3std4sync4mpmc7context*7Context3new
+   fun:*3std3sys12thread_local6native4lazy*16get_or_init_slow*
+   fun:*3std4sync4mpmc4list*4test5event13CompletedTestE4recv*
+   fun:*4test7console17run_tests_console
+   fun:*4test15test_main_inner
+   fun:*4test18test_main_env_args
+}

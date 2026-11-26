@@ -35,8 +35,9 @@ class ReleaseRecovery(unittest.TestCase):
                          "size_in_bytes": 12345, "workflow_run": {"id": 123, "head_sha": self.commit}}
         self.artifacts = [self.artifact]
 
-    def validate(self):
-        return recovery.validate_run(self.run, self.jobs, self.artifacts, self.repository, self.tag, self.commit)
+    def validate(self, *, require_minimum_rust=False):
+        return recovery.validate_run(self.run, self.jobs, self.artifacts, self.repository, self.tag, self.commit,
+                                     require_minimum_rust=require_minimum_rust)
 
     def test_only_installation_failure_with_complete_original_evidence_is_eligible(self):
         self.assertEqual(self.validate(), 456)
@@ -57,6 +58,22 @@ class ReleaseRecovery(unittest.TestCase):
                 with self.subTest(job=job["name"], conclusion=conclusion), self.assertRaises(ValueError):
                     self.validate()
             job["conclusion"] = original
+
+    def test_tags_with_minimum_rust_job_require_its_success(self):
+        self.jobs = [
+            {"name": name, "status": "completed", "conclusion": "success"}
+            for name in recovery.SELECTIVE_JOBS
+        ] + [self.policy,
+             {"name": recovery.GATE, "status": "completed", "conclusion": "failure"},
+             {"name": recovery.DRAFT, "status": "completed", "conclusion": "skipped"}]
+        with self.assertRaisesRegex(ValueError, "missing"):
+            self.validate(require_minimum_rust=True)
+        minimum = {"name": recovery.MINIMUM_RUST, "status": "completed", "conclusion": "failure"}
+        self.jobs.append(minimum)
+        with self.assertRaisesRegex(ValueError, "minimum Rust"):
+            self.validate(require_minimum_rust=True)
+        minimum["conclusion"] = "success"
+        self.assertEqual(self.validate(require_minimum_rust=True), 456)
 
     def test_wrong_repository_tag_commit_workflow_event_or_incomplete_run_rejected(self):
         for key, value in (

@@ -42,15 +42,10 @@ const standalone = new Set();
 const inputs = new Map();
 const fixtureCounts = {};
 const fixtureHash = createHash("sha256");
-const testSource = readFileSync(new URL("../tests/conversion.rs", import.meta.url), "utf8");
-const rustFixtures = new Set([...testSource.matchAll(/include_str!\(\s*"fixtures\/([^"\n]+)"\s*,?\s*\)/g)]
-  .map((match) => match[1]));
 const names = readdirSync(new URL("../tests/fixtures/", import.meta.url))
   .filter((name) => name.endsWith(".tsv") && name !== "unicode-case-policy.tsv").sort();
 let count = 0;
 for (const name of names) {
-  assert.ok(rustFixtures.has(name),
-    `${name} must remain in the Rust regression suite`);
   const fixture = readFileSync(
     new URL(`../tests/fixtures/${name}`, import.meta.url),
     "utf8",

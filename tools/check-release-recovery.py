@@ -20,6 +20,7 @@ SUCCESSFUL_JOBS = {
 POLICY = "Release checks / Dependency and privacy policy"
 DRAFT = "Prepare complete release draft"
 GATE = "Release checks / Rust and Fcitx5"
+MINIMUM_RUST = "Release checks / Workspace tests on minimum Rust"
 SELECTIVE_JOBS = (SUCCESSFUL_JOBS - {GATE}) | {
     "Release checks / Select validation by change impact",
     "Release checks / Selected tooling regressions",
@@ -33,7 +34,7 @@ POLICY_CHECKS = {
 }
 
 
-def validate_run(run, jobs, artifacts, repository, tag, commit):
+def validate_run(run, jobs, artifacts, repository, tag, commit, *, require_minimum_rust=False):
     if (run["repository"]["full_name"] != repository
             or run["head_repository"]["full_name"] != repository
             or run["path"] != ".github/workflows/release.yml"
@@ -44,6 +45,8 @@ def validate_run(run, jobs, artifacts, repository, tag, commit):
     names = {job["name"] for job in jobs}
     selective = "Release checks / Select validation by change impact" in names
     successful = SELECTIVE_JOBS if selective else SUCCESSFUL_JOBS
+    if require_minimum_rust:
+        successful = successful | {MINIMUM_RUST}
     expected = successful | {POLICY, DRAFT} | ({GATE} if selective else set())
     if len(jobs) != len(expected) or {job["name"] for job in jobs} != expected:
         raise ValueError("source run has missing, duplicate or unexpected jobs")
@@ -98,7 +101,11 @@ def check(source, repository, tag, run_id):
     jobs = [job for page in pages for job in page["jobs"]]
     pages = api(f"{endpoint}/artifacts?per_page=100", paginate=True)
     artifacts = [asset for page in pages for asset in page["artifacts"]]
-    artifact_id = validate_run(run, jobs, artifacts, repository, tag, commit)
+    # A historical tag may have a CI workflow that predates this job.
+    workflow = source / ".github/workflows/ci.yml"
+    require_minimum_rust = workflow.exists() and "  minimum-rust:" in workflow.read_text().splitlines()
+    artifact_id = validate_run(run, jobs, artifacts, repository, tag, commit,
+                               require_minimum_rust=require_minimum_rust)
     # Fail closed if a retry started while evidence was being collected.
     if api(endpoint) != run:
         raise ValueError("source run changed during verification; inspect before retrying")

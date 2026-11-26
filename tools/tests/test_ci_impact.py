@@ -22,14 +22,14 @@ spec.loader.exec_module(impact)
 
 class Selection(unittest.TestCase):
     def test_documentation_only_has_no_heavy_jobs_or_tool_regressions(self):
-        selection = impact.plan(['README.md', 'docs/TESTING.md', 'CHANGELOG.md'])
+        selection = impact.plan(['README.md', 'docs/TESTING.md', 'CHANGELOG.md', 'graphify-out/graph.json'])
         self.assertFalse(any(selection[key] for key in impact.CHECKS))
         self.assertEqual(selection['formats'], [])
         self.assertEqual(selection['tests'], [])
 
     def test_unknown_workflow_toolchain_and_empty_inputs_are_broad(self):
         for path in ('new-file', 'new-guide.md', 'tools/new-helper.py', 'docs/new-script.py',
-                     'packaging/new-distro/recipe', '.github/workflows/ci.yml',
+                     'packaging/new-distro/recipe', 'graphify-out/other.json', '.github/workflows/ci.yml',
                      '.github/workflows/release.yml', '.cargo/config.toml', 'Cargo.lock',
                      'rust-toolchain.toml', 'tools/ci-impact.py', 'tools/check-build.sh',
                      'adapters/fcitx5/CMakeLists.txt', '../README.md', 'odd\nname'):
@@ -50,7 +50,9 @@ class Selection(unittest.TestCase):
                      'adapters/fcitx5/addon.cpp', 'adapters/fcitx5/ffi/src/lib.rs'):
             with self.subTest(path=path):
                 selected = impact.plan([path])
-                self.assertTrue(all(selected[key] for key in impact.CHECKS if key != 'lint'))
+                self.assertTrue(all(selected[key] for key in impact.CHECKS
+                                    if key not in ('lint', 'minimum_rust')))
+                self.assertFalse(selected['minimum_rust'])
                 self.assertEqual(selected['formats'], list(impact.FORMATS))
 
     def test_package_formats_and_combined_changes_form_a_union(self):
@@ -160,6 +162,7 @@ class RequiredGate(unittest.TestCase):
         # producers, but a producer failure must never make their skip acceptable.
         return {job: {'result': 'success' if run else 'skipped'} for job, run in {
             'impact': True, 'docs': True, 'native': selected['native'],
+            'minimum-rust': selected['minimum_rust'],
             'tools': selected['tools'], 'policy': selected['policy'], 'lint': selected['lint'],
             'memory': selected['memory'], 'release-native': selected['release_native'],
             'packages': bool(selected['formats']), 'release-bundle': selected['bundle'],
