@@ -96,6 +96,9 @@ result as a new run. Planned checks need an issue link; do not claim they exist.
 
 ## Agent skills
 
+- Graphify. Load the installed Graphify skill first for `/graphify`. When the graph
+  exists, [query it](CONTRIBUTING.md#explore-the-code-with-graphify) before codebase
+  searches or source reads.
 - Issue tracker. Use [GitHub Issues](docs/agents/issue-tracker.md) for tickets and specs.
 - Triage labels. Use the [triage label mapping](docs/agents/triage-labels.md) when triaging issues.
 - Domain docs. Use the [single-context layout](docs/agents/domain.md) when working with domain terms or decisions.
