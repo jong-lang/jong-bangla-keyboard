@@ -94,6 +94,12 @@ result as a new run. Planned checks need an issue link; do not claim they exist.
   Keep AGENTS.md at most 120 lines and README.md at most 80. Keep CLAUDE.md to one
   link here. Propose any additional document before creating it. Use no em dashes.
 
+## Agent skills
+
+- Issue tracker. Use [GitHub Issues](docs/agents/issue-tracker.md) for tickets and specs.
+- Triage labels. Use the [triage label mapping](docs/agents/triage-labels.md) when triaging issues.
+- Domain docs. Use the [single-context layout](docs/agents/domain.md) when working with domain terms or decisions.
+
 ## Read when needed
 
 | When doing this | Read this |
