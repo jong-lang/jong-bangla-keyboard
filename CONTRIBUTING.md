@@ -13,10 +13,20 @@ uv tool install graphifyy
 graphify query "How does Fcitx5 input reach the Rust composition engine?"
 ```
 
-Queries use the checked-in graph locally and need no API key. Run
-`graphify export html` for a browser view or `graphify update .` to refresh the
-graph after code changes. Share the refreshed `graph.json` in the same PR as
-the code change. The HTML, report, and extraction cache stay local.
+Queries use the checked-in graph locally and need no API key. If the wiki
+index exists, use it for broad navigation. Use `graphify path` for relationships,
+`graphify explain` for focused concepts, and `graphify section` for Markdown
+headings. Read the source lines located by those queries to verify code claims.
+Use the full graph report when reviewing architecture or when focused queries
+leave gaps. Apply the query-first rule to any authorized code exploration
+subagent. Use direct inspection for stale or incorrect graph output or when the
+maintainer asks to skip the graph.
+
+Run `graphify export html` for a browser view. After code changes, run
+`graphify update .` for an AST-only refresh and include the updated
+`graphify-out/graph.json` in the PR. A refresh can replace the whole JSON.
+Dirty graph files are expected after hooks or incremental updates. The HTML,
+report, and extraction cache stay local.
 
 ## Choose the mode
 
